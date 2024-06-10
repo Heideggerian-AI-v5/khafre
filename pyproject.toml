@@ -1,0 +1,46 @@
+[project]
+name = "khafre"
+readme = "README.md"
+requires-python = ">=3.8"
+license = { "file" = "LICENSE" }
+authors = [{ "name" = "Mihai Hawkin", "email" = "mpomarlan@yahoo.co.uk" }, { "name" = "Nikolaos Tsiogkas", "email" = "nikolaos.tsiogkas@kuleuven.be" }, { "name" = "Stefano De Giorgis", "email" = "stefano.degiorgis2@unibo.it" }, { "name" = "Rachel Ringe", "email" = "rringe@uni-bremen.de" }]
+keywords = ["perception", "affordance recognition", "machine learning", "object recognition"]
+classifiers = [
+    "Development Status :: 0 - Alpha",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Operating System :: POSIX :: Linux",
+    "Operating System :: Microsoft :: Windows",
+    "Operating System :: MacOS",
+]
+urls = { "Documentation" = "https://Heideggerian-AI-v5.github.io/khafre" }
+dependencies = [numpy, opencv-python, py-build-cmake, requests, ultralytics]
+dynamic = ["version", "description"]
+
+[build-system]
+requires = ["py-build-cmake~=0.1.8"]
+build-backend = "py_build_cmake.build"
+
+[tool.py-build-cmake.module]
+directory = "khafre"
+
+[tool.py-build-cmake.sdist]
+include = ["CMakeLists.txt", "src/*"]
+
+[tool.py-build-cmake.cmake]
+minimum_version = "3.17"
+build_type = "RelWithDebInfo"
+source_path = "src"
+build_args = ["-j"]
+install_components = ["khafre_numerics"]
+
+[tool.py-build-cmake.stubgen]
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+testpaths = ["test"]

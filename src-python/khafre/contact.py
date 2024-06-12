@@ -5,21 +5,23 @@ import os
 import platform
 import cv2 as cv
 
+from .contactcpp import _contact
+
 _datapp = ndpointer(dtype=numpy.uintp, ndim=1, flags='C') 
 
 
-dirpath = os.path.dirname(os.path.abspath(__file__))
-if 'Windows' == platform.system():
-    soPath = os.path.join(dirpath, 'libcontact.dll')
-else:
-    soPath = os.path.join(dirpath, 'libcontact.so')
-
-_dll = ctypes.CDLL(soPath) 
-
-_contact = _dll.contact
+#dirpath = os.path.dirname(os.path.abspath(__file__))
+#if 'Windows' == platform.system():
+#    soPath = os.path.join(dirpath, 'libcontact.dll')
+#else:
+#    soPath = os.path.join(dirpath, 'libcontact.so')
+#
+#_dll = ctypes.CDLL(soPath) 
+#
+#_contact = _dll.contact
 #                      searchWidth     threshold      rows           cols          dilS     dilO      maskS   maskO    depth    contPS   contPO
-_contact.argtypes = [ctypes.c_int, ctypes.c_float, ctypes.c_int, ctypes.c_int, _datapp, _datapp, _datapp, _datapp, _datapp, _datapp, _datapp]
-_contact.restype = None
+#_contact.argtypes = [ctypes.c_int, ctypes.c_float, ctypes.c_int, ctypes.c_int, _datapp, _datapp, _datapp, _datapp, _datapp, _datapp, _datapp]
+#_contact.restype = None
 
 dilationKernel = cv.getStructuringElement(cv.MORPH_CROSS,(3,3),(1,1))
 
@@ -70,13 +72,15 @@ def contact(searchWidth, threshold, imgHeight, imgWidth, s, o, dilatedImgs, mask
         return (x.__array_interface__['data'][0] + numpy.arange(x.shape[0])*x.strides[0]).astype(numpy.uintp)
     contPS = numpy.zeros((imgHeight, imgWidth),dtype=numpy.uint8)
     contPO = numpy.zeros((imgHeight, imgWidth),dtype=numpy.uint8)
-    searchWidth = 7
+    #searchWidth = 7
     #threshold = 0.5
-    #maskImgS = maskImgs[s]
-    #maskImgO = maskImgs[o]
-    maskImgS = cv.erode(maskImgs[s], dilationKernel)
-    maskImgO = cv.erode(maskImgs[o], dilationKernel)
-    _contact(searchWidth, threshold, imgHeight, imgWidth, _pp(dilatedImgs[s]), _pp(dilatedImgs[o]), _pp(maskImgs[s]), _pp(maskImgs[o]), _pp(depthImg), _pp(contPS), _pp(contPO))
+    maskImgS = maskImgs[s]
+    maskImgO = maskImgs[o]
+    #maskImgS = cv.erode(maskImgs[s], dilationKernel)
+    #maskImgO = cv.erode(maskImgs[o], dilationKernel)
+    _contact(searchWidth, threshold, imgHeight, imgWidth, dilatedImgs[s], dilatedImgs[o], maskImgs[s], maskImgs[o], depthImg, contPS, contPO)
+    #_contact(searchWidth, threshold, imgHeight, imgWidth, _pp(dilatedImgs[s]), _pp(dilatedImgs[o]), _pp(maskImgs[s]), _pp(maskImgs[o]), _pp(depthImg), _pp(contPS), _pp(contPO))
+    #_contact(searchWidth, threshold, imgHeight, imgWidth, _pp(dilatedImgs[s]), _pp(dilatedImgs[o]), _pp(maskImgs[s]), _pp(maskImgs[o]), _pp(depthImg), _pp(contPS), _pp(contPO))
     #contPS, contPO = _contactSlow(searchWidth, threshold, imgHeight, imgWidth, (dilatedImgs[s]), (dilatedImgs[o]), maskImgS, maskImgO, (depthImg), (contPS), (contPO))
     contPS = _expand(imgHeight, imgWidth, maskImgs[s], contPS)
     contPO = _expand(imgHeight, imgWidth, maskImgs[o], contPO)

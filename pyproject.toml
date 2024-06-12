@@ -19,7 +19,7 @@ classifiers = [
     "Operating System :: MacOS",
 ]
 urls = { "Documentation" = "https://Heideggerian-AI-v5.github.io/khafre" }
-dependencies = [numpy, opencv-python, py-build-cmake, requests, ultralytics]
+dependencies = ["numpy", "opencv-python", "py-build-cmake", "requests", "ultralytics"]
 dynamic = ["version", "description"]
 
 [build-system]
@@ -27,7 +27,7 @@ requires = ["py-build-cmake~=0.1.8"]
 build-backend = "py_build_cmake.build"
 
 [tool.py-build-cmake.module]
-directory = "khafre"
+directory = "src-python"
 
 [tool.py-build-cmake.sdist]
 include = ["CMakeLists.txt", "src/*"]

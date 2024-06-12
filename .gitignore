@@ -72,6 +72,7 @@ instance/
 docs/_build/
 
 # PyBuilder
+.py-build-cmake_cache/
 .pybuilder/
 target/
 

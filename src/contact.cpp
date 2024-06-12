@@ -45,7 +45,6 @@ void contactDM(int searchWidth, float threshold, int rows, int cols, PyArrayObje
                     while((0==found) && (l<lastSearch))
                     {
                         int cc = j+l;
-                        std::cout << i << " " << j << " " << k << " " << l << " " << (int)*comaskD_Element << " " << *depth_Element << " " << *codepth_Element << std::endl;
                         if((0<=cr) && (cr<rows) && (0<=cc) && (cc<cols) && (0!=*comaskD_Element) && close(*depth_Element, *codepth_Element, threshold))
                             found = 255;
                         l++;

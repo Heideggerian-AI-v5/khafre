@@ -1,4 +1,5 @@
 #define PY_SSIZE_T_CLEAN
+#include <cassert>
 #include <Python.h>
 #include "numpy/arrayobject.h"
 #include <iostream>
@@ -139,6 +140,8 @@ static struct PyModuleDef contactcpp = {
 
 /* The main entry point that is called by Python when our module is imported. */
 PyMODINIT_FUNC PyInit_contactcpp(void) {
+    assert(CHAR_BIT == 8); // Require 8bit chars
+    assert(sizeof(float) == 4); // Require 32bit floats
     import_array();
     return PyModule_Create(&contactcpp);
 }

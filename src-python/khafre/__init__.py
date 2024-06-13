@@ -3,3 +3,5 @@ Taskable perception for affordance recognition, including support for learning f
 """
 
 __version__ = '0.0.1'
+from khafre import contact
+

@@ -56,6 +56,9 @@ size as the masks.
 Therefore, a point on an object corresponds to a pixel on its normal mask and a pixel in the depth image. When
 searching for points close to a point P, the search will look at pixels in the depth map close to the pixel 
 corresponding to P.
+
+Note that when computing closeness, only depth values are compared, rather than a full computation of distance 
+between inverse projected pixels.
     
 Arguments:
     searchWidth: int, controls the size of the window around a pixel to search for close pixels. The size of the

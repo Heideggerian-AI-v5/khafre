@@ -1,4 +1,4 @@
-import khafre.contact
+import khafre
 import numpy
 import pytest
 

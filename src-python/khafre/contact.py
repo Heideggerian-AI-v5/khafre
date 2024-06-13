@@ -7,22 +7,6 @@ import cv2 as cv
 
 from .contactcpp import _contact
 
-_datapp = ndpointer(dtype=numpy.uintp, ndim=1, flags='C') 
-
-
-#dirpath = os.path.dirname(os.path.abspath(__file__))
-#if 'Windows' == platform.system():
-#    soPath = os.path.join(dirpath, 'libcontact.dll')
-#else:
-#    soPath = os.path.join(dirpath, 'libcontact.so')
-#
-#_dll = ctypes.CDLL(soPath) 
-#
-#_contact = _dll.contact
-#                      searchWidth     threshold      rows           cols          dilS     dilO      maskS   maskO    depth    contPS   contPO
-#_contact.argtypes = [ctypes.c_int, ctypes.c_float, ctypes.c_int, ctypes.c_int, _datapp, _datapp, _datapp, _datapp, _datapp, _datapp, _datapp]
-#_contact.restype = None
-
 dilationKernel = cv.getStructuringElement(cv.MORPH_CROSS,(3,3),(1,1))
 
 def _contactSlow(searchWidth, threshold, imgHeight, imgWidth, dilImgS, dilImgO, maskImgS, maskImgO, depthImg, contPS, contPO):
@@ -53,34 +37,57 @@ def _contactSlow(searchWidth, threshold, imgHeight, imgWidth, dilImgS, dilImgO, 
     contPS = _ci(searchWidth, threshold, imgHeight, imgWidth, dilImgO, maskImgO, maskImgS, contPS)
     return contPS, contPO
 
-def contact(searchWidth, threshold, imgHeight, imgWidth, s, o, dilatedImgs, maskImgs, depthImg):
+def contact(searchWidth, threshold, imgHeight, imgWidth, s, o, dilatedImgs, maskImgs, depthImg, erodeMasks=True):
+    """
+Compute contact masks of two objects. Each object is represented by a pair of masks, a normal and a dilated mask.
+The masks are images, all of the same size.
+    
+Contact is taken to occur where both of the following conditions happen:
+    1) there is some overlap between the dilated mask of an object A and the normal mask of the other object B AND
+    2) some point on object B that is in that overlap is close to a point on object A.
+        
+Depth information, represented as a depth image, is used when computing closeness. The depth image has the same
+size as the masks.
+        
+Therefore, a point on an object corresponds to a pixel on its normal mask and a pixel in the depth image. When
+searching for points close to a point P, the search will look at pixels in the depth map close to the pixel 
+corresponding to P.
+    
+Arguments:
+    searchWidth: int, controls the size of the window around a pixel to search for close pixels. The size of the
+                 window is then (2*searchWidth+1)^2
+    threshold: float, a threshold used to decide whether two points are close or not
+    imgHeight, imgWidth: int, gives the masks and depth image dimensions
+    s, o: str, name of the objects to look for contacts
+    dilatedImgs, maskImgs: dict, where keys are strings and values are numpy arrays of type numpy.uint8. These
+                 dictionaries should contain keys equal to string s and o
+    depthImg: numpy array of type numpy.float32
+    erodeMasks: bool, if True then the normal masks will be slightly eroded before searching for contacts.
+    
+Returns:
+    contPS, contPO: numpy array of type numpy.uint8, contact masks for objects s and o respectively. Will have
+                 the same size as the mask images. A non-zero value indicates a pixel was flagged as belonging
+                 to the contact region.
+    """
     def _pixelCount(mask):
         return len(mask[mask>0])
     def _expand(imgHeight, imgWidth, mask, contact):
-        #return contact
         pixelCount = 0.2*_pixelCount(mask)
         contactCount = _pixelCount(contact)
-        #print("PC", pixelCount, contactCount)
         if 0 == contactCount:
             return contact
         while contactCount < pixelCount:
             contact = numpy.bitwise_and(mask, cv.dilate(contact, dilationKernel))
             contactCount = _pixelCount(contact)
-            #print("    ", pixelCount, contactCount)
         return contact
-    def _pp(x):
-        return (x.__array_interface__['data'][0] + numpy.arange(x.shape[0])*x.strides[0]).astype(numpy.uintp)
     contPS = numpy.zeros((imgHeight, imgWidth),dtype=numpy.uint8)
     contPO = numpy.zeros((imgHeight, imgWidth),dtype=numpy.uint8)
-    #searchWidth = 7
-    #threshold = 0.5
     maskImgS = maskImgs[s]
     maskImgO = maskImgs[o]
-    #maskImgS = cv.erode(maskImgs[s], dilationKernel)
-    #maskImgO = cv.erode(maskImgs[o], dilationKernel)
+    if erodeMasks:
+        maskImgS = cv.erode(maskImgs[s], dilationKernel)
+        maskImgO = cv.erode(maskImgs[o], dilationKernel)
     _contact(searchWidth, threshold, imgHeight, imgWidth, dilatedImgs[s], dilatedImgs[o], maskImgs[s], maskImgs[o], depthImg, contPS, contPO)
-    #_contact(searchWidth, threshold, imgHeight, imgWidth, _pp(dilatedImgs[s]), _pp(dilatedImgs[o]), _pp(maskImgs[s]), _pp(maskImgs[o]), _pp(depthImg), _pp(contPS), _pp(contPO))
-    #_contact(searchWidth, threshold, imgHeight, imgWidth, _pp(dilatedImgs[s]), _pp(dilatedImgs[o]), _pp(maskImgs[s]), _pp(maskImgs[o]), _pp(depthImg), _pp(contPS), _pp(contPO))
     #contPS, contPO = _contactSlow(searchWidth, threshold, imgHeight, imgWidth, (dilatedImgs[s]), (dilatedImgs[o]), maskImgS, maskImgO, (depthImg), (contPS), (contPO))
     contPS = _expand(imgHeight, imgWidth, maskImgs[s], contPS)
     contPO = _expand(imgHeight, imgWidth, maskImgs[o], contPO)

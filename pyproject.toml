@@ -43,4 +43,4 @@ install_components = ["khafre_numerics"]
 
 [tool.pytest.ini_options]
 minversion = "6.0"
-testpaths = ["test"]
+testpaths = ["tests"]

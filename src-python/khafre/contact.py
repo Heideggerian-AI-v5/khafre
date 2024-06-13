@@ -10,6 +10,10 @@ from .contactcpp import _contact
 dilationKernel = cv.getStructuringElement(cv.MORPH_CROSS,(3,3),(1,1))
 
 def _contactSlow(searchWidth, threshold, imgHeight, imgWidth, dilImgS, dilImgO, maskImgS, maskImgO, depthImg, contPS, contPO):
+    """
+Should not call this. A naive implementation of searching for contact masks in python. Too slow for practical use,
+present here to have a kind of easier to check reference and tester for the faster implementation in C++.
+    """
     def _ci(searchWidth, threshold, imgHeight, imgWidth, dilImgD, maskImgD, maskImgN, contPN):
         #dKS = cv.getStructuringElement(cv.MORPH_RECT,(searchWidth*2+1,searchWidth*2+1),(searchWidth,searchWidth))
         #contPN = numpy.bitwise_and(dilImgD,maskImgN)
@@ -37,7 +41,7 @@ def _contactSlow(searchWidth, threshold, imgHeight, imgWidth, dilImgS, dilImgO, 
     contPS = _ci(searchWidth, threshold, imgHeight, imgWidth, dilImgO, maskImgO, maskImgS, contPS)
     return contPS, contPO
 
-def contact(searchWidth, threshold, imgHeight, imgWidth, s, o, dilatedImgs, maskImgs, depthImg, erodeMasks=True):
+def contact(searchWidth, threshold, imgHeight, imgWidth, s, o, dilatedImgs, maskImgs, depthImg, erodeMasks=True, beSlow=False):
     """
 Compute contact masks of two objects. Each object is represented by a pair of masks, a normal and a dilated mask.
 The masks are images, all of the same size.
@@ -63,6 +67,9 @@ Arguments:
                  dictionaries should contain keys equal to string s and o
     depthImg: numpy array of type numpy.float32
     erodeMasks: bool, if True then the normal masks will be slightly eroded before searching for contacts.
+    beSlow: bool. Should be kept False in most circumstances. If True, contact masks will be computed using
+                 a slower implementation in python. This is/was only useful to debug the C++ implementation
+                 by comparing its output to a reference.
     
 Returns:
     contPS, contPO: numpy array of type numpy.uint8, contact masks for objects s and o respectively. Will have
@@ -87,8 +94,11 @@ Returns:
     if erodeMasks:
         maskImgS = cv.erode(maskImgs[s], dilationKernel)
         maskImgO = cv.erode(maskImgs[o], dilationKernel)
-    _contact(searchWidth, threshold, imgHeight, imgWidth, dilatedImgs[s], dilatedImgs[o], maskImgs[s], maskImgs[o], depthImg, contPS, contPO)
-    #contPS, contPO = _contactSlow(searchWidth, threshold, imgHeight, imgWidth, (dilatedImgs[s]), (dilatedImgs[o]), maskImgS, maskImgO, (depthImg), (contPS), (contPO))
+    if not beSlow:
+        _contact(searchWidth, threshold, imgHeight, imgWidth, dilatedImgs[s], dilatedImgs[o], maskImgs[s], maskImgs[o], depthImg, contPS, contPO)
+    else:
+        contPS, contPO = _contactSlow(searchWidth, threshold, imgHeight, imgWidth, (dilatedImgs[s]), (dilatedImgs[o]), maskImgS, maskImgO, (depthImg), (contPS), (contPO))
     contPS = _expand(imgHeight, imgWidth, maskImgs[s], contPS)
     contPO = _expand(imgHeight, imgWidth, maskImgs[o], contPO)
     return contPS, contPO
+

@@ -1,7 +1,16 @@
+import array
 import cv2 as cv
 import time
-from multiprocessing import shared_memory, Process, Lock, Queue
+from multiprocessing import shared_memory, Process, Lock, Queue, SimpleQueue, Pipe
+import signal
 import sys
+
+class NameTaken(Exception):
+    """
+An attempt has been made to associate a name to an entity, when that name
+was already associated.
+    """
+    pass
 
 class _GracefulExit(Exception):
     """
@@ -11,7 +20,7 @@ be raised or caught anywhere else.
     """
     pass
 
-def _RequestExit():
+def _RequestExit(signum, frame):
     """
 Raises a graceful exit exception upon receiving a SIGTERM. Apart from
 its role in bricks.py, this function should not appear anywhere else
@@ -19,7 +28,7 @@ in your codebase.
     """
     raise _GracefulExit()
 
-class ReifiedProcess():
+class ReifiedProcess:
     """
 Wraps together some useful functionality: starting a process, stopping
 it on request and do custom cleanup code in such cases.
@@ -34,6 +43,12 @@ are member variables of this object.
 
 Note: this function does nothing if a process associated to this object
 is already started.
+
+Note: memory is usually not shared between subprocesses. This means that
+changing member variables of a ReifiedProcess will have no effect on the
+process after it is started. Some subclasses may offer specialized setters
+so that the subprocess is informed of the change as well, but unless this
+is explicitly stated it should never be assumed.
         """
         if not isinstance(self._process, Process):
             self._process=Process(target=lambda : self._run(), daemon=self._daemon, args=())
@@ -46,9 +61,12 @@ then terminate. It then joins the process.
 Note: it is possible to start another process associated to this object
 after termination and joining is complete.
         """
-        if isinstance(self._process, Process):
-            self._process.kill()
-            self.join()
+        if isinstance(self._process, Process) and self._process.is_alive():
+            #try:
+                self._process.terminate()
+                self.join()
+            #except:
+            #    pass
     def join(self, timeout=None):
         """
 Joins the process associated to this object. This includes waiting for
@@ -86,4 +104,64 @@ Runs the object's process and sets up graceful exit on SIGTERM.
             # This will take care of terminating all daemon subprocesses started by this process.
             sys.exit(0)
 
+class RatedSimpleQueue:
+   """
+Wraps around a multiprocessing queue, maintains information about rate of 
+incoming and dropped entries. Assumes there is only one consumer of the
+queue, and that, when there are several entries in the queue, only the 
+latest must be serviced. A "dropped" entry is one that is in the queue 
+when another entry shows up.
+
+"Rate of incoming": estimated based on the difference in timestamps
+between entries to the queue. Reported in entries/second. Rates above
+1 million entries/second are reported as 1 million entries/second.
+
+"Rate of dropped entries": estimated based on dropped frames out of the
+last 100. Reported in %.
+   """
+   def __init__(self):
+       self._queue = SimpleQueue()
+       self._entriesHistory = array.array('h',[1]*100)
+       self._historyHead = 0
+       self._previousTS = None
+       self._rate=None
+   def _markHistory(self,done=True,rewind=False):
+       if rewind:
+           self._historyHead-=1
+           self._historyHead%=100
+       m=1
+       if not done:
+           m=0
+       self._entriesHistory[self._historyHead]=m
+       self._historyHead+=1
+       self._historyHead%=100
+   def flush(self):
+       while not self._queue.empty():
+           self._queue.get()
+           self._markHistory()
+   def empty(self):
+       return self._queue.empty()
+   def put(self,e):
+       ts = time.perf_counter()
+       self._queue.put((ts,e))
+   def get(self, block=True, timeout=None):
+       if self._queue.empty():
+           ts, e = self._queue.get(block=block,timeout=timeout)
+           self._markHistory()
+       else:
+           while not self._queue.empty():
+               ts, e = self._queue.get()
+               self._markHistory(done=False)
+           self._markHistory(done=True,rewind=True)
+       if self._previousTS is not None:
+           diff = ts - self._previousTS
+           if diff>1e-6:
+               self._rate = 1.0/(diff)
+           else:
+               self._rate = 1e6
+       self._previousTS = ts
+       return e
+   def getWithRates(self, block=True, timeout=None):
+       e = self.get(block=block, timeout=timeout)
+       return e, self._rate, 100-sum(self._entriesHistory)
 

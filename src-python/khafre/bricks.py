@@ -1,9 +1,13 @@
 import array
 import cv2 as cv
-import time
+from functools import reduce
 from multiprocessing import shared_memory, Process, Lock, Queue, SimpleQueue, Pipe
+import numpy
+import time
 import signal
 import sys
+from typing import Sequence, Union
+import weakref
 
 class NameTaken(Exception):
     """
@@ -169,4 +173,92 @@ last 100. Reported in %.
    def getWithRates(self, block=True, timeout=None):
        e = self.get(block=block, timeout=timeout)
        return e, self._rate, 100-sum(self._entriesHistory)
+
+def _closeSHMProducerPort(shm,lock,active):
+    shm.close()
+    shm.unlink()
+    active["active"] = False
+    # We may have released the lock already, in which case just ignore the exception.
+    try:
+        lock.release()
+    except:
+        pass
+    
+class SHMProducerPort:
+    """
+Defines a "producer port" for sharing a numpy array between subprocesses.
+The numpy array size and type must be known at construction and may not
+be changed afterwards. The array element type must be a numeric type.
+
+The producer is responsible for allocating and freeing up the shared memory.
+
+The consumers may write in the shared memory as well.
+
+Note, consumers are NOT automatically notified about updates to the shared memory.
+Some other mechanism, e.g. a queue or pipe, is needed.
+
+It is possible to either copy a numpy array wholesale via the send function,
+or to access the numpy array inside a with block.
+
+A typical pattern is to create a pair of producer and consumer ports with the
+SHMPort() function. The consumer port object may be used to initialize several
+subprocesses. In this case, the size of the shared buffer will never change.
+
+It is possible to implement a producer/consumer relationship that allows
+consumers to be fed variable-sized buffers. It is however more difficult to
+implement and its cost/benefit ratio may not be favorable in most cases.
+    """
+    def __init__(self, shape:Union[list,tuple], dtype:numpy.dtype):
+        """
+Initialize the SHMProducerPort object.
+
+    shape: tuple, a numpy array shape
+    dtype: numpy.dtype, a numeric numpy data type for the array elements
+        """
+        buffsize = reduce(lambda x,y: x*y, shape)*dtype(1).nbytes
+        self._shm = shared_memory.SharedMemory(create=True, size=buffsize)
+        self._npArray = numpy.ndarray(shape, dtype=dtype, buffer=self._shm.buf)
+        self._lock = Lock()
+        self._finalizer = weakref.finalizer(self,_closeSHMProducerPort,self._shm,self._lock,self._active)
+        self._active={"active":True}
+    def send(self, src):
+        """
+Write the contents of array src to the shared memory buffer.
+
+Note, src must have the shame shape and data type as used to create this port. No checks are
+performed however.
+        """
+        if not self._active["active"]:
+            raise ValueError
+        with self._lock:
+            numpy.copyto(self._npArray, src)
+    def __enter__(self):
+        if not self._active["active"]:
+            raise ValueError
+        self._lock.acquire()
+        return self._npArray
+    def __exit__(self, exit_type, value, traceback):
+        self._lock.release()
+        return False
+
+class SHMConsumerPort:
+    def __init__(self, lock, name, shape, dtype):
+        self._lock = lock
+        self._shm = None
+        self._name = name
+        self._shape = shape
+        self._dtype = dtype
+    def __enter__(self):
+        self._lock.acquire()
+        self._shm = shared_memory.SharedMemory(name=self._name)
+        return numpy.ndarray(self._shape, dtype=self._dtype, buffer=self._shm.buf)
+    def __exit__(self, exit_type, value, traceback):
+        self._shm.close()
+        self._lock.release()
+        return False
+
+def SHMPort(shape:Union[list,tuple], dtype:numpy.dtype):
+    producer = SHMProducerPort(shape,dtype)
+    consumer = SHMConsumerPort(producer._lock, producer._shm.name, shape, dtype)
+    return producer, consumer
 

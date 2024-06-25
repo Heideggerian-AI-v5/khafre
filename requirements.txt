@@ -1,5 +1,6 @@
 numpy
 opencv-python
+pillow
 py-build-cmake
 requests
 ultralytics

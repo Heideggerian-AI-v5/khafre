@@ -102,6 +102,9 @@ Also close opened visualization windows.
         _ = [(_x(k), v[1].flush()) for k,v in self._inputs.items()]
         if self._existing_shm is not None:
             # Apparently it is safe to close a shared memory twice -- second call is just ignored.
+            # It is also safe to close it without locking: this simply removes access to the shared
+            # memory from this process, and will not create race conditions with any other process
+            # that may use the shared memory.
             self._existing_shm.close()
         # Python promises to release a lock when a with block is exited FOR ANY REASON,
         # but just in case, try to release the lock here.

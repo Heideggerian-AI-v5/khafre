@@ -62,11 +62,8 @@ Note: it is possible to start another process associated to this object
 after termination and joining is complete.
         """
         if isinstance(self._process, Process) and self._process.is_alive():
-            #try:
-                self._process.terminate()
-                self.join()
-            #except:
-            #    pass
+            self._process.terminate()
+            self.join()
     def join(self, timeout=None):
         """
 Joins the process associated to this object. This includes waiting for

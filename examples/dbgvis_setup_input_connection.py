@@ -1,24 +1,32 @@
 import base64
 import cv2 as cv
-import keyboard
 import numpy
+import mss
 from multiprocessing import shared_memory
 import os
 from PIL import Image
-from websockets.sync.client import connect
+from pynput.keyboard import Key, Listener
 import signal
 import sys
 import time
 
 from khafre.dbgvis import DbgVisualizer
 
-import mss
 
 ## DbgVis example: shows how to set up a connection to the khafre debug visualizer.
 # In this example, what we will visualize is a resized copy of one of your monitors.
 
-# An auxiliary function to set up a signal handler
+# Auxiliary objects to exit on key press (or rather, release)
 goOn={"goOn":True}
+def on_press(key):
+    pass
+def on_release(key):
+    if key == Key.esc:
+        goOn["goOn"] = False
+        # Stop listener
+        return False
+
+# An auxiliary function to set up a signal handler
 def doExit(signum, frame,vp, shm):
     vp.stop()
     shm.close()
@@ -59,8 +67,8 @@ def main():
         # IMPORTANT: for now, subprocesses in khafre cannot be "hotwired" and you must make all settings, 
         # including all interprocess connection channels, before you start the subprocesses.
         lock, inputChannel = vp.requestInputChannel("Screenshot Cam")
-        # Optional, set up signal handlers. As written, the handlers will trigger the termination of the 
-        # DbgVisualizer subprocess before the shared memory is closed and unlinked.
+        # Optional, but strongly recommended: set up signal handlers. The handlers should trigger the 
+        # termination of the DbgVisualizer subprocess before the shared memory is closed and unlinked.
         signal.signal(signal.SIGTERM, lambda signum, frame: doExit(signum, frame, vp, shm))
         signal.signal(signal.SIGINT, lambda signum, frame: doExit(signum, frame, vp, shm))
         # Step 3: running the visualizer
@@ -68,17 +76,22 @@ def main():
         vp.start()
         # Finally, you can enter a loop in which the screen is captured and sent to the DbgVisualizer.
         # You will also see how many fps your system can manage with this code.
-        while True:#goOn["goOn"]:
-            resizedScreenshot = getImg(sct, monitor, imgWidth, imgHeight)
-            # RECOMMENDATION: write your code so as to minimize the time you keep the input channel lock acquired.
-            # IMPORTANT: the lock MUST be released at some point, or it is impossible for DbgVisualizer to
-            # claim access to the shared memory!
-            with lock:
-                numpy.copyto(npImage, resizedScreenshot)
-                inputChannel.put(shm.name,imgHeight,imgWidth,3,numpy.float32)
-            # Usually, some waiting time between iterations of such a loop would also be needed. However, usually
-            # the kind of processes that generate images, such as screenshots and resizes, are "slow", and can
-            # function as a delay themselves.
+        # Just as an example, setting up a way to exit the loop without signals as well -- in this case,
+        # when releasing the ESC key.
+        print("Press ESC to exit.")
+        with Listener(on_press=on_press, on_release=on_release) as listener:
+            while goOn["goOn"]:
+                resizedScreenshot = getImg(sct, monitor, imgWidth, imgHeight)
+                # RECOMMENDATION: write your code so as to minimize the time you keep the input channel lock acquired.
+                # IMPORTANT: the lock MUST be released at some point, or it is impossible for DbgVisualizer to
+                # claim access to the shared memory!
+                with lock:
+                    numpy.copyto(npImage, resizedScreenshot)
+                    inputChannel.put(shm.name,imgHeight,imgWidth,3,numpy.float32)
+                # Usually, some waiting time between iterations of such a loop would also be needed. However, usually
+                # the kind of processes that generate images, such as screenshots and resizes, are "slow", and can
+                # function as a delay themselves.
+            listener.join()
         # Step 4: A clean exit:
         # Stop the debug visualizer first, and only after that close and unlink the shared memory.
         vp.stop()

@@ -3,6 +3,7 @@ import cv2 as cv
 import keyboard
 import numpy
 from multiprocessing import shared_memory
+import os
 from PIL import Image
 from websockets.sync.client import connect
 import signal
@@ -19,8 +20,6 @@ import mss
 # An auxiliary function to set up a signal handler
 goOn={"goOn":True}
 def doExit(signum, frame,vp, shm):
-    print("doExit",signum, frame)
-    #goOn["goOn"]=False
     vp.stop()
     shm.close()
     shm.unlink()
@@ -62,7 +61,6 @@ def main():
         lock, inputChannel = vp.requestInputChannel("Screenshot Cam")
         # Optional, set up signal handlers. As written, the handlers will trigger the termination of the 
         # DbgVisualizer subprocess before the shared memory is closed and unlinked.
-        # TODO: rewrite the example so that the main loop does not have to play nice with the handler.
         signal.signal(signal.SIGTERM, lambda signum, frame: doExit(signum, frame, vp, shm))
         signal.signal(signal.SIGINT, lambda signum, frame: doExit(signum, frame, vp, shm))
         # Step 3: running the visualizer
@@ -70,7 +68,7 @@ def main():
         vp.start()
         # Finally, you can enter a loop in which the screen is captured and sent to the DbgVisualizer.
         # You will also see how many fps your system can manage with this code.
-        while goOn["goOn"]:
+        while True:#goOn["goOn"]:
             resizedScreenshot = getImg(sct, monitor, imgWidth, imgHeight)
             # RECOMMENDATION: write your code so as to minimize the time you keep the input channel lock acquired.
             # IMPORTANT: the lock MUST be released at some point, or it is impossible for DbgVisualizer to
@@ -86,40 +84,6 @@ def main():
         vp.stop()
         shm.close()
         shm.unlink()
-
-"""
-imgWidth, imgHeight = (240, 240)
-endImg = imgHeight*imgWidth*3
-endDepth = endImg + imgHeight*imgWidth*8
-turtleImgSocketURL = "ws://localhost:8765"
-
-def doExit(dbg, shm):
-    dbg.stop()
-    shm.close()
-    shm.unlink()
-    sys.exit()
-
-def main():
-    a = numpy.ones(shape=(imgHeight, imgWidth, 3), dtype=numpy.float32)  # Start with an existing NumPy array
-    shm = shared_memory.SharedMemory(create=True, size=a.nbytes)
-    vp = DbgVisualizer()
-    signal.signal(signal.SIGTERM, lambda signum, frame: doExit(vp,shm))
-    signal.signal(signal.SIGINT, lambda signum, frame: doExit(vp,shm))
-    npImg = numpy.ndarray(a.shape, dtype=numpy.float32, buffer=shm.buf)
-    lock, inputChannel = vp.requestInputChannel("Turtle Cam")
-    vp.start()
-    with connect(turtleImgSocketURL) as websocket:
-        while True:
-            msg = websocket.recv()
-            image = base64.b64decode(msg)
-            image, depthImage, _ = image[:endImg], numpy.frombuffer(image[endImg:endDepth]).reshape((imgHeight,imgWidth)), numpy.frombuffer(image[endDepth:], dtype=numpy.uint16).reshape((imgHeight,imgWidth))
-            pilImage = Image.frombytes("RGB", (imgHeight,imgWidth), image)
-            with lock:
-                numpy.copyto(npImg, numpy.ascontiguousarray(numpy.float32(numpy.array(pilImage)[:,:,(2,1,0)]))/255.0)
-                inputChannel.put(shm.name,imgHeight,imgWidth,3,numpy.float32)
-
-
-"""
 
 if "__main__" == __name__:
     main()

@@ -50,7 +50,7 @@ process after it is started. Some subclasses may offer specialized setters
 so that the subprocess is informed of the change as well, but unless this
 is explicitly stated it should never be assumed.
         """
-        if not isinstance(self._process, Process):
+        if (not isinstance(self._process, Process)) or (not self._process.is_active()):
             self._process=Process(target=lambda : self._run(), daemon=self._daemon, args=())
             self._process.start()
     def stop(self):
@@ -97,6 +97,14 @@ this process' SIGTERM handler (see the except block of _run).
 Runs the object's process and sets up graceful exit on SIGTERM.
         """
         signal.signal(signal.SIGTERM, _RequestExit)
+        # The main process may be issued a SIGINT from, e.g., the command line via Ctrl+C on Unix
+        # systems. It should have a handler that will then initiate subprocess cleanups, and in
+        # particular, a handler that sends termination requests to khafre subprocesses before
+        # freeing shared memories.
+        # However, to avoid that same signal handler from being invoked by the khafre subprocesses
+        # themselves, set up an "ignore signal" handler here. Invoking the same signal handler as
+        # in the main process will result in error, as a None object will attempt to terminate.
+        signal.signal(signal.SIGINT, lambda s,f: None)
         try:
             self.doWork()
         except _GracefulExit:

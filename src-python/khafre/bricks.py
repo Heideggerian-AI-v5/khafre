@@ -206,7 +206,7 @@ subprocesses. In this case, the size of the shared buffer will never change.
 
 It is possible to implement a producer/consumer relationship that allows
 consumers to be fed variable-sized buffers. It is however more difficult to
-implement and its cost/benefit ratio may not be favorable in most cases.
+write and its cost/benefit ratio may not be favorable in most cases.
     """
     def __init__(self, shape:Union[list,tuple], dtype:numpy.dtype):
         """
@@ -219,8 +219,8 @@ Initialize the SHMProducerPort object.
         self._shm = shared_memory.SharedMemory(create=True, size=buffsize)
         self._npArray = numpy.ndarray(shape, dtype=dtype, buffer=self._shm.buf)
         self._lock = Lock()
-        self._finalizer = weakref.finalizer(self,_closeSHMProducerPort,self._shm,self._lock,self._active)
         self._active={"active":True}
+        self._finalizer = weakref.finalize(self,_closeSHMProducerPort,self._shm,self._lock,self._active)
     def send(self, src):
         """
 Write the contents of array src to the shared memory buffer.
@@ -242,6 +242,16 @@ performed however.
         return False
 
 class SHMConsumerPort:
+    """
+Defines a "consumer port" for sharing a numpy array between subprocesses.
+
+A consumer may write to the shared region. The difference to the producer is
+that a consumer is not responsible for deallocating the shared memory.
+
+Typically, a consumer port is created paired with a producer port, via the
+SHMPort() function.
+    
+    """
     def __init__(self, lock, name, shape, dtype):
         self._lock = lock
         self._shm = None

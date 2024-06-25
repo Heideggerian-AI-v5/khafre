@@ -47,8 +47,7 @@ images, not images used in other perception subprocesses.
         super().__init__()
         self._inputs = {}
         self._existing_shm=None
-        self._lock=None
-    def requestInputChannel(self, name):
+    def requestInputChannel(self, name, consumerSHMPort):
         """
 Creates a Lock and RatedSimpleQueue and associates them to name,
 which will also be used as the title of the OpenCV window.
@@ -60,8 +59,8 @@ a shared memory.
         """
         if name in self._inputs:
             raise NameTaken
-        self._inputs[name] = (Lock(), DbgVisualizerInputChannel())
-        return self._inputs[name]
+        self._inputs[name] = (consumerSHMPort, RatedSimpleQueue())
+        return self._inputs[name][1]
     def doWork(self):
         """
 Loop through the registered input channels. If something
@@ -70,24 +69,19 @@ dropped frame info).
         """
         while True:
             for k,v in self._inputs.items():
-                lock, rsq = v
+                consumer, rsq = v
                 if not rsq.empty():
                     e,rate,dropped = rsq.getWithRates()
-                    shmName,rows,cols,channels,dtype = e
-                    self._lock=lock
-                    with self._lock:
-                        self._existing_shm = shared_memory.SharedMemory(name=shmName)
-                        segImg = numpy.ndarray((rows, cols, channels), dtype=dtype, buffer=self._existing_shm.buf)
+                    with consumer as segImg:
                         rateAdj = rate
                         if rate is None:
-                            rateAdj=0.0
+                            rateAdj = 0.0
                         rateStr = "%.02f fps | %d%% dropped" % (rateAdj, dropped)
                         textColor = (1.0,1.0,0.0)
                         (text_width, text_height), baseline = cv.getTextSize(rateStr, cv.FONT_HERSHEY_SIMPLEX, 0.5, cv.LINE_AA)
                         cv.rectangle(segImg,(0,0),(text_width, text_height+baseline),(0.0,0.0,0.0),-1)
                         cv.putText(segImg,rateStr,(0, text_height), cv.FONT_HERSHEY_SIMPLEX, 0.5, textColor, 1, cv.LINE_AA)
                         cv.imshow(k, segImg)
-                        self._existing_shm.close()
             cv.waitKey(10)
     def cleanup(self):
         """
@@ -100,17 +94,4 @@ Also close opened visualization windows.
             except:
                 pass
         _ = [(_x(k), v[1].flush()) for k,v in self._inputs.items()]
-        if self._existing_shm is not None:
-            # Apparently it is safe to close a shared memory twice -- second call is just ignored.
-            # It is also safe to close it without locking: this simply removes access to the shared
-            # memory from this process, and will not create race conditions with any other process
-            # that may use the shared memory.
-            self._existing_shm.close()
-        # Python promises to release a lock when a with block is exited FOR ANY REASON,
-        # but just in case, try to release the lock here.
-        if self._lock is not None:
-            try:
-                self._lock.release()
-            except:
-                pass
 

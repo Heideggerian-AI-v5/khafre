@@ -3,5 +3,6 @@ opencv-python
 pillow
 py-build-cmake
 requests
+torch
 typing
 ultralytics

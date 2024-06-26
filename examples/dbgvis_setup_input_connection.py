@@ -106,7 +106,9 @@ def main():
                 # Place the image into the shared port. Also, notify the consumer (DbgVis) that something happened.
 
                 producer.send(resizedScreenshot)
-                inputChannel.put(True)
+                
+                # DbgVis can also print something for us.
+                inputChannel.put("Hello World!")
 
                 # Usually, some waiting time between iterations of such a loop would also be needed. However, usually
                 # the kind of processes that generate images, such as screenshots and resizes, are "slow", and can

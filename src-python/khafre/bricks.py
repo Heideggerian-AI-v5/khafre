@@ -1,3 +1,7 @@
+### TODO
+# Prepare an alternative set of bricks that use threads instead of processes,
+# just to compare ...
+
 import array
 import cv2 as cv
 from functools import reduce
@@ -40,6 +44,7 @@ it on request and do custom cleanup code in such cases.
     def __init__(self):
         self._process=None
         self._daemon=False
+        self._keepOn=False
     def start(self):
         """
 Starts a process associated to this object. Arguments for the process
@@ -80,6 +85,10 @@ it to terminate if it has not done so already.
         """
 Derived classes should extend this method. This is where the useful
 code, i.e. the one that does the actual work, gets put.
+
+IMPORTANT: this function will be enclosed in a loop that runs (almost)
+as long as the process does. This function MUST terminate, e.g. it
+should not include any while True loops.
         """
         pass
     def cleanup(self):
@@ -106,8 +115,10 @@ Runs the object's process and sets up graceful exit on SIGTERM.
         # themselves, set up an "ignore signal" handler here. Invoking the same signal handler as
         # in the main process will result in error, as a None object will attempt to terminate.
         signal.signal(signal.SIGINT, lambda s,f: None)
+        self._keepOn = True
         try:
-            self.doWork()
+            while self._keepOn:
+                self.doWork()
         except _GracefulExit:
             self.cleanup()
             # This will take care of terminating all daemon subprocesses started by this process.
@@ -203,6 +214,10 @@ or to access the numpy array inside a with block.
 A typical pattern is to create a pair of producer and consumer ports with the
 SHMPort() function. The consumer port object may be used to initialize several
 subprocesses. In this case, the size of the shared buffer will never change.
+
+Producers must be created by a "main" process -- or in any case, if a process
+creates a producer, then it must not give it to a khafre subprocess. Khafre
+subprocesses must use consumer ports instead.
 
 It is possible to implement a producer/consumer relationship that allows
 consumers to be fed variable-sized buffers. It is however more difficult to

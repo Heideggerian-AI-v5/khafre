@@ -14,6 +14,10 @@ from khafre.bricks import RatedSimpleQueue, SHMPort
 from khafre.dbgvis import DbgVisualizer
 from khafre.nnwrappers import YOLOObjectSegmentationWrapper
 
+### Object detection/segmentation example: shows how to set up a connection to the khafre object detection,
+# and between it and a debug visualizer. See the dbgvis_setup_input_connection.py example for more comments
+# on the debug visualizer.
+# In this example, we will attempt to have a pretrained YOLO model recognize objects visible on screen.
 
 # Auxiliary objects to exit on key press (or rather, release)
 goOn={"goOn":True}
@@ -46,40 +50,67 @@ def main():
 
         imgWidth,imgHeight = (int(monitor["width"]*240.0/monitor["height"]), 240)
         
-        rawImgProducerPort, rawImgConsumerPort = SHMPort((imgHeight, imgWidth, 3), numpy.float32)
-        screenshotProducerPort, screenshotConsumerPort = SHMPort((imgHeight, imgWidth, 3), numpy.float32)
-        dbgImgProducerPort, dbgImgConsumerPort = SHMPort((imgHeight, imgWidth, 3), numpy.float32)
-        inputNotification = RatedSimpleQueue()
-        outputQueue = Queue()
+        # We will need a debug visualizer and object detection processes.
+        # We need to send a screenshot to the object detection, object detection will send a debug image
+        # to the visualizer, and we will also send the screenshot from here to the debug visualizer.
+        # Usually, the output from object detection will go somewhere else too, but for this example we will ignore it.
+        # We therefore set up the following shared memories:
+        
+        rawImgProducerPort, rawImgConsumerPort = SHMPort((imgHeight, imgWidth, 3), numpy.float32) # input image for object detection
+        screenshotProducerPort, screenshotConsumerPort = SHMPort((imgHeight, imgWidth, 3), numpy.float32) # screenshot to show in dbgvis
+        dbgImgProducerPort, dbgImgConsumerPort = SHMPort((imgHeight, imgWidth, 3), numpy.float32) # segmentation mask image to show in dbgvis
+        
+        # Writing to shared memories will not notify their users. We need another way to send notifications:
+        inputNotification = RatedSimpleQueue() # Notification from this process to object detection: "a screenshot is ready"
+        outputQueue = Queue() # In order for object detection to do anything, it must have somewhere to send output
 
+        # Construct process objects. These are not started yet.
+        
         dbgP = DbgVisualizer()
         objP = YOLOObjectSegmentationWrapper()
 
+        # Set up DbgVis so that it will use the shared memories where we send images to it. It will provide us with notification queues
+        # to inform it when an image is ready.
+        
         dbgNotificationQueue = dbgP.requestInputChannel("Object Detection/Segmentation", dbgImgConsumerPort)
         dbgScreenshotNotificationQueue = dbgP.requestInputChannel("Screen capture", screenshotConsumerPort)
 
+        # Set up the connections to object detection.
+        
         objP.setInputImagePort(rawImgConsumerPort, inputNotification)
         objP.setOutputImagePort(None, outputQueue)
         objP.setOutputDbgImagePort(dbgImgConsumerPort, dbgNotificationQueue)
 
-
+        # Optional, but STRONGLY recommended: set signal handlers that will ensure the subprocesses terminate on exit.
         signal.signal(signal.SIGTERM, lambda signum, frame: doExit(signum, frame, dbgP, objP))
         signal.signal(signal.SIGINT, lambda signum, frame: doExit(signum, frame, dbgP, objP))
 
+        # Only after all connection objects -- shared memories and notification queues -- are set up, we can start.
         dbgP.start()
         objP.start()
+        
+        # RECOMMENDED: tell the object detection to load a model AFTER starting the process. This might avoid some unnecessary
+        # copying of a large object when starting the process.
         
         objP.sendCommand(("LOAD", ("yolov8n-seg.pt",)))
 
         print("Starting object segmentation will take a while, wait a few seconds for a debug window labeled \"Object Detection/Segmentation\".\nPress ESC to exit. (By the way, this is process %s)" % str(os.getpid()))
         with Listener(on_press=on_press, on_release=on_release) as listener:
             while goOn["goOn"]:
-            
+
+                # Ignore output from object detection.
+                            
                 while not outputQueue.empty():
                     outputQueue.get()
                 
                 screenshot = getImg(sct, monitor)
 
+                # Send the screenshot to dbgvis and object detection.
+                # Note: dbgvis will write to the shared memory it is given access to. If its access was read-only like
+                # object detection, then it would have been possible for both of them to use the same shared memory as
+                # consumers. They would however require different notification queues even in this case: a notification,
+                # once popped out of the queue, is lost and therefore seen only by the first process to read it.
+                
                 rawImgProducerPort.send(screenshot)
                 inputNotification.put(True)
                 screenshotProducerPort.send(screenshot)
@@ -87,6 +118,8 @@ def main():
                 
             listener.join()
 
+        # A clean exit: stop all subprocesses.
+        
         objP.stop()
         dbgP.stop()
 

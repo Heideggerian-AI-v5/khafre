@@ -5,7 +5,7 @@
 import array
 import cv2 as cv
 from functools import reduce
-from multiprocessing import shared_memory, Process, Lock, Queue, SimpleQueue, Pipe
+from multiprocessing import shared_memory, Process, RLock, Queue, SimpleQueue, Pipe
 import numpy
 import time
 import signal
@@ -233,7 +233,7 @@ Initialize the SHMProducerPort object.
         buffsize = reduce(lambda x,y: x*y, shape)*dtype(1).nbytes
         self._shm = shared_memory.SharedMemory(create=True, size=buffsize)
         self._npArray = numpy.ndarray(shape, dtype=dtype, buffer=self._shm.buf)
-        self._lock = Lock()
+        self._lock = RLock()
         self._active={"active":True}
         self._finalizer = weakref.finalize(self,_closeSHMProducerPort,self._shm,self._lock,self._active)
     def send(self, src):
@@ -245,6 +245,9 @@ performed however.
         """
         if not self._active["active"]:
             raise ValueError
+        srcH, srcW = src.shape[0], src.shape[1]
+        if(srcH != self._npArray.shape[0]) or (srcW != self._npArray.shape[1]):
+            src = cv.resize(src, (self._npArray.shape[1], self._npArray.shape[0]), interpolation=cv.INTER_LINEAR)
         with self._lock:
             numpy.copyto(self._npArray, src)
     def __enter__(self):
@@ -260,8 +263,9 @@ class SHMConsumerPort:
     """
 Defines a "consumer port" for sharing a numpy array between subprocesses.
 
-A consumer may write to the shared region. The difference to the producer is
-that a consumer is not responsible for deallocating the shared memory.
+A consumer may write to the shared region, or copy a numpy array wholesale via
+the send method. The difference to the producer is that a consumer is not responsible 
+for deallocating the shared memory.
 
 Typically, a consumer port is created paired with a producer port, via the
 SHMPort() function.
@@ -273,6 +277,12 @@ SHMPort() function.
         self._name = name
         self._shape = shape
         self._dtype = dtype
+    def send(self, src):
+        srcH, srcW = src.shape[0], src.shape[1]
+        if(srcH != self._shape[0]) or (srcW != self._shape[1]):
+            src = cv.resize(src, (self._shape[1], self._shape[0]), interpolation=cv.INTER_LINEAR)
+        with self._lock:
+            numpy.copyto(self._npArray, src)
     def __enter__(self):
         self._lock.acquire()
         self._shm = shared_memory.SharedMemory(name=self._name)

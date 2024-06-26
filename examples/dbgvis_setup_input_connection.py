@@ -2,7 +2,6 @@ import base64
 import cv2 as cv
 import numpy
 import mss
-from multiprocessing import shared_memory
 import os
 from PIL import Image
 from pynput.keyboard import Key, Listener
@@ -37,12 +36,12 @@ def doExit(signum, frame, vp):
     vp.stop()
     sys.exit()
 
-# Define a function to capture the image from the screen and resize it.
-def getImg(sct, monitor, imgWidth, imgHeight):
+# Define a function to capture the image from the screen.
+def getImg(sct, monitor):
     sct_img = sct.grab(monitor)
     pilImage = Image.frombytes("RGB", sct_img.size, sct_img.bgra, "raw", "BGRX")
     rawImage = numpy.ascontiguousarray(numpy.float32(numpy.array(pilImage)[:,:,(2,1,0)]))/255.0
-    return cv.resize(rawImage, (imgWidth, imgHeight), interpolation=cv.INTER_LINEAR)
+    return rawImage
 
 def main():
 
@@ -101,11 +100,13 @@ def main():
         print("Press ESC to exit. (By the way, this is process %s)" % str(os.getpid()))
         with Listener(on_press=on_press, on_release=on_release) as listener:
             while goOn["goOn"]:
-                resizedScreenshot = getImg(sct, monitor, imgWidth, imgHeight)
+                screenshot = getImg(sct, monitor)
 
                 # Place the image into the shared port. Also, notify the consumer (DbgVis) that something happened.
+                # Note: screenshot is likely larger than the producer's image. producer.send will automatically resize
+                # in this case.
 
-                producer.send(resizedScreenshot)
+                producer.send(screenshot)
                 
                 # DbgVis can also print something for us.
                 inputChannel.put("Hello World!")

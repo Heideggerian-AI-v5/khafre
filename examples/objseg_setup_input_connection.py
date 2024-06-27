@@ -56,7 +56,7 @@ def main():
         # Usually, the output from object detection will go somewhere else too, but for this example we will ignore it.
         # We therefore set up the following shared memories:
         
-        rawImgProducerPort, rawImgConsumerPort = SHMPort((imgHeight, imgWidth, 3), numpy.float32) # input image for object detection
+        rawImgProducerPort, rawImgConsumerPort = SHMPort((imgHeight, imgWidth, 3), numpy.uint8) # input image for object detection
         screenshotProducerPort, screenshotConsumerPort = SHMPort((imgHeight, imgWidth, 3), numpy.float32) # screenshot to show in dbgvis
         dbgImgProducerPort, dbgImgConsumerPort = SHMPort((imgHeight, imgWidth, 3), numpy.float32) # segmentation mask image to show in dbgvis
         
@@ -106,12 +106,8 @@ def main():
                 screenshot = getImg(sct, monitor)
 
                 # Send the screenshot to dbgvis and object detection.
-                # Note: dbgvis will write to the shared memory it is given access to. If its access was read-only like
-                # object detection, then it would have been possible for both of them to use the same shared memory as
-                # consumers. They would however require different notification queues even in this case: a notification,
-                # once popped out of the queue, is lost and therefore seen only by the first process to read it.
                 
-                rawImgProducerPort.send(screenshot)
+                rawImgProducerPort.send((screenshot*255).astype(numpy.uint8))
                 inputNotification.put(True)
                 screenshotProducerPort.send(screenshot)
                 dbgScreenshotNotificationQueue.put("")

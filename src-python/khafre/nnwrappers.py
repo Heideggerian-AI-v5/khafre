@@ -125,7 +125,7 @@ class YOLOObjectSegmentationWrapper(NNImgWrapper):
         boxes = [x for x,p in zip(results.boxes.xyxyn.tolist(), polys) if (2<len(p))]
         polys = [p for p in polys if (2<len(p))] 
         retq = [{"type": t, "confidence": c, "box": b, "polygon": p, "id": k+1} for k,(t,c,b,p) in enumerate(zip(names, confs, boxes, polys))]
-        for k, p in polys:
+        for k, p in enumerate(polys):
             cv.fillPoly(outputImg, pts = [p], color = k+1)
         return retq, outputImg
     def _prepareDbgImg(self, results, outputImg, dbgImg):

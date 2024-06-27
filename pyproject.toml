@@ -23,7 +23,7 @@ dependencies = ["numpy", "opencv-python", "py-build-cmake", "requests", "ultraly
 dynamic = ["version", "description"]
 
 [build-system]
-requires = ["py-build-cmake~=0.1.8"]
+requires = ["py-build-cmake~=0.1.8", "numpy~=2.0.0"]
 build-backend = "py_build_cmake.build"
 
 [tool.py-build-cmake.module]
@@ -38,6 +38,7 @@ build_type = "RelWithDebInfo"
 source_path = "src"
 build_args = ["-j"]
 install_components = ["khafre_numerics"]
+find_python3 = true
 
 [tool.py-build-cmake.stubgen]
 

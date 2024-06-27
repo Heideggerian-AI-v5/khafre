@@ -2,10 +2,15 @@ cmake_minimum_required(VERSION 3.17)
 project(khafre)
 
 # Find the Python development files
-find_package(Python3 REQUIRED COMPONENTS Development.Module)
+set(Python3_FIND_VIRTUALENV "FIRST")
+find_package(Python3 COMPONENTS Interpreter Development NumPy)
 
 # Add the module to compile
 Python3_add_library(contactcpp MODULE "contact.cpp")
+target_include_directories(contactcpp
+  PUBLIC
+    ${Python3_NumPy_INCLUDE_DIRS}
+)
 
 # Install the module
 install(TARGETS contactcpp

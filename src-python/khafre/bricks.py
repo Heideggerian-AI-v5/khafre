@@ -144,7 +144,6 @@ last 100. Reported in %.
        self._entriesHistory = array.array('h',[1]*100)
        self._historyHead = 0
        self._previousTS = None
-       self._rate=None
    def _markHistory(self,done=True,rewind=False):
        if rewind:
            self._historyHead-=1
@@ -163,27 +162,31 @@ last 100. Reported in %.
        return self._queue.empty()
    def put(self,e):
        ts = time.perf_counter()
-       self._queue.put((ts,e))
-   def get(self, block=True, timeout=None):
-       if self._queue.empty():
-           ts, e = self._queue.get(block=block,timeout=timeout)
-           self._markHistory()
-       else:
-           while not self._queue.empty():
-               ts, e = self._queue.get()
-               self._markHistory(done=False)
-           self._markHistory(done=True,rewind=True)
+       rate = 0
        if self._previousTS is not None:
            diff = ts - self._previousTS
            if diff>1e-6:
-               self._rate = 1.0/(diff)
+               rate = 1.0/(diff)
            else:
-               self._rate = 1e6
+               rate = 1e6
        self._previousTS = ts
+       self._queue.put((rate,e))
+   def _get(self, block=True, timeout=None):
+       if self._queue.empty():
+           rate, e = self._queue.get(block=block,timeout=timeout)
+           self._markHistory()
+       else:
+           while not self._queue.empty():
+               rate, e = self._queue.get()
+               self._markHistory(done=False)
+           self._markHistory(done=True,rewind=True)
+       return rate, e
+   def get(self, block=True, timeout=None):
+       _, e = self._get(block=block, timeout=timeout)
        return e
    def getWithRates(self, block=True, timeout=None):
-       e = self.get(block=block, timeout=timeout)
-       return e, self._rate, 100-sum(self._entriesHistory)
+       rate, e = self._get(block=block, timeout=timeout)
+       return e, rate, 100-sum(self._entriesHistory)
 
 def _closeSHMProducerPort(shm,lock,active):
     shm.close()

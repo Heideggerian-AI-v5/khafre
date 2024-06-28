@@ -136,6 +136,8 @@ class YOLOObjectSegmentationWrapper(NNImgWrapper):
         workImg = dbgImg
         if (outputImg.shape[0] != dbgImg.shape[0]) or (outputImg.shape[1] != dbgImg.shape[1]):
            workImg = numpy.zeros((outputImg.shape[0], outputImg.shape[1], 3),dtype=dbgImg.dtype)
+        else:
+            workImg.fill(0)
         for e in results:
             aux = cv.boundingRect(e["polygon"])
             left, top, right, bottom = [aux[0],aux[1], aux[0]+aux[2], aux[1]+aux[3]]

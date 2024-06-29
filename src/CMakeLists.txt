@@ -10,16 +10,24 @@ Python3_add_library(contactcpp MODULE "contact.cpp")
 target_include_directories(contactcpp
   PUBLIC
     ${Python3_NumPy_INCLUDE_DIRS}
+    ${Python3_INCLUDE_DIRS}
 )
+
+if(PY_BUILD_CMAKE_MODULE_NAME)
+  set(INSTALL_PATH ${PY_BUILD_CMAKE_MODULE_NAME})
+else()
+  include(GNUInstallDirs)
+  set(INSTALL_PATH ${CMAKE_INSTALL_LIBDIR})
+endif()
 
 # Install the module
 install(TARGETS contactcpp
         EXCLUDE_FROM_ALL
         COMPONENT khafre_numerics
-        DESTINATION ${PY_BUILD_CMAKE_MODULE_NAME})
+        LIBRARY DESTINATION ${INSTALL_PATH})
 
 # Install stubs to get autocomplete and type hints
 install(FILES contactcpp.pyi
         EXCLUDE_FROM_ALL
         COMPONENT khafre_numerics
-        DESTINATION ${PY_BUILD_CMAKE_MODULE_NAME})
+        DESTINATION ${INSTALL_PATH})

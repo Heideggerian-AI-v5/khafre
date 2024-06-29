@@ -5,6 +5,7 @@
 import array
 import cv2 as cv
 from functools import reduce
+import os
 from multiprocessing import shared_memory, Process, RLock, Queue, SimpleQueue, Pipe
 import numpy
 import time
@@ -36,6 +37,13 @@ in your codebase.
     """
     raise _GracefulExit()
 
+# lambdas and bound methods cannot be pickled on Windows (or perhaps more generally
+# on architectures without process forking?)
+# Workaround: send the reifiedObject as an argument to a function
+# that then calls its run function 
+def picklePusher(rp):
+    rp._run()
+
 class ReifiedProcess:
     """
 Wraps together some useful functionality: starting a process, stopping
@@ -60,7 +68,7 @@ so that the subprocess is informed of the change as well, but unless this
 is explicitly stated it should never be assumed.
         """
         if (not isinstance(self._process, Process)) or (not self._process.is_active()):
-            self._process=Process(target=lambda : self._run(), daemon=self._daemon, args=())
+            self._process=Process(target=picklePusher, daemon=self._daemon, args=(self,))
             self._process.start()
     def stop(self):
         """

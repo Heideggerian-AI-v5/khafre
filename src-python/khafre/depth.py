@@ -33,7 +33,7 @@ Wire shared memories:
         predictions = self._model(Image.fromarray(img))
         # interpolate to original size
         outputImg = cv.resize(predictions["predicted_depth"].numpy()[0], (img.shape[1], img.shape[0]), interpolation=cv.INTER_LINEAR)
-        return True, outputImg
+        return {}, outputImg
     def _prepareDbgImg(self, results, outputImg, dbgImg):
         workImg = cv.cvtColor(outputImg / numpy.max(outputImg), cv.COLOR_GRAY2BGR)
         if (outputImg.shape[0] != dbgImg.shape[0]) or (outputImg.shape[1] != dbgImg.shape[1]):

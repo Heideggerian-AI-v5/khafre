@@ -19,14 +19,8 @@ Wires supported by this subprocess:
     """
     def __init__(self):
         super().__init__()
-        #self._inputImage = None
-        #self._inputNotification = None
         self._model = None
         self._command = Queue()
-        #self._outputImage = None
-        #self._outputNotification = None
-        #self._dbgImage = None
-        #self._dbgNotification = None
     def _checkSubscriptionRequest(self, name, queue, consumerSHM):
         return ("InpImg" == name)
     def _checkPublisherRequest(self, name, queues, consumerSHM):
@@ -85,11 +79,12 @@ Subclasses should implement command handling code here.
             # Do we even have an image to work on?
             if not self._subscriptions["InpImg"].empty():
                 # We only get the latest image -- need to check how many were dropped along the way.
-                _,rate,dropped = self._subscriptions["InpImg"].getWithRates()
+                e,rate,dropped = self._subscriptions["InpImg"].getWithRates()
                 # Get a copy of the image so we can free it for others (e.g., the image acquisition process) as soon as possible.
                 with self._subscriptions["InpImg"] as inpImg:
                     ourImg = numpy.copy(inpImg)
                 results, outputImg = self._useModel(ourImg)
+                results["imgId"] = e["imgId"]
                 if "OutImg" in self._publishers:
                     self._publishers["OutImg"].publish(outputImg, results)
                 # Do we need to prepare a debug image?
@@ -100,5 +95,3 @@ Subclasses should implement command handling code here.
                     self._publishers["DbgImg"].sendNotifications("%.02f ifps | %d%% obj drop" % (rate if rate is not None else 0.0, dropped))
     def cleanup(self):
         self._unloadModel()
-        while not self._inputNotification.empty():
-            self._inputNotification.get()

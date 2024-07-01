@@ -214,10 +214,12 @@ SHMPort() function.
         self._dtype = dtype
     def send(self, src):
         srcH, srcW = src.shape[0], src.shape[1]
+        self._shm = shared_memory.SharedMemory(name=self._name)
+        npArray = numpy.ndarray(self._shape, dtype=self._dtype, buffer=self._shm.buf)
         if(srcH != self._shape[0]) or (srcW != self._shape[1]):
             src = cv.resize(src, (self._shape[1], self._shape[0]), interpolation=cv.INTER_LINEAR)
         with self._lock:
-            numpy.copyto(self._npArray, src)
+            numpy.copyto(npArray, src)
     def __enter__(self):
         self._lock.acquire()
         self._shm = shared_memory.SharedMemory(name=self._name)

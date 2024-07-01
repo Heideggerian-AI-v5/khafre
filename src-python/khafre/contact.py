@@ -1,11 +1,14 @@
 import ctypes 
+import cv2 as cv
+from khafre.bricks import RatedSimpleQueue, ReifiedProcess
+from multiprocessing import Queue
 import numpy
 from numpy.ctypeslib import ndpointer 
 import os
 import platform
-import cv2 as cv
 
 from .contactcpp import _contact
+
 
 dilationKernel = cv.getStructuringElement(cv.MORPH_CROSS,(3,3),(1,1))
 
@@ -105,3 +108,121 @@ Returns:
     contPO = _expand(imgHeight, imgWidth, maskImgs[o], contPO)
     return contPS, contPO
 
+class ContactDetection(ReifiedProcess):
+    """
+Subprocess in which contact masks are calculated based on an object mask image and a depth image.
+
+Wires supported by this subprocess:
+    MaskImg: subscription. The object mask image and associated segmentation results.
+    DepthImg: subscription. The depth image and associated notification data.
+    OutImg: publisher. The contact masks image and associated symbolic results.
+    DbgImg: publisher. An image of the contact masks.
+
+Additionally, gets goal data (sets of triples) from a queue.
+    """
+    def __init__(self):
+        super().__init__()
+        self._goals = RatedSimpleQueue()
+        self._maskResults = {}
+        self._depthResults = {}
+        self._currentGoals = []
+        self._rateMask = None
+        self._droppedMask = 0
+        self._rateDepth = None
+        self._droppedDepth = 0
+    def getGoalQueue(self):
+        return self._goals
+    def _checkSubscriptionRequest(self, name, queue, consumerSHM):
+        return name in {"MaskImg", "DepthImg"}
+    def _checkPublisherRequest(self, name, queues, consumerSHM):
+        return name in {"OutImg", "DbgImg"}
+    def doWork(self):
+        """
+        """
+        def _orderQuery(q):
+            if q[0]>q[1]:
+                return (q[1], q[0])
+            return (q[0], q[1])
+        def _getMaskImgs(maskImg, results):
+            results = results.get("segments", [])
+            retq = {}
+            for e in results:
+                retq[e["type"]] = numpy.zeros(maskImg.shape,dtype=numpy.uint8)
+                retq[e["type"]][maskImg == e["id"]] = 255
+            return retq
+        def _s2c(s):
+            h = hash(s)
+            b,g,r = ((h&0xFF)), ((h&0xFF00)>>8), ((h&0xFF0000)>>16)
+            return (b/255.0, g/255.0, r/255.0)
+        haveNew = False
+        threshold = 0.05
+        searchWidth = 7
+        if not self._goals.empty():
+            self._currentGoals, _, _ = self._goals.getWithRates()
+        if not self._subscriptions["MaskImg"].empty():
+            haveNew = True
+            self._maskResults, self._rateMask, self._droppedMask = self._subscriptions["MaskImg"].getWithRates()
+        if not self._subscriptions["DepthImg"].empty():
+            haveNew = True
+            self._depthResults, self._rateDepth, self._droppedDepth = self._subscriptions["DepthImg"].getWithRates()
+        if haveNew and (self._maskResults.get("imgId") == self._depthResults.get("imgId")):
+            with self._subscriptions["MaskImg"] as maskImg:
+                with self._subscriptions["DepthImg"] as depthImg:
+                    depthImgLocal = numpy.copy(depthImg)
+                    maskImgs = _getMaskImgs(maskImg, self._maskResults)
+            imgHeight, imgWidth = depthImgLocal.shape
+            queries = set()
+            searchWidth = 7
+            threshold = 0.05
+            dilationKernel = cv.getStructuringElement(cv.MORPH_ELLIPSE, (2*5 + 1, 2*5 + 1), (5, 5))
+            outputImg = numpy.zeros((imgHeight, imgWidth), dtype=numpy.uint32)
+            results = {"imgId": self._maskResults.get("imgId"), "idx2Contact": {}, "contact2Idx": {}}
+            for p,s,o in self._currentGoals:
+                if "contactDistanceThreshold" == p:
+                    threshold = float(s)
+                elif "contactSearchWidth" == p:
+                    searchWidth = int(s)
+                elif "contactDilationKernel" == p:
+                    dr = int(s)
+                    dilationKernel = cv.getStructuringElement(cv.MORPH_ELLIPSE, (2*dr + 1, 2*dr + 1), (dr, dr))
+                elif "contactQuery" == p:
+                    if s==o:
+                        continue
+                    if o is not None:
+                        queries.add(_orderQuery((s,o)))
+                    else:
+                        _=[queries.add(_orderQuery((s,x))) for x in maskImgs.keys() if x!=s]
+            qobjs = set([x[0] for x in queries]).union([x[1] for x in queries])
+            dilatedImgs = {k: cv.dilate(maskImgs[k], dilationKernel) for k in qobjs if k in maskImgs}
+            for k, (s, o) in enumerate(queries):
+                if (s not in maskImgs) or (o not in maskImgs):
+                    continue
+                k = (k+1)*2
+                idSO = k
+                idOS = k-1
+                results["idx2Contact"][idSO] = (s,o) 
+                results["idx2Contact"][idOS] = (o,s)
+                results["contact2Idx"][(s,o)] = idSO 
+                results["contact2Idx"][(o,s)] = idOS 
+                contPS, contPO = contact(searchWidth, threshold, imgHeight, imgWidth, s, o, dilatedImgs, maskImgs, depthImgLocal)
+                outputImg[contPS>0] = idSO
+                outputImg[contPO>0] = idOS
+            if "OutImg" in self._publishers:
+                self._publishers["OutImg"].publish(outputImg, results)
+            # Do we need to prepare a debug image?
+            if "DbgImg" in self._publishers:
+                # Here we can hog the shared memory as long as we like -- dbgvis won't use it until we notify it that there's a new frame to show.
+                with self._publishers["DbgImg"] as dbgImg:
+                    workImg = dbgImg
+                    if (outputImg.shape[0] != dbgImg.shape[0]) or (outputImg.shape[1] != dbgImg.shape[1]):
+                        workImg = numpy.zeros((outputImg.shape[0], outputImg.shape[1], 3),dtype=dbgImg.dtype)
+                    else:
+                        workImg.fill(0)
+                    todos = [(k, _s2c(str(k))) for k in results["idx2Contact"].keys()]
+                    for k, color in todos:
+                        workImg[outputImg==k]=color
+                    if (outputImg.shape[0] != dbgImg.shape[0]) or (outputImg.shape[1] != dbgImg.shape[1]):
+                        numpy.copyto(dbgImg, cv.resize(workImg, (dbgImg.shape[1], dbgImg.shape[0]), interpolation=cv.INTER_LINEAR))
+                self._publishers["DbgImg"].sendNotifications("%.02f %.02f ifps | %d%% %d%% obj drop" % (self._rateMask if self._rateMask is not None else 0.0, self._rateDepth if self._rateDepth is not None else 0.0, self._droppedMask, self._droppedDepth))
+    def cleanup(self):
+        pass

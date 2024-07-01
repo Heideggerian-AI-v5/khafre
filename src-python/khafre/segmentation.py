@@ -29,7 +29,7 @@ Wire shared memories:
         outputImg = numpy.zeros((height, width), dtype=numpy.uint16)
         results = self._model(img, conf=self._confidenceThreshold, verbose=False)[0] # For some reason YOLO returns a list but it seems only the first element matters.
         if results.masks is None:
-            return [], outputImg
+            return {}, outputImg
         polys = [_clip(x, height, width) for x in results.masks.xy]
         names = [results.names[round(x)] for x, p in zip(results.boxes.cls.tolist(), polys) if (2<len(p))]
         confs = [x for x,p in zip(results.boxes.conf.tolist(), polys) if (2<len(p))]
@@ -38,7 +38,7 @@ Wire shared memories:
         retq = [{"type": t, "confidence": c, "box": b, "polygon": p, "id": k+1} for k,(t,c,b,p) in enumerate(zip(names, confs, boxes, polys))]
         for k, p in enumerate(polys):
             cv.fillPoly(outputImg, pts = [p], color = k+1)
-        return retq, outputImg
+        return {"segments": retq}, outputImg
     def _prepareDbgImg(self, results, outputImg, dbgImg):
         def _s2c(s):
             h = hash(s)
@@ -49,7 +49,7 @@ Wire shared memories:
            workImg = numpy.zeros((outputImg.shape[0], outputImg.shape[1], 3),dtype=dbgImg.dtype)
         else:
             workImg.fill(0)
-        for e in results:
+        for e in results.get("segments",[]):
             aux = cv.boundingRect(e["polygon"])
             left, top, right, bottom = [aux[0],aux[1], aux[0]+aux[2], aux[1]+aux[3]]
             cv.fillPoly(workImg, pts=[e["polygon"]], color=_s2c(e["type"]))

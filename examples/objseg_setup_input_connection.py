@@ -14,6 +14,7 @@ from khafre.bricks import RatedSimpleQueue, SHMPort, drawWire
 from khafre.dbgvis import DbgVisualizer
 from khafre.depth import TransformerDepthSegmentationWrapper
 from khafre.segmentation import YOLOObjectSegmentationWrapper
+from khafre.contact import ContactDetection
 
 ### Object detection/segmentation example: shows how to set up a connection to the khafre object detection,
 # and between it and a debug visualizer. See the dbgvis_setup_input_connection.py example for more comments
@@ -31,10 +32,11 @@ def on_release(key):
         return False
 
 ## An auxiliary function to set up a signal handler for SIGTERM and SIGINT
-def doExit(signum, frame, dbgP, objP, dptP):
+def doExit(signum, frame, dbgP, objP, dptP, conP):
     dbgP.stop()
     objP.stop()
     dptP.stop()
+    conP.stop()
     sys.exit()
 
 # Define a function to capture the image from the screen.
@@ -64,31 +66,35 @@ def main():
         objP = YOLOObjectSegmentationWrapper()
         # Monocular depth estimation is VERY computationally expensive, try to have it run on the GPU
         dptP = TransformerDepthSegmentationWrapper(device="cuda")
+        conP = ContactDetection()
 
         # Set up the connections to dbg visualizer and object detection.
-
-        # Normally there should be a wire for the OutImg connection of the object detection/segmentation and depth estimation processes, 
-        # however we will not use that result in this example and only visualize results via debug.
 
         drawWire("Screenshot Cam", [], [("Screenshot Cam", dbgP)], (imgHeight, imgWidth, 3), numpy.float32, RatedSimpleQueue, wireList=wireList)
         drawWire("Input Image", [], [("InpImg", objP), ("InpImg", dptP)], (imgHeight, imgWidth, 3), numpy.uint8, RatedSimpleQueue, wireList=wireList)
         drawWire("Dbg Obj Seg", [("DbgImg", objP)], [("Object Detection/Segmentation", dbgP)], (imgHeight, imgWidth, 3), numpy.float32, RatedSimpleQueue, wireList=wireList)
         drawWire("Dbg Depth", [("DbgImg", dptP)], [("Depth Estimation", dbgP)], (imgHeight, imgWidth, 3), numpy.float32, RatedSimpleQueue, wireList=wireList)
+        drawWire("Mask Image", [("OutImg", objP)], [("MaskImg", conP)], (imgHeight, imgWidth), numpy.uint16, RatedSimpleQueue, wireList=wireList)
+        drawWire("Depth Image", [("OutImg", dptP)], [("DepthImg", conP)], (imgHeight, imgWidth), numpy.float32, RatedSimpleQueue, wireList=wireList)
+        drawWire("Dbg Contact", [("DbgImg", conP)], [("Contact Detection", dbgP)], (imgHeight, imgWidth, 3), numpy.float32, RatedSimpleQueue, wireList=wireList)
         
         # Optional, but STRONGLY recommended: set signal handlers that will ensure the subprocesses terminate on exit.
-        signal.signal(signal.SIGTERM, lambda signum, frame: doExit(signum, frame, dbgP, objP, dptP))
-        signal.signal(signal.SIGINT, lambda signum, frame: doExit(signum, frame, dbgP, objP, dptP))
+        signal.signal(signal.SIGTERM, lambda signum, frame: doExit(signum, frame, dbgP, objP, dptP, conP))
+        signal.signal(signal.SIGINT, lambda signum, frame: doExit(signum, frame, dbgP, objP, dptP, conP))
 
         # Only after all connection objects -- shared memories and notification queues -- are set up, we can start.
         dbgP.start()
         objP.start()
         dptP.start()
+        conP.start()
         
         # RECOMMENDED: tell the object detection to load a model AFTER starting the process. This might avoid some unnecessary
         # copying of a large object when starting the process.
         
         objP.sendCommand(("LOAD", ("yolov8n-seg.pt",)))
         dptP.sendCommand(("LOAD", ("vinvino02/glpn-nyu",)))
+
+        conP.getGoalQueue().put([("contactQuery", "cup", "table"), ("contactQuery", "cup", "dining table")])
 
         print("Starting object segmentation and depth estimation will take a while, wait a few seconds for debug windows for them to show up.\nPress ESC to exit. (By the way, this is process %s)" % str(os.getpid()))
         with Listener(on_press=on_press, on_release=on_release) as listener:
@@ -98,7 +104,7 @@ def main():
 
                 # Send the screenshot to dbgvis and object detection.
                 
-                wireList["Input Image"].publish((screenshot*255).astype(numpy.uint8), True)
+                wireList["Input Image"].publish((screenshot*255).astype(numpy.uint8), {"imgId": str(time.perf_counter())})
                 wireList["Screenshot Cam"].publish(screenshot, "")
                 
             listener.join()

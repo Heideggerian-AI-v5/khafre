@@ -1,0 +1,585 @@
+Prefix(:=<http://www.W3C.org/khafre/affordances_situations.owl/>)
+Prefix(owl:=<http://www.w3.org/2002/07/owl#>)
+Prefix(rdf:=<http://www.w3.org/1999/02/22-rdf-syntax-ns#>)
+Prefix(xml:=<http://www.w3.org/XML/1998/namespace>)
+Prefix(xsd:=<http://www.w3.org/2001/XMLSchema#>)
+Prefix(rdfs:=<http://www.w3.org/2000/01/rdf-schema#>)
+Prefix(affordances_situations:=<http://www.W3C.org/khafre/affordances_situations.owl#>)
+
+
+Ontology(<http://www.W3C.org/khafre/affordances_situations.owl>
+
+Declaration(Class(affordances_situations:Boundary))
+Declaration(Class(affordances_situations:Contact))
+Declaration(Class(affordances_situations:Containee))
+Declaration(Class(affordances_situations:Container))
+Declaration(Class(affordances_situations:Containment))
+Declaration(Class(affordances_situations:Cuttee))
+Declaration(Class(affordances_situations:Cutter))
+Declaration(Class(affordances_situations:Cutting))
+Declaration(Class(affordances_situations:CuttingPoint))
+Declaration(Class(affordances_situations:CuttingSequence))
+Declaration(Class(affordances_situations:CuttingTool))
+Declaration(Class(affordances_situations:Falling))
+Declaration(Class(affordances_situations:FallingObject))
+Declaration(Class(affordances_situations:Floor))
+Declaration(Class(affordances_situations:Grasped))
+Declaration(Class(affordances_situations:Grasper))
+Declaration(Class(affordances_situations:Grasping))
+Declaration(Class(affordances_situations:GraspingPoint))
+Declaration(Class(affordances_situations:Gravity))
+Declaration(Class(affordances_situations:ImageSchematicSituation))
+Declaration(Class(affordances_situations:Interior))
+Declaration(Class(affordances_situations:Liquid))
+Declaration(Class(affordances_situations:Movement))
+Declaration(Class(affordances_situations:MovingObject))
+Declaration(Class(affordances_situations:Object))
+Declaration(Class(affordances_situations:Poured))
+Declaration(Class(affordances_situations:Pourer))
+Declaration(Class(affordances_situations:Pouring))
+Declaration(Class(affordances_situations:Role))
+Declaration(Class(affordances_situations:SemanticType))
+Declaration(Class(affordances_situations:Separation))
+Declaration(Class(affordances_situations:Sequence))
+Declaration(Class(affordances_situations:Source))
+Declaration(Class(affordances_situations:SourceContainer))
+Declaration(Class(affordances_situations:Stabbed))
+Declaration(Class(affordances_situations:Stabber))
+Declaration(Class(affordances_situations:Stabbing))
+Declaration(Class(affordances_situations:StabbingPart))
+Declaration(Class(affordances_situations:StabbingPoint))
+Declaration(Class(affordances_situations:StabbingTool))
+Declaration(Class(affordances_situations:StableObject))
+Declaration(Class(affordances_situations:Support))
+Declaration(Class(affordances_situations:Supportee))
+Declaration(Class(affordances_situations:Supporter))
+Declaration(Class(affordances_situations:Target))
+Declaration(Class(affordances_situations:TargetContainer))
+Declaration(Class(<http://www.ontologydesignpatterns.org/cp/owl/description.owl#Description>))
+Declaration(Class(<http://www.ontologydesignpatterns.org/cp/owl/situation.owl#Situation>))
+Declaration(Class(<https://w3id.org/framester/schema/ConceptualFrame>))
+Declaration(Class(<https://w3id.org/framester/schema/FrameOccurrence>))
+Declaration(ObjectProperty(affordances_situations:affects))
+Declaration(ObjectProperty(affordances_situations:attracts))
+Declaration(ObjectProperty(affordances_situations:contains))
+Declaration(ObjectProperty(affordances_situations:cuts))
+Declaration(ObjectProperty(affordances_situations:defines))
+Declaration(ObjectProperty(affordances_situations:falling))
+Declaration(ObjectProperty(affordances_situations:flowsFrom))
+Declaration(ObjectProperty(affordances_situations:flowsTo))
+Declaration(ObjectProperty(affordances_situations:grasps))
+Declaration(ObjectProperty(affordances_situations:hasCuttingPoint))
+Declaration(ObjectProperty(affordances_situations:hasGraspingPoint))
+Declaration(ObjectProperty(affordances_situations:hasGripOn))
+Declaration(ObjectProperty(affordances_situations:hasParticipant))
+Declaration(ObjectProperty(affordances_situations:inContactWith))
+Declaration(ObjectProperty(affordances_situations:inside))
+Declaration(ObjectProperty(affordances_situations:partOf))
+Declaration(ObjectProperty(affordances_situations:pours))
+Declaration(ObjectProperty(affordances_situations:resultsIn))
+Declaration(ObjectProperty(affordances_situations:separatedFrom))
+Declaration(ObjectProperty(affordances_situations:stabs))
+Declaration(ObjectProperty(affordances_situations:supports))
+Declaration(NamedIndividual(affordances_situations:Contact))
+Declaration(NamedIndividual(affordances_situations:Containment))
+Declaration(NamedIndividual(affordances_situations:Cutting))
+Declaration(NamedIndividual(affordances_situations:Falling))
+Declaration(NamedIndividual(affordances_situations:Grasping))
+Declaration(NamedIndividual(affordances_situations:Gravity))
+Declaration(NamedIndividual(affordances_situations:Movement))
+Declaration(NamedIndividual(affordances_situations:Pouring))
+Declaration(NamedIndividual(affordances_situations:Sequence))
+Declaration(NamedIndividual(affordances_situations:Stabbing))
+Declaration(NamedIndividual(affordances_situations:Support))
+Declaration(NamedIndividual(affordances_situations:boundary1))
+Declaration(NamedIndividual(affordances_situations:c1))
+Declaration(NamedIndividual(affordances_situations:c2))
+Declaration(NamedIndividual(affordances_situations:containee1))
+Declaration(NamedIndividual(affordances_situations:containee2))
+Declaration(NamedIndividual(affordances_situations:container1))
+Declaration(NamedIndividual(affordances_situations:container2))
+Declaration(NamedIndividual(affordances_situations:container3))
+Declaration(NamedIndividual(affordances_situations:cuttee1))
+Declaration(NamedIndividual(affordances_situations:cutter1))
+Declaration(NamedIndividual(affordances_situations:cutting1))
+Declaration(NamedIndividual(affordances_situations:cuttingPoint1))
+Declaration(NamedIndividual(affordances_situations:cuttingSequence1))
+Declaration(NamedIndividual(affordances_situations:g1))
+Declaration(NamedIndividual(affordances_situations:g2))
+Declaration(NamedIndividual(affordances_situations:grasped1))
+Declaration(NamedIndividual(affordances_situations:grasped2))
+Declaration(NamedIndividual(affordances_situations:grasper1))
+Declaration(NamedIndividual(affordances_situations:grasper2))
+Declaration(NamedIndividual(affordances_situations:graspingPoint1))
+Declaration(NamedIndividual(affordances_situations:interior1))
+Declaration(NamedIndividual(affordances_situations:liquid2))
+Declaration(NamedIndividual(affordances_situations:p1))
+Declaration(NamedIndividual(affordances_situations:part1))
+Declaration(NamedIndividual(affordances_situations:part2))
+Declaration(NamedIndividual(affordances_situations:pointyPart1))
+Declaration(NamedIndividual(affordances_situations:poured1))
+Declaration(NamedIndividual(affordances_situations:pourer1))
+Declaration(NamedIndividual(affordances_situations:separation1))
+Declaration(NamedIndividual(affordances_situations:stabbed1))
+Declaration(NamedIndividual(affordances_situations:stabber1))
+Declaration(NamedIndividual(affordances_situations:stabbing1))
+Declaration(NamedIndividual(affordances_situations:stabbingPoint1))
+Declaration(AnnotationProperty(<http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled>))
+
+############################
+#   Object Properties
+############################
+
+# Object Property: affordances_situations:contains (affordances_situations:contains)
+
+InverseObjectProperties(affordances_situations:contains affordances_situations:inside)
+ObjectPropertyDomain(affordances_situations:contains affordances_situations:Container)
+ObjectPropertyRange(affordances_situations:contains affordances_situations:Containee)
+
+# Object Property: affordances_situations:cuts (affordances_situations:cuts)
+
+ObjectPropertyDomain(affordances_situations:cuts affordances_situations:Cutter)
+ObjectPropertyRange(affordances_situations:cuts affordances_situations:Cuttee)
+
+# Object Property: affordances_situations:falling (affordances_situations:falling)
+
+ObjectPropertyRange(affordances_situations:falling affordances_situations:FallingObject)
+
+# Object Property: affordances_situations:flowsFrom (affordances_situations:flowsFrom)
+
+ObjectPropertyRange(affordances_situations:flowsFrom affordances_situations:Source)
+
+# Object Property: affordances_situations:flowsTo (affordances_situations:flowsTo)
+
+ObjectPropertyRange(affordances_situations:flowsTo affordances_situations:Target)
+
+# Object Property: affordances_situations:grasps (affordances_situations:grasps)
+
+ObjectPropertyDomain(affordances_situations:grasps affordances_situations:Grasper)
+ObjectPropertyRange(affordances_situations:grasps affordances_situations:Grasped)
+
+# Object Property: affordances_situations:hasGraspingPoint (affordances_situations:hasGraspingPoint)
+
+ObjectPropertyRange(affordances_situations:hasGraspingPoint affordances_situations:GraspingPoint)
+
+# Object Property: affordances_situations:hasGripOn (affordances_situations:hasGripOn)
+
+ObjectPropertyRange(affordances_situations:hasGripOn affordances_situations:StableObject)
+
+# Object Property: affordances_situations:hasParticipant (affordances_situations:hasParticipant)
+
+TransitiveObjectProperty(affordances_situations:hasParticipant)
+
+# Object Property: affordances_situations:inContactWith (affordances_situations:inContactWith)
+
+SymmetricObjectProperty(affordances_situations:inContactWith)
+
+# Object Property: affordances_situations:pours (affordances_situations:pours)
+
+ObjectPropertyDomain(affordances_situations:pours affordances_situations:Pourer)
+ObjectPropertyRange(affordances_situations:pours affordances_situations:Poured)
+
+# Object Property: affordances_situations:separatedFrom (affordances_situations:separatedFrom)
+
+SymmetricObjectProperty(affordances_situations:separatedFrom)
+
+# Object Property: affordances_situations:stabs (affordances_situations:stabs)
+
+ObjectPropertyDomain(affordances_situations:stabs affordances_situations:Stabber)
+ObjectPropertyRange(affordances_situations:stabs affordances_situations:Stabbed)
+
+# Object Property: affordances_situations:supports (affordances_situations:supports)
+
+ObjectPropertyDomain(affordances_situations:supports affordances_situations:Supporter)
+ObjectPropertyRange(affordances_situations:supports affordances_situations:Supportee)
+
+
+
+############################
+#   Classes
+############################
+
+# Class: affordances_situations:Boundary (affordances_situations:Boundary)
+
+SubClassOf(affordances_situations:Boundary affordances_situations:Role)
+
+# Class: affordances_situations:Contact (affordances_situations:Contact)
+
+SubClassOf(affordances_situations:Contact affordances_situations:ImageSchematicSituation)
+
+# Class: affordances_situations:Containee (affordances_situations:Containee)
+
+SubClassOf(affordances_situations:Containee affordances_situations:Role)
+
+# Class: affordances_situations:Container (affordances_situations:Container)
+
+SubClassOf(affordances_situations:Container affordances_situations:Role)
+
+# Class: affordances_situations:Containment (affordances_situations:Containment)
+
+SubClassOf(affordances_situations:Containment affordances_situations:ImageSchematicSituation)
+
+# Class: affordances_situations:Cuttee (affordances_situations:Cuttee)
+
+SubClassOf(affordances_situations:Cuttee affordances_situations:Role)
+
+# Class: affordances_situations:Cutter (affordances_situations:Cutter)
+
+SubClassOf(affordances_situations:Cutter affordances_situations:Role)
+
+# Class: affordances_situations:Cutting (affordances_situations:Cutting)
+
+SubClassOf(affordances_situations:Cutting affordances_situations:ImageSchematicSituation)
+
+# Class: affordances_situations:CuttingPoint (affordances_situations:CuttingPoint)
+
+SubClassOf(affordances_situations:CuttingPoint affordances_situations:Role)
+
+# Class: affordances_situations:CuttingSequence (affordances_situations:CuttingSequence)
+
+SubClassOf(affordances_situations:CuttingSequence affordances_situations:Sequence)
+
+# Class: affordances_situations:CuttingTool (affordances_situations:CuttingTool)
+
+SubClassOf(affordances_situations:CuttingTool affordances_situations:Role)
+
+# Class: affordances_situations:Falling (affordances_situations:Falling)
+
+SubClassOf(affordances_situations:Falling affordances_situations:ImageSchematicSituation)
+
+# Class: affordances_situations:FallingObject (affordances_situations:FallingObject)
+
+SubClassOf(affordances_situations:FallingObject affordances_situations:Role)
+
+# Class: affordances_situations:Floor (affordances_situations:Floor)
+
+SubClassOf(affordances_situations:Floor affordances_situations:SemanticType)
+
+# Class: affordances_situations:Grasped (affordances_situations:Grasped)
+
+SubClassOf(affordances_situations:Grasped affordances_situations:Role)
+
+# Class: affordances_situations:Grasper (affordances_situations:Grasper)
+
+SubClassOf(affordances_situations:Grasper affordances_situations:Role)
+
+# Class: affordances_situations:Grasping (affordances_situations:Grasping)
+
+SubClassOf(affordances_situations:Grasping affordances_situations:ImageSchematicSituation)
+
+# Class: affordances_situations:GraspingPoint (affordances_situations:GraspingPoint)
+
+SubClassOf(affordances_situations:GraspingPoint affordances_situations:Role)
+
+# Class: affordances_situations:Gravity (affordances_situations:Gravity)
+
+SubClassOf(affordances_situations:Gravity affordances_situations:SemanticType)
+
+# Class: affordances_situations:ImageSchematicSituation (affordances_situations:ImageSchematicSituation)
+
+SubClassOf(affordances_situations:ImageSchematicSituation <https://w3id.org/framester/schema/FrameOccurrence>)
+
+# Class: affordances_situations:Interior (affordances_situations:Interior)
+
+SubClassOf(affordances_situations:Interior affordances_situations:Role)
+
+# Class: affordances_situations:Liquid (affordances_situations:Liquid)
+
+SubClassOf(affordances_situations:Liquid affordances_situations:SemanticType)
+
+# Class: affordances_situations:Movement (affordances_situations:Movement)
+
+SubClassOf(affordances_situations:Movement affordances_situations:ImageSchematicSituation)
+
+# Class: affordances_situations:MovingObject (affordances_situations:MovingObject)
+
+SubClassOf(affordances_situations:MovingObject affordances_situations:Role)
+
+# Class: affordances_situations:Object (affordances_situations:Object)
+
+SubClassOf(affordances_situations:Object affordances_situations:Role)
+
+# Class: affordances_situations:Poured (affordances_situations:Poured)
+
+SubClassOf(affordances_situations:Poured affordances_situations:Role)
+
+# Class: affordances_situations:Pourer (affordances_situations:Pourer)
+
+SubClassOf(affordances_situations:Pourer affordances_situations:Role)
+
+# Class: affordances_situations:Pouring (affordances_situations:Pouring)
+
+SubClassOf(affordances_situations:Pouring affordances_situations:ImageSchematicSituation)
+
+# Class: affordances_situations:Separation (affordances_situations:Separation)
+
+SubClassOf(affordances_situations:Separation affordances_situations:ImageSchematicSituation)
+
+# Class: affordances_situations:Sequence (affordances_situations:Sequence)
+
+SubClassOf(affordances_situations:Sequence affordances_situations:ImageSchematicSituation)
+
+# Class: affordances_situations:Source (affordances_situations:Source)
+
+SubClassOf(affordances_situations:Source affordances_situations:Role)
+
+# Class: affordances_situations:SourceContainer (affordances_situations:SourceContainer)
+
+SubClassOf(affordances_situations:SourceContainer affordances_situations:Role)
+
+# Class: affordances_situations:Stabbed (affordances_situations:Stabbed)
+
+SubClassOf(affordances_situations:Stabbed affordances_situations:Role)
+
+# Class: affordances_situations:Stabber (affordances_situations:Stabber)
+
+SubClassOf(affordances_situations:Stabber affordances_situations:Role)
+
+# Class: affordances_situations:Stabbing (affordances_situations:Stabbing)
+
+SubClassOf(affordances_situations:Stabbing affordances_situations:ImageSchematicSituation)
+
+# Class: affordances_situations:StabbingPart (affordances_situations:StabbingPart)
+
+SubClassOf(affordances_situations:StabbingPart affordances_situations:Role)
+
+# Class: affordances_situations:StabbingPoint (affordances_situations:StabbingPoint)
+
+SubClassOf(affordances_situations:StabbingPoint affordances_situations:Role)
+
+# Class: affordances_situations:StabbingTool (affordances_situations:StabbingTool)
+
+SubClassOf(affordances_situations:StabbingTool affordances_situations:Role)
+
+# Class: affordances_situations:StableObject (affordances_situations:StableObject)
+
+SubClassOf(affordances_situations:StableObject affordances_situations:Role)
+
+# Class: affordances_situations:Support (affordances_situations:Support)
+
+SubClassOf(affordances_situations:Support affordances_situations:ImageSchematicSituation)
+
+# Class: affordances_situations:Supportee (affordances_situations:Supportee)
+
+SubClassOf(affordances_situations:Supportee affordances_situations:Role)
+
+# Class: affordances_situations:Supporter (affordances_situations:Supporter)
+
+SubClassOf(affordances_situations:Supporter affordances_situations:Role)
+
+# Class: affordances_situations:Target (affordances_situations:Target)
+
+SubClassOf(affordances_situations:Target affordances_situations:Role)
+
+# Class: affordances_situations:TargetContainer (affordances_situations:TargetContainer)
+
+SubClassOf(affordances_situations:TargetContainer affordances_situations:Role)
+
+# Class: <https://w3id.org/framester/schema/ConceptualFrame> (<https://w3id.org/framester/schema/ConceptualFrame>)
+
+SubClassOf(<https://w3id.org/framester/schema/ConceptualFrame> <http://www.ontologydesignpatterns.org/cp/owl/description.owl#Description>)
+
+# Class: <https://w3id.org/framester/schema/FrameOccurrence> (<https://w3id.org/framester/schema/FrameOccurrence>)
+
+SubClassOf(<https://w3id.org/framester/schema/FrameOccurrence> <http://www.ontologydesignpatterns.org/cp/owl/situation.owl#Situation>)
+
+
+############################
+#   Named Individuals
+############################
+
+# Individual: affordances_situations:Contact (affordances_situations:Contact)
+
+ClassAssertion(<https://w3id.org/framester/schema/ConceptualFrame> affordances_situations:Contact)
+
+# Individual: affordances_situations:Containment (affordances_situations:Containment)
+
+ClassAssertion(<https://w3id.org/framester/schema/ConceptualFrame> affordances_situations:Containment)
+
+# Individual: affordances_situations:Cutting (affordances_situations:Cutting)
+
+ClassAssertion(<https://w3id.org/framester/schema/ConceptualFrame> affordances_situations:Cutting)
+
+# Individual: affordances_situations:Falling (affordances_situations:Falling)
+
+ClassAssertion(<https://w3id.org/framester/schema/ConceptualFrame> affordances_situations:Falling)
+
+# Individual: affordances_situations:Grasping (affordances_situations:Grasping)
+
+ClassAssertion(<https://w3id.org/framester/schema/ConceptualFrame> affordances_situations:Grasping)
+
+# Individual: affordances_situations:Movement (affordances_situations:Movement)
+
+ClassAssertion(<https://w3id.org/framester/schema/ConceptualFrame> affordances_situations:Movement)
+
+# Individual: affordances_situations:Pouring (affordances_situations:Pouring)
+
+ClassAssertion(<https://w3id.org/framester/schema/ConceptualFrame> affordances_situations:Pouring)
+
+# Individual: affordances_situations:Sequence (affordances_situations:Sequence)
+
+ClassAssertion(<https://w3id.org/framester/schema/ConceptualFrame> affordances_situations:Sequence)
+
+# Individual: affordances_situations:Stabbing (affordances_situations:Stabbing)
+
+ClassAssertion(<https://w3id.org/framester/schema/ConceptualFrame> affordances_situations:Stabbing)
+
+# Individual: affordances_situations:Support (affordances_situations:Support)
+
+ClassAssertion(<https://w3id.org/framester/schema/ConceptualFrame> affordances_situations:Support)
+
+# Individual: affordances_situations:c1 (affordances_situations:c1)
+
+ObjectPropertyAssertion(affordances_situations:hasParticipant affordances_situations:c1 affordances_situations:container1)
+
+# Individual: affordances_situations:c2 (affordances_situations:c2)
+
+ObjectPropertyAssertion(affordances_situations:hasParticipant affordances_situations:c2 affordances_situations:liquid2)
+
+# Individual: affordances_situations:container1 (affordances_situations:container1)
+
+ClassAssertion(affordances_situations:FallingObject affordances_situations:container1)
+ObjectPropertyAssertion(affordances_situations:contains affordances_situations:container1 affordances_situations:containee1)
+
+# Individual: affordances_situations:container2 (affordances_situations:container2)
+
+ClassAssertion(affordances_situations:Container affordances_situations:container2)
+
+# Individual: affordances_situations:container3 (affordances_situations:container3)
+
+ClassAssertion(affordances_situations:Container affordances_situations:container3)
+
+# Individual: affordances_situations:cutter1 (affordances_situations:cutter1)
+
+ObjectPropertyAssertion(affordances_situations:cuts affordances_situations:cutter1 affordances_situations:cuttee1)
+ObjectPropertyAssertion(affordances_situations:hasCuttingPoint affordances_situations:cutter1 affordances_situations:cuttingPoint1)
+
+# Individual: affordances_situations:cutting1 (affordances_situations:cutting1)
+
+ObjectPropertyAssertion(affordances_situations:hasParticipant affordances_situations:cutting1 affordances_situations:cuttee1)
+
+# Individual: affordances_situations:cuttingSequence1 (affordances_situations:cuttingSequence1)
+
+ObjectPropertyAssertion(affordances_situations:hasParticipant affordances_situations:cuttingSequence1 affordances_situations:cutting1)
+ObjectPropertyAssertion(affordances_situations:hasParticipant affordances_situations:cuttingSequence1 affordances_situations:separation1)
+
+# Individual: affordances_situations:g1 (affordances_situations:g1)
+
+ObjectPropertyAssertion(affordances_situations:hasGraspingPoint affordances_situations:g1 affordances_situations:graspingPoint1)
+ObjectPropertyAssertion(affordances_situations:hasParticipant affordances_situations:g1 affordances_situations:grasper1)
+
+# Individual: affordances_situations:g2 (affordances_situations:g2)
+
+ObjectPropertyAssertion(affordances_situations:hasParticipant affordances_situations:g2 affordances_situations:grasped2)
+
+# Individual: affordances_situations:grasper1 (affordances_situations:grasper1)
+
+ClassAssertion(affordances_situations:FallingObject affordances_situations:grasper1)
+ObjectPropertyAssertion(affordances_situations:grasps affordances_situations:grasper1 affordances_situations:grasped1)
+
+# Individual: affordances_situations:grasper2 (affordances_situations:grasper2)
+
+ClassAssertion(affordances_situations:MovingObject affordances_situations:grasper2)
+ObjectPropertyAssertion(affordances_situations:grasps affordances_situations:grasper2 affordances_situations:grasped2)
+
+# Individual: affordances_situations:liquid2 (affordances_situations:liquid2)
+
+ObjectPropertyAssertion(affordances_situations:flowsFrom affordances_situations:liquid2 affordances_situations:container2)
+ObjectPropertyAssertion(affordances_situations:flowsTo affordances_situations:liquid2 affordances_situations:container3)
+
+# Individual: affordances_situations:p1 (affordances_situations:p1)
+
+ObjectPropertyAssertion(affordances_situations:hasParticipant affordances_situations:p1 affordances_situations:pourer1)
+
+# Individual: affordances_situations:part1 (affordances_situations:part1)
+
+ObjectPropertyAssertion(affordances_situations:separatedFrom affordances_situations:part1 affordances_situations:part2)
+
+# Individual: affordances_situations:pointyPart1 (affordances_situations:pointyPart1)
+
+ObjectPropertyAssertion(affordances_situations:inside affordances_situations:pointyPart1 affordances_situations:stabbingPoint1)
+
+# Individual: affordances_situations:pourer1 (affordances_situations:pourer1)
+
+ObjectPropertyAssertion(affordances_situations:pours affordances_situations:pourer1 affordances_situations:poured1)
+
+# Individual: affordances_situations:separation1 (affordances_situations:separation1)
+
+ObjectPropertyAssertion(affordances_situations:hasParticipant affordances_situations:separation1 affordances_situations:part1)
+ObjectPropertyAssertion(affordances_situations:hasParticipant affordances_situations:separation1 affordances_situations:part2)
+
+# Individual: affordances_situations:stabber1 (affordances_situations:stabber1)
+
+ObjectPropertyAssertion(affordances_situations:stabs affordances_situations:stabber1 affordances_situations:stabbed1)
+
+# Individual: affordances_situations:stabbing1 (affordances_situations:stabbing1)
+
+ObjectPropertyAssertion(affordances_situations:hasParticipant affordances_situations:stabbing1 affordances_situations:pointyPart1)
+ObjectPropertyAssertion(affordances_situations:hasParticipant affordances_situations:stabbing1 affordances_situations:stabbed1)
+
+
+DLSafeRule(Annotation(<http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean) Annotation(rdfs:comment "") Annotation(rdfs:label "ContainmentSituation 4") Body(ClassAtom(affordances_situations:Boundary Variable(:y)) ObjectPropertyAtom(affordances_situations:hasParticipant Variable(:x) Variable(:y)))Head(ClassAtom(affordances_situations:Containment Variable(:x))))
+DLSafeRule(Annotation(<http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean) Annotation(rdfs:comment "") Annotation(rdfs:label "All Containee are Objects") Body(ClassAtom(affordances_situations:Containee Variable(:x)))Head(ClassAtom(affordances_situations:Object Variable(:x))))
+DLSafeRule(Annotation(<http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean) Annotation(rdfs:comment "") Annotation(rdfs:label "ContainmentSituation 2") Body(ClassAtom(affordances_situations:Containee Variable(:y)) ObjectPropertyAtom(affordances_situations:hasParticipant Variable(:x) Variable(:y)))Head(ClassAtom(affordances_situations:Containment Variable(:x))))
+DLSafeRule(Annotation(<http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean) Annotation(rdfs:comment "") Annotation(rdfs:label "All Containers are Objects") Body(ClassAtom(affordances_situations:Container Variable(:x)))Head(ClassAtom(affordances_situations:Object Variable(:x))))
+DLSafeRule(Annotation(<http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean) Annotation(rdfs:comment "") Annotation(rdfs:label "SourceContainer") Body(ClassAtom(affordances_situations:Container Variable(:x)) ClassAtom(affordances_situations:Source Variable(:x)))Head(ClassAtom(affordances_situations:SourceContainer Variable(:x))))
+DLSafeRule(Annotation(<http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean) Annotation(rdfs:comment "") Annotation(rdfs:label "TargetContainer") Body(ClassAtom(affordances_situations:Container Variable(:x)) ClassAtom(affordances_situations:Target Variable(:x)))Head(ClassAtom(affordances_situations:TargetContainer Variable(:x))))
+DLSafeRule(Annotation(<http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean) Annotation(rdfs:comment "") Annotation(rdfs:label "ContainmentSituation 1") Body(ClassAtom(affordances_situations:Container Variable(:y)) ObjectPropertyAtom(affordances_situations:hasParticipant Variable(:x) Variable(:y)))Head(ClassAtom(affordances_situations:Containment Variable(:x))))
+DLSafeRule(Annotation(<http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean) Annotation(rdfs:comment "") Annotation(rdfs:label "Contact from Containment") Body(ClassAtom(affordances_situations:Containment Variable(:s)))Head(ClassAtom(affordances_situations:Contact Variable(:s))))
+DLSafeRule(Annotation(<http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean) Annotation(rdfs:comment "") Annotation(rdfs:label "Containment Roles") Body(ClassAtom(affordances_situations:Containment Variable(:s)) ObjectPropertyAtom(affordances_situations:hasParticipant Variable(:s) Variable(:x)) ObjectPropertyAtom(affordances_situations:contains Variable(:x) Variable(:y)))Head(ObjectPropertyAtom(affordances_situations:hasParticipant Variable(:s) Variable(:y))))
+DLSafeRule(Annotation(<http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean) Annotation(rdfs:comment "") Annotation(rdfs:label "Cuttee Object") Body(ClassAtom(affordances_situations:Cuttee Variable(:s)))Head(ClassAtom(affordances_situations:Object Variable(:s))))
+DLSafeRule(Annotation(<http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean) Annotation(rdfs:comment "") Annotation(rdfs:label "CuttingSituation 2") Body(ClassAtom(affordances_situations:Cuttee Variable(:x)) ObjectPropertyAtom(affordances_situations:hasParticipant Variable(:s) Variable(:x)))Head(ClassAtom(affordances_situations:Cutting Variable(:s))))
+DLSafeRule(Annotation(<http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean) Annotation(rdfs:comment "") Annotation(rdfs:label "Cutter Object") Body(ClassAtom(affordances_situations:Cutter Variable(:s)))Head(ClassAtom(affordances_situations:Object Variable(:s))))
+DLSafeRule(Annotation(<http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean) Annotation(rdfs:comment "") Annotation(rdfs:label "CuttingSituation 1") Body(ClassAtom(affordances_situations:Cutter Variable(:x)) ObjectPropertyAtom(affordances_situations:hasParticipant Variable(:s) Variable(:x)))Head(ClassAtom(affordances_situations:Cutting Variable(:s))))
+DLSafeRule(Annotation(<http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean) Annotation(rdfs:comment "") Annotation(rdfs:label "Contact from Cutting 2") Body(ClassAtom(affordances_situations:Cutting Variable(:s)))Head(ClassAtom(affordances_situations:Contact Variable(:s))))
+DLSafeRule(Annotation(<http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean) Annotation(rdfs:comment "") Annotation(rdfs:label "CuttingSequence 1") Body(ClassAtom(affordances_situations:Cutting Variable(:s1)) ObjectPropertyAtom(affordances_situations:hasParticipant Variable(:seq) Variable(:s1)) ClassAtom(affordances_situations:Separation Variable(:s2)) ObjectPropertyAtom(affordances_situations:hasParticipant Variable(:seq) Variable(:s2)))Head(ClassAtom(affordances_situations:CuttingSequence Variable(:seq)) ObjectPropertyAtom(affordances_situations:resultsIn Variable(:seq) Variable(:s2))))
+DLSafeRule(Annotation(<http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean) Annotation(rdfs:comment "") Annotation(rdfs:label "CuttingSituation 6") Body(ClassAtom(affordances_situations:CuttingPoint Variable(:x)) ObjectPropertyAtom(affordances_situations:hasParticipant Variable(:s) Variable(:x)))Head(ClassAtom(affordances_situations:Cutting Variable(:s))))
+DLSafeRule(Annotation(<http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean) Annotation(rdfs:comment "") Annotation(rdfs:label "CuttingSituation 3") Body(ClassAtom(affordances_situations:CuttingTool Variable(:x)) ObjectPropertyAtom(affordances_situations:hasParticipant Variable(:s) Variable(:x)))Head(ClassAtom(affordances_situations:Cutting Variable(:s))))
+DLSafeRule(Annotation(<http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean) Annotation(rdfs:comment "") Annotation(rdfs:label "FallingObject") Body(ObjectPropertyAtom(affordances_situations:hasParticipant Variable(:s) Variable(:x)) ClassAtom(affordances_situations:Falling Variable(:s)))Head(ClassAtom(affordances_situations:FallingObject Variable(:x))))
+DLSafeRule(Annotation(<http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean) Annotation(rdfs:comment "") Annotation(rdfs:label "Movement from Falling") Body(ObjectPropertyAtom(affordances_situations:hasParticipant Variable(:s) Variable(:x)) ClassAtom(affordances_situations:Falling Variable(:s)))Head(ClassAtom(affordances_situations:MovingObject Variable(:x)) ClassAtom(affordances_situations:Movement Variable(:s))))
+DLSafeRule(Annotation(<http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean) Annotation(rdfs:comment "") Annotation(rdfs:label "Falling from Containment") Body(ObjectPropertyAtom(affordances_situations:contains Variable(:x) Variable(:y)) ClassAtom(affordances_situations:FallingObject Variable(:x)))Head(ClassAtom(affordances_situations:FallingObject Variable(:y))))
+DLSafeRule(Annotation(<http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean) Annotation(rdfs:comment "") Annotation(rdfs:label "Falling from Grasping") Body(ClassAtom(affordances_situations:FallingObject Variable(:x)) ObjectPropertyAtom(affordances_situations:grasps Variable(:x) Variable(:y)))Head(ClassAtom(affordances_situations:FallingObject Variable(:y))))
+DLSafeRule(Annotation(<http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean) Annotation(rdfs:comment "") Annotation(rdfs:label "Falling Roles") Body(ClassAtom(affordances_situations:FallingObject Variable(:x)) ObjectPropertyAtom(affordances_situations:hasParticipant Variable(:s) Variable(:x)))Head(ClassAtom(affordances_situations:Falling Variable(:s))))
+DLSafeRule(Annotation(<http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean) Annotation(rdfs:comment "") Annotation(rdfs:label "FallingSituation 1") Body(ClassAtom(affordances_situations:FallingObject Variable(:x)) ObjectPropertyAtom(affordances_situations:hasParticipant Variable(:s) Variable(:x)))Head(ClassAtom(affordances_situations:Falling Variable(:s))))
+DLSafeRule(Annotation(<http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean) Annotation(rdfs:comment "") Annotation(rdfs:label "GraspingSituation 2") Body(ClassAtom(affordances_situations:Grasped Variable(:x)) ObjectPropertyAtom(affordances_situations:hasParticipant Variable(:s) Variable(:x)))Head(ClassAtom(affordances_situations:Grasping Variable(:s))))
+DLSafeRule(Annotation(<http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean) Annotation(rdfs:comment "") Annotation(rdfs:label "Grasping Roles 2") Body(ClassAtom(affordances_situations:Grasping Variable(:s)) ObjectPropertyAtom(affordances_situations:hasParticipant Variable(:s) Variable(:x)) ClassAtom(affordances_situations:Grasper Variable(:x)) ObjectPropertyAtom(affordances_situations:hasParticipant Variable(:s) Variable(:y)) ClassAtom(affordances_situations:Grasped Variable(:y)))Head(ObjectPropertyAtom(affordances_situations:grasps Variable(:x) Variable(:y))))
+DLSafeRule(Annotation(<http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean) Annotation(rdfs:comment "") Annotation(rdfs:label "Movement from Grasping") Body(ClassAtom(affordances_situations:Grasper Variable(:x)) ClassAtom(affordances_situations:MovingObject Variable(:x)) ObjectPropertyAtom(affordances_situations:grasps Variable(:x) Variable(:y)))Head(ClassAtom(affordances_situations:MovingObject Variable(:y))))
+DLSafeRule(Annotation(<http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean) Annotation(rdfs:comment "") Annotation(rdfs:label "Grasping Situation 1") Body(ClassAtom(affordances_situations:Grasper Variable(:x)) ObjectPropertyAtom(affordances_situations:hasParticipant Variable(:s) Variable(:x)))Head(ClassAtom(affordances_situations:Grasping Variable(:s))))
+DLSafeRule(Annotation(<http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean) Annotation(rdfs:comment "") Annotation(rdfs:label "Contact from Grasping") Body(ClassAtom(affordances_situations:Grasping Variable(:s)))Head(ClassAtom(affordances_situations:Contact Variable(:s))))
+DLSafeRule(Annotation(<http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean) Annotation(rdfs:comment "") Annotation(rdfs:label "Grasping Roles 3") Body(ClassAtom(affordances_situations:GraspingPoint Variable(:k)) ObjectPropertyAtom(affordances_situations:hasParticipant Variable(:s) Variable(:k)))Head(ClassAtom(affordances_situations:Grasping Variable(:s))))
+DLSafeRule(Annotation(<http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean) Annotation(rdfs:comment "") Annotation(rdfs:label "ContainmentSituation 3") Body(ClassAtom(affordances_situations:Interior Variable(:y)) ObjectPropertyAtom(affordances_situations:hasParticipant Variable(:x) Variable(:y)))Head(ClassAtom(affordances_situations:Containment Variable(:x))))
+DLSafeRule(Annotation(<http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean) Annotation(rdfs:comment "") Annotation(rdfs:label "Movement from Containment") Body(ClassAtom(affordances_situations:MovingObject Variable(:x)) ObjectPropertyAtom(affordances_situations:contains Variable(:x) Variable(:y)))Head(ClassAtom(affordances_situations:MovingObject Variable(:y))))
+DLSafeRule(Annotation(<http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean) Annotation(rdfs:comment "") Annotation(rdfs:label "Movement Roles") Body(ClassAtom(affordances_situations:MovingObject Variable(:x)) ObjectPropertyAtom(affordances_situations:hasParticipant Variable(:s) Variable(:x)))Head(ClassAtom(affordances_situations:Movement Variable(:s))))
+DLSafeRule(Annotation(<http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean) Annotation(rdfs:comment "") Annotation(rdfs:label "PouringSituation 2") Body(ClassAtom(affordances_situations:Poured Variable(:x)) ObjectPropertyAtom(affordances_situations:hasParticipant Variable(:s) Variable(:x)))Head(ClassAtom(affordances_situations:Pouring Variable(:s))))
+DLSafeRule(Annotation(<http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean) Annotation(rdfs:comment "") Annotation(rdfs:label "PouringSituation 3") Body(ObjectPropertyAtom(affordances_situations:hasParticipant Variable(:s) Variable(:x)) ClassAtom(affordances_situations:Pourer Variable(:x)) ClassAtom(affordances_situations:Poured Variable(:y)))Head(ObjectPropertyAtom(affordances_situations:hasParticipant Variable(:s) Variable(:y))))
+DLSafeRule(Annotation(<http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean) Annotation(rdfs:comment "") Annotation(rdfs:label "PouringSituation 4") Body(ObjectPropertyAtom(affordances_situations:hasParticipant Variable(:s) Variable(:y)) ClassAtom(affordances_situations:Pourer Variable(:x)) ClassAtom(affordances_situations:Poured Variable(:y)))Head(ObjectPropertyAtom(affordances_situations:hasParticipant Variable(:s) Variable(:x))))
+DLSafeRule(Annotation(<http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean) Annotation(rdfs:comment "") Annotation(rdfs:label "PouringSituation 1") Body(ClassAtom(affordances_situations:Pourer Variable(:x)) ObjectPropertyAtom(affordances_situations:hasParticipant Variable(:s) Variable(:x)))Head(ClassAtom(affordances_situations:Pouring Variable(:s))))
+DLSafeRule(Annotation(<http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean) Annotation(rdfs:comment "") Annotation(rdfs:label "Movement from Pouring") Body(ClassAtom(affordances_situations:Pouring Variable(:s)))Head(ClassAtom(affordances_situations:Movement Variable(:s))))
+DLSafeRule(Annotation(<http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean) Annotation(rdfs:comment "") Annotation(rdfs:label "Contact between Poured and SourceContainer") Body(ClassAtom(affordances_situations:Pouring Variable(:s)) ObjectPropertyAtom(affordances_situations:flowsFrom Variable(:x) Variable(:y)) ClassAtom(affordances_situations:SourceContainer Variable(:y)))Head(ClassAtom(affordances_situations:Contact Variable(:s)) ObjectPropertyAtom(affordances_situations:hasParticipant Variable(:s) Variable(:x)) ObjectPropertyAtom(affordances_situations:hasParticipant Variable(:s) Variable(:y)) ObjectPropertyAtom(affordances_situations:inContactWith Variable(:x) Variable(:y))))
+DLSafeRule(Annotation(<http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean) Annotation(rdfs:comment "") Annotation(rdfs:label "Contact between Poured and TargetCointainer") Body(ClassAtom(affordances_situations:Pouring Variable(:s)) ObjectPropertyAtom(affordances_situations:flowsTo Variable(:x) Variable(:y)) ClassAtom(affordances_situations:TargetContainer Variable(:y)))Head(ClassAtom(affordances_situations:Contact Variable(:s)) ObjectPropertyAtom(affordances_situations:hasParticipant Variable(:s) Variable(:x)) ObjectPropertyAtom(affordances_situations:hasParticipant Variable(:s) Variable(:y)) ObjectPropertyAtom(affordances_situations:inContactWith Variable(:x) Variable(:y))))
+DLSafeRule(Annotation(<http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean) Annotation(rdfs:comment "") Annotation(rdfs:label "StabbingSituation 2") Body(ClassAtom(affordances_situations:Stabbed Variable(:x)) ObjectPropertyAtom(affordances_situations:hasParticipant Variable(:s) Variable(:x)))Head(ClassAtom(affordances_situations:Stabbing Variable(:s))))
+DLSafeRule(Annotation(<http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean) Annotation(rdfs:comment "") Annotation(rdfs:label "StabbingSituation 1") Body(ClassAtom(affordances_situations:Stabber Variable(:x)) ObjectPropertyAtom(affordances_situations:hasParticipant Variable(:s) Variable(:x)))Head(ClassAtom(affordances_situations:Stabbing Variable(:s))))
+DLSafeRule(Annotation(<http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean) Annotation(rdfs:comment "") Annotation(rdfs:label "StabbingSituation 4") Body(ClassAtom(affordances_situations:Stabbing Variable(:s)))Head(ClassAtom(affordances_situations:Contact Variable(:s))))
+DLSafeRule(Annotation(<http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean) Annotation(rdfs:comment "") Annotation(rdfs:label "StabbingSituation 6") Body(ClassAtom(affordances_situations:StabbingPart Variable(:x)) ObjectPropertyAtom(affordances_situations:hasParticipant Variable(:s) Variable(:x)))Head(ClassAtom(affordances_situations:Stabbing Variable(:s))))
+DLSafeRule(Annotation(<http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean) Annotation(rdfs:comment "") Annotation(rdfs:label "StabbingSituation 7") Body(ObjectPropertyAtom(affordances_situations:hasParticipant Variable(:s) Variable(:x)) ObjectPropertyAtom(affordances_situations:inside Variable(:x) Variable(:y)) ClassAtom(affordances_situations:StabbingPart Variable(:y)))Head(ClassAtom(affordances_situations:Stabbing Variable(:s))))
+DLSafeRule(Annotation(<http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean) Annotation(rdfs:comment "") Annotation(rdfs:label "StabbingSituation 5") Body(ClassAtom(affordances_situations:StabbingPoint Variable(:x)) ObjectPropertyAtom(affordances_situations:hasParticipant Variable(:s) Variable(:x)))Head(ClassAtom(affordances_situations:Stabbing Variable(:s))))
+DLSafeRule(Annotation(<http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean) Annotation(rdfs:comment "") Annotation(rdfs:label "StabbingSituation 3") Body(ClassAtom(affordances_situations:StabbingTool Variable(:x)) ObjectPropertyAtom(affordances_situations:hasParticipant Variable(:s) Variable(:x)))Head(ClassAtom(affordances_situations:Stabbing Variable(:s))))
+DLSafeRule(Annotation(<http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean) Annotation(rdfs:comment "") Annotation(rdfs:label "All Supportee are Objects") Body(ClassAtom(affordances_situations:Supportee Variable(:x)))Head(ClassAtom(affordances_situations:Object Variable(:x))))
+DLSafeRule(Annotation(<http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean) Annotation(rdfs:comment "") Annotation(rdfs:label "Support Roles2") Body(ObjectPropertyAtom(affordances_situations:hasParticipant Variable(:s) Variable(:x)) ObjectPropertyAtom(affordances_situations:hasParticipant Variable(:s) Variable(:y)) ClassAtom(affordances_situations:Supporter Variable(:x)) ClassAtom(affordances_situations:Supportee Variable(:y)))Head(ObjectPropertyAtom(affordances_situations:supports Variable(:x) Variable(:y))))
+DLSafeRule(Annotation(<http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean) Annotation(rdfs:comment "") Annotation(rdfs:label "SupportSituation 2") Body(ClassAtom(affordances_situations:Supportee Variable(:y)) ObjectPropertyAtom(affordances_situations:hasParticipant Variable(:s) Variable(:y)))Head(ClassAtom(affordances_situations:Support Variable(:s))))
+DLSafeRule(Annotation(<http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean) Annotation(rdfs:comment "") Annotation(rdfs:label "All Supporters are Objects") Body(ClassAtom(affordances_situations:Supporter Variable(:x)))Head(ClassAtom(affordances_situations:Object Variable(:x))))
+DLSafeRule(Annotation(<http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean) Annotation(rdfs:comment "") Annotation(rdfs:label "SupportSituation 1") Body(ClassAtom(affordances_situations:Supporter Variable(:x)) ObjectPropertyAtom(affordances_situations:hasParticipant Variable(:s) Variable(:x)))Head(ClassAtom(affordances_situations:Support Variable(:s))))
+DLSafeRule(Annotation(<http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean) Annotation(rdfs:comment "") Annotation(rdfs:label "Contact from Containment 2") Body(ObjectPropertyAtom(affordances_situations:contains Variable(:x) Variable(:y)))Head(ObjectPropertyAtom(affordances_situations:inContactWith Variable(:x) Variable(:y))))
+DLSafeRule(Annotation(<http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean) Annotation(rdfs:comment "") Annotation(rdfs:label "Contact from Cutting") Body(ObjectPropertyAtom(affordances_situations:cuts Variable(:x) Variable(:y)))Head(ObjectPropertyAtom(affordances_situations:inContactWith Variable(:x) Variable(:y))))
+DLSafeRule(Annotation(<http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean) Annotation(rdfs:comment "") Annotation(rdfs:label "CuttingPoint partOf Cuttee") Body(ObjectPropertyAtom(affordances_situations:hasParticipant Variable(:s) Variable(:x)) ObjectPropertyAtom(affordances_situations:hasCuttingPoint Variable(:x) Variable(:k)) ObjectPropertyAtom(affordances_situations:cuts Variable(:x) Variable(:y)))Head(ObjectPropertyAtom(affordances_situations:partOf Variable(:k) Variable(:y))))
+DLSafeRule(Annotation(<http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean) Annotation(rdfs:comment "") Annotation(rdfs:label "CuttingSituation 4") Body(ObjectPropertyAtom(affordances_situations:cuts Variable(:x) Variable(:y)) ObjectPropertyAtom(affordances_situations:hasParticipant Variable(:s) Variable(:x)))Head(ObjectPropertyAtom(affordances_situations:hasParticipant Variable(:s) Variable(:y)) ClassAtom(affordances_situations:Cutting Variable(:s))))
+DLSafeRule(Annotation(<http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean) Annotation(rdfs:comment "") Annotation(rdfs:label "CuttingSituation 5") Body(ObjectPropertyAtom(affordances_situations:cuts Variable(:x) Variable(:y)) ObjectPropertyAtom(affordances_situations:hasParticipant Variable(:s) Variable(:y)))Head(ObjectPropertyAtom(affordances_situations:hasParticipant Variable(:s) Variable(:x)) ClassAtom(affordances_situations:Cutting Variable(:s))))
+DLSafeRule(Annotation(<http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean) Annotation(rdfs:comment "") Annotation(rdfs:label "PouringSituation 5") Body(ObjectPropertyAtom(affordances_situations:flowsFrom Variable(:x) Variable(:w)) ObjectPropertyAtom(affordances_situations:hasParticipant Variable(:s) Variable(:x)))Head(ClassAtom(affordances_situations:Pouring Variable(:s))))
+DLSafeRule(Annotation(<http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean) Annotation(rdfs:comment "") Annotation(rdfs:label "PouringSituation 6") Body(ObjectPropertyAtom(affordances_situations:flowsTo Variable(:x) Variable(:w)) ObjectPropertyAtom(affordances_situations:hasParticipant Variable(:s) Variable(:x)))Head(ClassAtom(affordances_situations:Pouring Variable(:s))))
+DLSafeRule(Annotation(<http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean) Annotation(rdfs:comment "") Annotation(rdfs:label "Grip from Grasping") Body(ObjectPropertyAtom(affordances_situations:grasps Variable(:x) Variable(:y)))Head(ObjectPropertyAtom(affordances_situations:hasGripOn Variable(:x) Variable(:y))))
+DLSafeRule(Annotation(<http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean) Annotation(rdfs:comment "") Annotation(rdfs:label "Contact from Grasping 2") Body(ObjectPropertyAtom(affordances_situations:grasps Variable(:x) Variable(:y)))Head(ObjectPropertyAtom(affordances_situations:inContactWith Variable(:x) Variable(:y))))
+DLSafeRule(Annotation(<http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean) Annotation(rdfs:comment "") Annotation(rdfs:label "GraspingPoint partOf Grasped") Body(ObjectPropertyAtom(affordances_situations:hasParticipant Variable(:s) Variable(:x)) ObjectPropertyAtom(affordances_situations:hasGraspingPoint Variable(:x) Variable(:k)) ObjectPropertyAtom(affordances_situations:grasps Variable(:x) Variable(:y)))Head(ObjectPropertyAtom(affordances_situations:partOf Variable(:k) Variable(:y))))
+DLSafeRule(Annotation(<http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean) Annotation(rdfs:comment "") Annotation(rdfs:label "Grasping Roles") Body(ObjectPropertyAtom(affordances_situations:grasps Variable(:x) Variable(:y)) ObjectPropertyAtom(affordances_situations:hasParticipant Variable(:s) Variable(:x)))Head(ObjectPropertyAtom(affordances_situations:hasParticipant Variable(:s) Variable(:y)) ClassAtom(affordances_situations:Grasping Variable(:s))))
+DLSafeRule(Annotation(<http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean) Annotation(rdfs:comment "") Annotation(rdfs:label "SeparationSituaiton 1") Body(ObjectPropertyAtom(affordances_situations:hasParticipant Variable(:s) Variable(:y)) ObjectPropertyAtom(affordances_situations:hasParticipant Variable(:s) Variable(:x)) ObjectPropertyAtom(affordances_situations:separatedFrom Variable(:x) Variable(:y)))Head(ClassAtom(affordances_situations:Separation Variable(:s))))
+DLSafeRule(Annotation(<http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean) Annotation(rdfs:comment "") Annotation(rdfs:label "StabbingSituation 8") Body(ObjectPropertyAtom(affordances_situations:stabs Variable(:x) Variable(:y)) ObjectPropertyAtom(affordances_situations:hasParticipant Variable(:s) Variable(:x)))Head(ClassAtom(affordances_situations:Stabbing Variable(:s))))
+)

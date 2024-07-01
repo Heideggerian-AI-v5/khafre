@@ -12,7 +12,8 @@ import time
 
 from khafre.bricks import RatedSimpleQueue, SHMPort, drawWire
 from khafre.dbgvis import DbgVisualizer
-from khafre.nnwrappers import YOLOObjectSegmentationWrapper
+from khafre.depth import TransformerDepthSegmentationWrapper
+from khafre.segmentation import YOLOObjectSegmentationWrapper
 
 ### Object detection/segmentation example: shows how to set up a connection to the khafre object detection,
 # and between it and a debug visualizer. See the dbgvis_setup_input_connection.py example for more comments
@@ -30,9 +31,10 @@ def on_release(key):
         return False
 
 ## An auxiliary function to set up a signal handler for SIGTERM and SIGINT
-def doExit(signum, frame, dbgP, objP):
+def doExit(signum, frame, dbgP, objP, dptP):
     dbgP.stop()
     objP.stop()
+    dptP.stop()
     sys.exit()
 
 # Define a function to capture the image from the screen.
@@ -55,35 +57,40 @@ def main():
 
         imgWidth,imgHeight = (int(monitor["width"]*240.0/monitor["height"]), 240)
         
-        # We will need a debug visualizer and object detection processes.        
+        # We will need a debug visualizer, a depth estimator, and object detection processes.
         # Construct process objects. These are not started yet.
         
         dbgP = DbgVisualizer()
         objP = YOLOObjectSegmentationWrapper()
+        # Monocular depth estimation is VERY computationally expensive, try to have it run on the GPU
+        dptP = TransformerDepthSegmentationWrapper(device="cuda")
 
         # Set up the connections to dbg visualizer and object detection.
 
-        # Normally there should be a wire for the OutImg connection of the object detection/segmentation process, 
+        # Normally there should be a wire for the OutImg connection of the object detection/segmentation and depth estimation processes, 
         # however we will not use that result in this example and only visualize results via debug.
 
         drawWire("Screenshot Cam", [], [("Screenshot Cam", dbgP)], (imgHeight, imgWidth, 3), numpy.float32, RatedSimpleQueue, wireList=wireList)
-        drawWire("Input Image", [], [("InpImg", objP)], (imgHeight, imgWidth, 3), numpy.uint8, RatedSimpleQueue, wireList=wireList)
+        drawWire("Input Image", [], [("InpImg", objP), ("InpImg", dptP)], (imgHeight, imgWidth, 3), numpy.uint8, RatedSimpleQueue, wireList=wireList)
         drawWire("Dbg Obj Seg", [("DbgImg", objP)], [("Object Detection/Segmentation", dbgP)], (imgHeight, imgWidth, 3), numpy.float32, RatedSimpleQueue, wireList=wireList)
+        drawWire("Dbg Depth", [("DbgImg", dptP)], [("Depth Estimation", dbgP)], (imgHeight, imgWidth, 3), numpy.float32, RatedSimpleQueue, wireList=wireList)
         
         # Optional, but STRONGLY recommended: set signal handlers that will ensure the subprocesses terminate on exit.
-        signal.signal(signal.SIGTERM, lambda signum, frame: doExit(signum, frame, dbgP, objP))
-        signal.signal(signal.SIGINT, lambda signum, frame: doExit(signum, frame, dbgP, objP))
+        signal.signal(signal.SIGTERM, lambda signum, frame: doExit(signum, frame, dbgP, objP, dptP))
+        signal.signal(signal.SIGINT, lambda signum, frame: doExit(signum, frame, dbgP, objP, dptP))
 
         # Only after all connection objects -- shared memories and notification queues -- are set up, we can start.
         dbgP.start()
         objP.start()
+        dptP.start()
         
         # RECOMMENDED: tell the object detection to load a model AFTER starting the process. This might avoid some unnecessary
         # copying of a large object when starting the process.
         
         objP.sendCommand(("LOAD", ("yolov8n-seg.pt",)))
+        dptP.sendCommand(("LOAD", ("vinvino02/glpn-nyu",)))
 
-        print("Starting object segmentation will take a while, wait a few seconds for a debug window labeled \"Object Detection/Segmentation\".\nPress ESC to exit. (By the way, this is process %s)" % str(os.getpid()))
+        print("Starting object segmentation and depth estimation will take a while, wait a few seconds for debug windows for them to show up.\nPress ESC to exit. (By the way, this is process %s)" % str(os.getpid()))
         with Listener(on_press=on_press, on_release=on_release) as listener:
             while goOn["goOn"]:
 
@@ -99,6 +106,7 @@ def main():
         # A clean exit: stop all subprocesses.
         
         objP.stop()
+        dptP.stop()
         dbgP.stop()
 
 if "__main__" == __name__:

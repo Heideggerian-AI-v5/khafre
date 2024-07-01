@@ -11,27 +11,31 @@ class NNImgWrapper(ReifiedProcess):
     """
     def __init__(self):
         super().__init__()
-        self._inputImage = None
-        self._inputNotification = None
+        #self._inputImage = None
+        #self._inputNotification = None
         self._model = None
         self._command = Queue()
-        self._outputImage = None
-        self._outputNotification = None
-        self._dbgImage = None
-        self._dbgNotification = None
-    def setInputImagePort(self, consumerSHMPort, inputNotificationQueue):
-        self._inputImage = consumerSHMPort
-        self._inputNotification = inputNotificationQueue
+        #self._outputImage = None
+        #self._outputNotification = None
+        #self._dbgImage = None
+        #self._dbgNotification = None
+    def _checkSubscriptionRequest(self, name, queue, consumerSHM):
+        return ("InpImg" == name)
+    def _checkPublisherRequest(self, name, queues, consumerSHM):
+        return name in {"OutImg", "DbgImg"}
+    #def setInputImagePort(self, consumerSHMPort, inputNotificationQueue):
+    #    self._inputImage = consumerSHMPort
+    #    self._inputNotification = inputNotificationQueue
     def setModel(self, model):
         self._model = model
     def sendCommand(self, command, block=False, timeout=None):
         self._command.put(command, block=block, timeout=timeout)
-    def setOutputImagePort(self, consumerSHMPort, outputNotificationQueue):
-        self._outputImage = consumerSHMPort
-        self._outputNotification = outputNotificationQueue
-    def setOutputDbgImagePort(self, consumerSHMPort, dbgNotificationQueue):
-        self._dbgImage = consumerSHMPort
-        self._dbgNotification = dbgNotificationQueue
+    #def setOutputImagePort(self, consumerSHMPort, outputNotificationQueue):
+    #    self._outputImage = consumerSHMPort
+    #    self._outputNotification = outputNotificationQueue
+    #def setOutputDbgImagePort(self, consumerSHMPort, dbgNotificationQueue):
+    #    self._dbgImage = consumerSHMPort
+    #    self._dbgNotification = dbgNotificationQueue
     def _unloadModel(self):
         if self._model is not None:
             del self._model
@@ -78,24 +82,23 @@ Subclasses should implement command handling code here.
             self._handleCommand(self._command.get())
         # Do we even have a model loaded? Do we even have an output to send to?
         # Note: it is possible for the user of this process to not want an image as a result, and only a list of detections/polygons etc.
-        if (self._model is not None) and (self._outputNotification is not None):
+        if (self._model is not None):
             # Do we even have an image to work on?
-            if not self._inputNotification.empty():
+            if not self._subscriptions["InpImg"][0].empty():
                 # We only get the latest image -- need to check how many were dropped along the way.
-                _,rate,dropped = self._inputNotification.getWithRates()
+                _,rate,dropped = self._subscriptions["InpImg"][0].getWithRates()
                 # Get a copy of the image so we can free it for others (e.g., the image acquisition process) as soon as possible.
-                with self._inputImage as inpImg:
+                with self._subscriptions["InpImg"][1] as inpImg:
                     ourImg = numpy.copy(inpImg)
                 results, outputImg = self._useModel(ourImg)
-                if self._outputImage is not None:
-                    self._outputImgage.send(outputImg)
-                self._outputNotification.put(results)
+                if "OutImg" in self._publishers:
+                    self._publishers["OutImg"].publish(outputImg, results)
                 # Do we need to prepare a debug image?
-                if self._dbgImage is not None:
+                if "DbgImg" in self._publishers:
                     # Here we can hog the shared memory as long as we like -- dbgvis won't use it until we notify it that there's a new frame to show.
-                    with self._dbgImage as dbgImg:
+                    with self._publishers["DbgImg"] as dbgImg:
                         self._prepareDbgImg(results, outputImg, dbgImg)
-                    self._dbgNotification.put("%.02f ifps | %d%% obj drop" % (rate if rate is not None else 0.0, dropped))
+                    self._publishers["DbgImg"].sendNotifications("%.02f ifps | %d%% obj drop" % (rate if rate is not None else 0.0, dropped))
     def cleanup(self):
         self._unloadModel()
         while not self._inputNotification.empty():

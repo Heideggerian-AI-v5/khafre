@@ -1,5 +1,5 @@
 import cv2 as cv
-from khafre.bricks import ReifiedProcess, RatedSimpleQueue, NameTaken
+from khafre.bricks import ReifiedProcess, RatedSimpleQueue, NameTaken, SHMConsumerPort
 from multiprocessing import Lock, shared_memory
 import numpy
 
@@ -18,30 +18,19 @@ images, not images used in other perception subprocesses.
     """
     def __init__(self):
         super().__init__()
-        self._inputs = {}
-    def requestInputChannel(self, name, consumerSHMPort):
-        """
-Creates a Lock and RatedSimpleQueue and associates them to name,
-which will also be used as the title of the OpenCV window.
-No other input channel must use the same name, and if name
-is already used then the function fails.
-
-A user of this input channel must employ Lock to synchronize
-a shared memory.
-        """
-        if name in self._inputs:
-            raise NameTaken
-        self._inputs[name] = (consumerSHMPort, RatedSimpleQueue())
-        return self._inputs[name][1]
+    def _checkSubscriptionRequest(self, name, queue, consumerSHM):
+        if (name in self._subscriptions) or (not isinstance(queue, RatedSimpleQueue)) or (not isinstance(consumerSHM, SHMConsumerPort)):
+            return False
+        return True
     def doWork(self):
         """
 Loop through the registered input channels. If something
 is in a channel, display it (together with frame rate and
 dropped frame info).
         """
-        for k,v in self._inputs.items():
-            consumer, rsq = v
-            if not rsq.empty():
+        for k,v in self._subscriptions.items():
+            rsq, consumer = v
+            if (consumer is not None) and (not rsq.empty()):
                 e,rate,dropped = rsq.getWithRates()
                 with consumer as segImg:
                     rateAdj = rate
@@ -68,5 +57,5 @@ Also close opened visualization windows.
                 cv.destroyWindow(k)
             except:
                 pass
-        _ = [(_x(k), v[1].flush()) for k,v in self._inputs.items()]
+        _ = [(_x(k), v[1].flush()) for k,v in self._subscriptions.items()]
 

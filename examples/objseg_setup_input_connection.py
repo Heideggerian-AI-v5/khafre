@@ -10,7 +10,7 @@ import signal
 import sys
 import time
 
-from khafre.bricks import RatedSimpleQueue, SHMPort
+from khafre.bricks import RatedSimpleQueue, SHMPort, drawWire
 from khafre.dbgvis import DbgVisualizer
 from khafre.nnwrappers import YOLOObjectSegmentationWrapper
 
@@ -44,43 +44,32 @@ def getImg(sct, monitor):
 
 def main():
 
+    # IMPORTANT: this will be our registry of "wires", connections between khafre subprocesses.
+    # Keep this variable alive at least as long as the subprocesses are running.
+
+    wireList={}
+
     with mss.mss() as sct:
 
         monitor = sct.monitors[1]
 
         imgWidth,imgHeight = (int(monitor["width"]*240.0/monitor["height"]), 240)
         
-        # We will need a debug visualizer and object detection processes.
-        # We need to send a screenshot to the object detection, object detection will send a debug image
-        # to the visualizer, and we will also send the screenshot from here to the debug visualizer.
-        # Usually, the output from object detection will go somewhere else too, but for this example we will ignore it.
-        # We therefore set up the following shared memories:
-        
-        rawImgProducerPort, rawImgConsumerPort = SHMPort((imgHeight, imgWidth, 3), numpy.uint8) # input image for object detection
-        screenshotProducerPort, screenshotConsumerPort = SHMPort((imgHeight, imgWidth, 3), numpy.float32) # screenshot to show in dbgvis
-        dbgImgProducerPort, dbgImgConsumerPort = SHMPort((imgHeight, imgWidth, 3), numpy.float32) # segmentation mask image to show in dbgvis
-        
-        # Writing to shared memories will not notify their users. We need another way to send notifications:
-        inputNotification = RatedSimpleQueue() # Notification from this process to object detection: "a screenshot is ready"
-        outputQueue = Queue() # In order for object detection to do anything, it must have somewhere to send output
-
+        # We will need a debug visualizer and object detection processes.        
         # Construct process objects. These are not started yet.
         
         dbgP = DbgVisualizer()
         objP = YOLOObjectSegmentationWrapper()
 
-        # Set up DbgVis so that it will use the shared memories where we send images to it. It will provide us with notification queues
-        # to inform it when an image is ready.
-        
-        dbgNotificationQueue = dbgP.requestInputChannel("Object Detection/Segmentation", dbgImgConsumerPort)
-        dbgScreenshotNotificationQueue = dbgP.requestInputChannel("Screen capture", screenshotConsumerPort)
+        # Set up the connections to dbg visualizer and object detection.
 
-        # Set up the connections to object detection.
-        
-        objP.setInputImagePort(rawImgConsumerPort, inputNotification)
-        objP.setOutputImagePort(None, outputQueue)
-        objP.setOutputDbgImagePort(dbgImgConsumerPort, dbgNotificationQueue)
+        # Normally there should be a wire for the OutImg connection of the object detection/segmentation process, 
+        # however we will not use that result in this example and only visualize results via debug.
 
+        drawWire("Screenshot Cam", [], [("Screenshot Cam", dbgP)], (imgHeight, imgWidth, 3), numpy.float32, RatedSimpleQueue, wireList=wireList)
+        drawWire("Input Image", [], [("InpImg", objP)], (imgHeight, imgWidth, 3), numpy.uint8, RatedSimpleQueue, wireList=wireList)
+        drawWire("Dbg Obj Seg", [("DbgImg", objP)], [("Object Detection/Segmentation", dbgP)], (imgHeight, imgWidth, 3), numpy.float32, RatedSimpleQueue, wireList=wireList)
+        
         # Optional, but STRONGLY recommended: set signal handlers that will ensure the subprocesses terminate on exit.
         signal.signal(signal.SIGTERM, lambda signum, frame: doExit(signum, frame, dbgP, objP))
         signal.signal(signal.SIGINT, lambda signum, frame: doExit(signum, frame, dbgP, objP))
@@ -98,19 +87,12 @@ def main():
         with Listener(on_press=on_press, on_release=on_release) as listener:
             while goOn["goOn"]:
 
-                # Ignore output from object detection.
-                            
-                while not outputQueue.empty():
-                    outputQueue.get()
-                
                 screenshot = getImg(sct, monitor)
 
                 # Send the screenshot to dbgvis and object detection.
                 
-                rawImgProducerPort.send((screenshot*255).astype(numpy.uint8))
-                inputNotification.put(True)
-                screenshotProducerPort.send(screenshot)
-                dbgScreenshotNotificationQueue.put("")
+                wireList["Input Image"].publish((screenshot*255).astype(numpy.uint8), True)
+                wireList["Screenshot Cam"].publish(screenshot, "")
                 
             listener.join()
 

@@ -84,11 +84,11 @@ Subclasses should implement command handling code here.
         # Note: it is possible for the user of this process to not want an image as a result, and only a list of detections/polygons etc.
         if (self._model is not None):
             # Do we even have an image to work on?
-            if not self._subscriptions["InpImg"][0].empty():
+            if not self._subscriptions["InpImg"].empty():
                 # We only get the latest image -- need to check how many were dropped along the way.
-                _,rate,dropped = self._subscriptions["InpImg"][0].getWithRates()
+                _,rate,dropped = self._subscriptions["InpImg"].getWithRates()
                 # Get a copy of the image so we can free it for others (e.g., the image acquisition process) as soon as possible.
-                with self._subscriptions["InpImg"][1] as inpImg:
+                with self._subscriptions["InpImg"] as inpImg:
                     ourImg = numpy.copy(inpImg)
                 results, outputImg = self._useModel(ourImg)
                 if "OutImg" in self._publishers:

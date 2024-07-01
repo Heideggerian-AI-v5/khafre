@@ -265,12 +265,12 @@ Return True if the subscription is acceptable, False otherwise.
         pass
     def addSubscription(self, name: str, queue: Union[Queue, SimpleQueue, RatedSimpleQueue], consumerSHM: Union[SHMConsumerPort, None]):
         if self._checkSubscriptionRequest(name, queue, consumerSHM):
-            self._subscriptions[name] = (queue, consumerSHM)
+            self._subscriptions[name] = SubscriberConsumerWire(consumerSHM, queue)
         else:
             raise BadSubscription
     def addPublisher(self, name: str, queues, consumerSHM: Union[SHMConsumerPort, None]):
         if self._checkPublisherRequest(name, queues, consumerSHM):
-            self._publishers[name] = ConsumerWire(consumerSHM, queues)
+            self._publishers[name] = PublisherConsumerWire(consumerSHM, queues)
         else:
             raise BadPublisher
     def start(self):
@@ -371,7 +371,7 @@ class ProducerWire():
     def __exit__(self, exit_type, value, traceback):
         return self._producer.__exit__(exit_type, value, traceback)
 
-class ConsumerWire():
+class PublisherConsumerWire():
     def __init__(self, consumer, notifications):
         self._consumer = consumer
         self._notifications = notifications
@@ -385,6 +385,21 @@ class ConsumerWire():
         _=[x.put(data) for x in self._notifications]
     def send(self, data):
         self._consumer.send(data)
+    def __enter__(self):
+        return self._consumer.__enter__()
+    def __exit__(self, exit_type, value, traceback):
+        return self._consumer.__exit__(exit_type, value, traceback)
+
+class SubscriberConsumerWire():
+    def __init__(self, consumer, notification):
+        self._consumer = consumer
+        self._notification = notification
+    def empty(self):
+        return self._notification.empty()
+    def get(self):
+        return self._notification.get()
+    def getWithRates(self):
+        return self._notification.getWithRates()
     def __enter__(self):
         return self._consumer.__enter__()
     def __exit__(self, exit_type, value, traceback):

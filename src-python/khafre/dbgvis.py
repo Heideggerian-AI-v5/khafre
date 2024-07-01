@@ -29,10 +29,9 @@ is in a channel, display it (together with frame rate and
 dropped frame info).
         """
         for k,v in self._subscriptions.items():
-            rsq, consumer = v
-            if (consumer is not None) and (not rsq.empty()):
-                e,rate,dropped = rsq.getWithRates()
-                with consumer as segImg:
+            if (not v.empty()):
+                e,rate,dropped = v.getWithRates()
+                with v as segImg:
                     rateAdj = rate
                     if rate is None:
                         rateAdj = 0.0

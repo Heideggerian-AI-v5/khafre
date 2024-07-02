@@ -184,7 +184,8 @@ Additionally, gets goal data (sets of triples) from a queue.
                 self._previousFeatures[o] = getFeatures(self._previousFeatures.get(o), self._previousImage, self._previousMaskImgs[o], featureParams)
                 self._previousFeatures[o], nowFeatures[o], previous3D[o], now3D[o] = computeOpticalFlow(previousFeatures.get(o), self._previousImage, self._currentImage, self._currentMaskImgs[o], self._previousDepth, self._currentDepth)
             relativeMovements = getRelativeMovements(previous3D, now3D, self._queries, self._settings["approachVelocity"], self._settings["departVelocity"])
-            self._publishers["OutImg"].sendNotifications({"imgId": self._maskResults.get("imgId"), "movements": relativeMovements})
+            if "OutImg" in self._publishers:
+                self._publishers["OutImg"].sendNotifications({"imgId": self._maskResults.get("imgId"), "movements": relativeMovements})
             # Do we need to prepare a debug image?
             if "DbgImg" in self._publishers:
                 # Here we can hog the shared memory as long as we like -- dbgvis won't use it until we notify it that there's a new frame to show.

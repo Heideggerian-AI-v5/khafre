@@ -1,14 +1,9 @@
-import ctypes 
 import cv2 as cv
 from khafre.bricks import RatedSimpleQueue, ReifiedProcess
 from multiprocessing import Queue
 import numpy
-from numpy.ctypeslib import ndpointer 
-import os
-import platform
 
 from .contactcpp import _contact
-
 
 dilationKernel = cv.getStructuringElement(cv.MORPH_CROSS,(3,3),(1,1))
 
@@ -167,9 +162,9 @@ Additionally, gets goal data (sets of triples) from a queue.
             self._depthResults, self._rateDepth, self._droppedDepth = self._subscriptions["DepthImg"].getWithRates()
         if haveNew and (self._maskResults.get("imgId") == self._depthResults.get("imgId")):
             with self._subscriptions["MaskImg"] as maskImg:
-                with self._subscriptions["DepthImg"] as depthImg:
-                    depthImgLocal = numpy.copy(depthImg)
-                    maskImgs = _getMaskImgs(maskImg, self._maskResults)
+                maskImgs = _getMaskImgs(maskImg, self._maskResults)
+            with self._subscriptions["DepthImg"] as depthImg:
+                depthImgLocal = numpy.copy(depthImg)
             imgHeight, imgWidth = depthImgLocal.shape
             queries = set()
             searchWidth = 7

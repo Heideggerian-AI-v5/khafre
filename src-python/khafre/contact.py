@@ -1,5 +1,5 @@
 import cv2 as cv
-from khafre.bricks import RatedSimpleQueue, ReifiedProcess
+from khafre.bricks import RatedSimpleQueue
 from khafre.taskable import TaskableProcess
 from multiprocessing import Queue
 import numpy
@@ -145,7 +145,7 @@ Additionally, gets goal data (sets of triples) from a queue.
             retq = {}
             for e in results:
                 retq[e["type"]] = numpy.zeros(maskImg.shape,dtype=numpy.uint8)
-                retq[e["type"]][maskImg == e["id"]] = 255
+                cv.fillPoly(retq[e["type"]], pts = [e["polygon"]], color = 255)
             return retq
         def _s2c(s):
             h = hash(s)

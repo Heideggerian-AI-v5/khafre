@@ -1,5 +1,6 @@
 import cv2 as cv
 from khafre.bricks import RatedSimpleQueue, ReifiedProcess
+from khafre.taskable import TaskableProcess
 from multiprocessing import Queue
 import numpy
 
@@ -36,7 +37,7 @@ def getFeatures(previousFeatures, previousGray, previousMaskImg, featureParams):
                     previousFeatures = newFeatures
     return previousFeatures
 
-class OpticalFlow(ReifiedProcess):
+class OpticalFlow(TaskableProcess):
     """
 Subprocess in which contact masks are calculated based on an object mask image and a depth image.
 
@@ -50,7 +51,8 @@ Additionally, gets goal data (sets of triples) from a queue.
     """
     def __init__(self):
         super().__init__()
-        self._goals = RatedSimpleQueue()
+        self._settings["featureParams"] = dict(maxCorners = 10, qualityLevel = 0.2, minDistance = 2, blockSize = 5)
+        self._settings["lkParams"] = dict(winSize = (15,15), maxLevel = 2, criteria = (cv.TERM_CRITERIA_EPS | cv.TERM_CRITERIA_COUNT, 10, 0.03))
         self._imageResults = {}
         self._depthResults = {}
         self._maskResults = {}
@@ -70,22 +72,14 @@ Additionally, gets goal data (sets of triples) from a queue.
         self._previousFeatures = None
         self._currentFeatures = None
         self._featureParams = {}
-    def getGoalQueue(self):
-        return self._goals
     def _checkSubscriptionRequest(self, name, queue, consumerSHM):
         return name in {"InpImg", "MaskImg", "DepthImg"}
     def _checkPublisherRequest(self, name, queues, consumerSHM):
         return name in {"OutImg", "DbgImg"}
-    def doWork(self):
+    def _performStep(self):
         """
         """
-        def _orderQuery(q):
-            if q[0]>q[1]:
-                return (q[1], q[0])
-            return (q[0], q[1])
         haveNew = False
-        if not self._goals.empty():
-            self._currentGoals, _, _ = self._goals.getWithRates()
         if not self._subscriptions["InpImg"].empty():
             haveNew = True
             self._imageResults, self._rateImage, self._droppedImage = self._subscriptions["InpImg"].getWithRates()
@@ -99,7 +93,6 @@ Additionally, gets goal data (sets of triples) from a queue.
             self._previousImage = self._currentImage
             self._previousDepth = self._currentDepth
             self._previousMask = self._currentMask
-            self._previousFeatures = self._currentFeatures
             with self._subscriptions["inpImg"] as inpImg:
                 self._currentImage = numpy.uint8(cv.cvtColor(inpImg, cv.COLOR_BGR2GRAY)*255)
             with self._subscriptions["DepthImg"] as depthImg:
@@ -108,34 +101,10 @@ Additionally, gets goal data (sets of triples) from a queue.
                 self._currentMask = numpy.copy(maskImg)
             if (self._currentImage is None) or (self._previousImage is None) or (self._currentMask is None) or (self._previousMask is None) or (self._currentDepth is None) or (self._previousDepth is None):
                 return
-            featureParams = dict(maxCorners = 5, qualityLevel = 0.2, minDistance = 2, blockSize = 5)
-            lkParams = dict(winSize = (15,15), maxLevel = 2, criteria = (cv.TERM_CRITERIA_EPS | cv.TERM_CRITERIA_COUNT, 10, 0.03))
-            queries = set()
-            queriesForAll = set()
-            for p,s,o in self._currentGoals:
-                if "opticalFlowCorners" == p:
-                    featureParams["maxCorners"] = int(s)
-                elif "opticalFlowQualityLevel" == p:
-                    featureParams["qualityLevel"] = int(s)
-                elif "opticalFlowMinDistance" == p:
-                    featureParams["minDistance"] = int(s)
-                elif "opticalFlowBlockSize" == p:
-                    featureParams["blockSize"] = int(s)
-                elif "opticalFlowMaxLevel" == p:
-                    lkParams["maxLevel"] = int(s)
-                elif "opticalFlowWinSize" == p:
-                    lkParams["winSize"] = (int(s), int(s))
-                elif "opticalFlowQuery" == p:
-                    if s==o:
-                        continue
-                    if o is not None:
-                        queries.add(_orderQuery((s,o)))
-                    else:
-                        queriesForAll.add(s)
-            qobjs = set([x[0] for x in queries]).union([x[1] for x in queries])
-            for x in queriesForAll:
-                queries = queries.union([_orderQuery((x, y)) for y in qobjs if x!=y])
-            for k, (s,o) in enumerate(queries):
+            ####self._previousFeatures = self._currentFeatures
+            featureParams = self._settings["featureParams"]
+            lkParams = self._settings["lkParams"]
+            for k, (p, s,o) in enumerate(self._queries):
                 
             #####if all([x is not None for x in [self._previousImage, self._previousFeatures, self._previousDepth, self._previousMask, self._currentImage, self._currentFeatures, self._currentDepth, self._currentMask]]):
                 regionOfInterest = numpy.zeros(self._previousMask.shape, dtype=uint8)

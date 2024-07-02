@@ -15,6 +15,7 @@ from khafre.dbgvis import DbgVisualizer
 from khafre.depth import TransformerDepthSegmentationWrapper
 from khafre.segmentation import YOLOObjectSegmentationWrapper
 from khafre.contact import ContactDetection
+from khafre.optical_flow import OpticalFlow
 
 ### Object detection/segmentation example: shows how to set up a connection to the khafre object detection,
 # and between it and a debug visualizer. See the dbgvis_setup_input_connection.py example for more comments

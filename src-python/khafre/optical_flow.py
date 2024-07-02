@@ -2,8 +2,6 @@ import cv2 as cv
 from khafre.bricks import RatedSimpleQueue, ReifiedProcess
 from multiprocessing import Queue
 import numpy
-import os
-import platform
 
 def inverseProjection(point, depthImg):
     if isinstance(point, numpy.ndarray):
@@ -211,4 +209,81 @@ def getRelativeMovements(previous3D, now3D, queries):
                 else:
                     retq.append(("stillness", s, o))
     return retq
+
+def perception(dbg = False):
+    def _objPolygons(label,img,outfile):
+        contours, hierarchy = cv.findContours(image=img, mode=cv.RETR_TREE, method=cv.CHAIN_APPROX_SIMPLE)
+        contours = [x.reshape((len(x), 2)) for x in contours]
+        for polygon, h in zip(contours, hierarchy[0]):
+            if 0 > h[3]:
+                pstr = ""
+                for p in polygon:
+                    pstr += ("%f %f " % (p[0]/240., p[1]/240.))
+                if 0 < len(polygon):
+                    pstr += ("%f %f " % (polygon[0][0]/240., polygon[0][1]/240.))
+                _ = outfile.write("%d %s\n" % (label, pstr))    
+    perceptionQueriesLocal = {"relativeMovements": [], "contacts": []}
+    previousGray, gray = None, None
+    previousMaskImgs, maskImgs, previousFeatures, nowFeatures, previous3D, now3D = {}, {}, {}, {}, {}, {}
+    maskImgs = {}
+    while perceptionGVar.get("keepOn"):
+        with imageReady:
+            imageReady.wait()
+        recognitionResultsLock.acquire()
+        image = objectRecognitionResults["image"]
+        resultDicts = objectRecognitionResults["resultDicts"]
+        depthImg = objectRecognitionResults["depthImg"]
+        depthImgPrev = objectRecognitionResults["depthImgPrev"]
+        recognitionResultsLock.release()
+        resultDicts = remapResultNames(resultDicts)
+        if image is None:
+            continue
+        npImg = numpy.ascontiguousarray(numpy.float32(numpy.array(image)[:,:,(2,1,0)]))/255.0
+        previousGray = gray
+        gray = numpy.uint8(cv.cvtColor(npImg, cv.COLOR_BGR2GRAY)*255)
+        previous3D, now3D = {}, {}
+        if (previousGray is None) or (gray is None) or (depthImgPrev is None) or (depthImg is None):
+            previousMaskImgs, maskImgs, previousFeatures, nowFeatures = {}, {}, {}, {}
+            continue
+        perceptionQuestionsLock.acquire()
+        perceptionQueriesLocal = {k:v for k,v in perceptionQueries.items()}
+        perceptionQuestionsLock.release()
+        queriedObjects = getQueriedObjects(perceptionQueriesLocal, resultDicts)
+        updatePNDPair(previousMaskImgs, maskImgs, queriedObjects, {e["type"]: e["mask"] for e in resultDicts})
+        maskImgs["Agent"] = getSelfMask()
+        updatePNDPair(previousFeatures, nowFeatures, queriedObjects, None)
+        for o in queriedObjects:
+            previousFeatures[o] = getFeatures(previousFeatures.get(o), previousGray, previousMaskImgs.get(o))
+            previousFeatures[o], nowFeatures[o], previous3D[o], now3D[o] = computeOpticalFlow(previousFeatures.get(o), previousGray, gray, maskImgs.get(o), depthImgPrev, depthImg)
+        relativeMovements = getRelativeMovements(previous3D, now3D, perceptionQueriesLocal["relativeMovements"])
+        contacts, contactPixels, contactMasks = getContacts(maskImgs, depthImg, perceptionQueriesLocal["contacts"])
+        perceptionResultsLock.acquire()
+        perceptionResults["relativeMovements"] = relativeMovements
+        perceptionResults["contacts"] = contacts
+        perceptionResults["image"] = image
+        perceptionResults["contactMasks"] = contactMasks
+        perceptionResultsLock.release()
+        if dbg:
+            #print("QC\n", perceptionQueriesLocal["contacts"])
+            print("Relative Movements", sorted(perceptionResults["relativeMovements"]))
+            print("Contacts", sorted(perceptionResults["contacts"]))
+        with perceptionReady:
+            perceptionReady.notify_all()
+        if dbg:
+            for cd, pixels in contactPixels.items():
+                if 0 < len(pixels):
+                    print(cd)
+                for p in pixels:
+                    npImg = cv.line(npImg, p, p, contactColor, 1)
+            for k in nowFeatures.keys():
+                if (previousFeatures.get(k) is None) or (nowFeatures.get(k) is None):
+                    continue
+                for i, (new, old) in enumerate(zip(nowFeatures[k], previousFeatures[k])):
+                    a, b = new.ravel().astype(int)
+                    c, d = old.ravel().astype(int)
+                    npImg = cv.line(npImg, (a,b), (c,d), opticalFlowColor, 2)
+            debugDataLock.acquire()
+            debugData["opticalFlow"] = npImg
+            debugDataLock.release()
+
 

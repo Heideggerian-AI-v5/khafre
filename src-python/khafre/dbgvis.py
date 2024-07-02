@@ -56,5 +56,5 @@ Also close opened visualization windows.
                 cv.destroyWindow(k)
             except:
                 pass
-        _ = [(_x(k), v[1].flush()) for k,v in self._subscriptions.items()]
+        _ = [(_x(k)) for k in self._subscriptions.items()]
 

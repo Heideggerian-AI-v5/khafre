@@ -94,7 +94,7 @@ def main():
         objP.sendCommand(("LOAD", ("yolov8n-seg.pt",)))
         dptP.sendCommand(("LOAD", ("vinvino02/glpn-nyu",)))
 
-        conP.getGoalQueue().put([("contactQuery", "cup", "table"), ("contactQuery", "cup", "dining table")])
+        conP.getGoalQueue().put([("contact/query", "cup", "table"), ("contact/query", "cup", "dining table")])
 
         print("Starting object segmentation and depth estimation will take a while, wait a few seconds for debug windows for them to show up.\nPress ESC to exit. (By the way, this is process %s)" % str(os.getpid()))
         with Listener(on_press=on_press, on_release=on_release) as listener:

@@ -1,5 +1,6 @@
 import cv2 as cv
 from khafre.bricks import RatedSimpleQueue, ReifiedProcess
+from khafre.taskable import TaskableProcess
 from multiprocessing import Queue
 import numpy
 
@@ -103,7 +104,7 @@ Returns:
     contPO = _expand(imgHeight, imgWidth, maskImgs[o], contPO)
     return contPS, contPO
 
-class ContactDetection(ReifiedProcess):
+class ContactDetection(TaskableProcess):
     """
 Subprocess in which contact masks are calculated based on an object mask image and a depth image.
 
@@ -117,7 +118,12 @@ Additionally, gets goal data (sets of triples) from a queue.
     """
     def __init__(self):
         super().__init__()
-        self._goals = RatedSimpleQueue()
+        self._prefix="contact"
+        self._settings["searchWidth"] = 7
+        self._settings["threshold"] = 0.05
+        self._settings["radius"] = 5
+        self._dilationKernel = cv.getStructuringElement(cv.MORPH_ELLIPSE, (2*5 + 1, 2*5 + 1), (5, 5))
+        self._symmetricPredicates.add("contact/query")
         self._maskResults = {}
         self._depthResults = {}
         self._currentGoals = []
@@ -125,19 +131,15 @@ Additionally, gets goal data (sets of triples) from a queue.
         self._droppedMask = 0
         self._rateDepth = None
         self._droppedDepth = 0
-    def getGoalQueue(self):
-        return self._goals
+    def _adjustDilationKernel(self, dr):
+        self._dilationKernel = cv.getStructuringElement(cv.MORPH_ELLIPSE, (2*dr + 1, 2*dr + 1), (dr, dr))
     def _checkSubscriptionRequest(self, name, queue, consumerSHM):
         return name in {"MaskImg", "DepthImg"}
     def _checkPublisherRequest(self, name, queues, consumerSHM):
         return name in {"OutImg", "DbgImg"}
-    def doWork(self):
+    def _performStep(self):
         """
         """
-        def _orderQuery(q):
-            if q[0]>q[1]:
-                return (q[1], q[0])
-            return (q[0], q[1])
         def _getMaskImgs(maskImg, results):
             results = results.get("segments", [])
             retq = {}
@@ -150,10 +152,6 @@ Additionally, gets goal data (sets of triples) from a queue.
             b,g,r = ((h&0xFF)), ((h&0xFF00)>>8), ((h&0xFF0000)>>16)
             return (b/255.0, g/255.0, r/255.0)
         haveNew = False
-        threshold = 0.05
-        searchWidth = 7
-        if not self._goals.empty():
-            self._currentGoals, _, _ = self._goals.getWithRates()
         if not self._subscriptions["MaskImg"].empty():
             haveNew = True
             self._maskResults, self._rateMask, self._droppedMask = self._subscriptions["MaskImg"].getWithRates()
@@ -166,30 +164,11 @@ Additionally, gets goal data (sets of triples) from a queue.
             with self._subscriptions["DepthImg"] as depthImg:
                 depthImgLocal = numpy.copy(depthImg)
             imgHeight, imgWidth = depthImgLocal.shape
-            queries = set()
-            searchWidth = 7
-            threshold = 0.05
-            dilationKernel = cv.getStructuringElement(cv.MORPH_ELLIPSE, (2*5 + 1, 2*5 + 1), (5, 5))
             outputImg = numpy.zeros((imgHeight, imgWidth), dtype=numpy.uint32)
             results = {"imgId": self._maskResults.get("imgId"), "idx2Contact": {}, "contact2Idx": {}}
-            for p,s,o in self._currentGoals:
-                if "contactDistanceThreshold" == p:
-                    threshold = float(s)
-                elif "contactSearchWidth" == p:
-                    searchWidth = int(s)
-                elif "contactDilationKernel" == p:
-                    dr = int(s)
-                    dilationKernel = cv.getStructuringElement(cv.MORPH_ELLIPSE, (2*dr + 1, 2*dr + 1), (dr, dr))
-                elif "contactQuery" == p:
-                    if s==o:
-                        continue
-                    if o is not None:
-                        queries.add(_orderQuery((s,o)))
-                    else:
-                        _=[queries.add(_orderQuery((s,x))) for x in maskImgs.keys() if x!=s]
-            qobjs = set([x[0] for x in queries]).union([x[1] for x in queries])
-            dilatedImgs = {k: cv.dilate(maskImgs[k], dilationKernel) for k in qobjs if k in maskImgs}
-            for k, (s, o) in enumerate(queries):
+            qobjs = set([x[1] for x in self._queries]).union([x[2] for x in self._queries])
+            dilatedImgs = {k: cv.dilate(maskImgs[k], self._dilationKernel) for k in qobjs if k in maskImgs}
+            for k, (p, s, o) in enumerate(self._queries):
                 if (s not in maskImgs) or (o not in maskImgs):
                     continue
                 k = (k+1)*2
@@ -199,7 +178,7 @@ Additionally, gets goal data (sets of triples) from a queue.
                 results["idx2Contact"][idOS] = (o,s)
                 results["contact2Idx"][(s,o)] = idSO 
                 results["contact2Idx"][(o,s)] = idOS 
-                contPS, contPO = contact(searchWidth, threshold, imgHeight, imgWidth, s, o, dilatedImgs, maskImgs, depthImgLocal)
+                contPS, contPO = contact(self._settings["searchWidth"], self._settings["threshold"], imgHeight, imgWidth, s, o, dilatedImgs, maskImgs, depthImgLocal)
                 outputImg[contPS>0] = idSO
                 outputImg[contPO>0] = idOS
             if "OutImg" in self._publishers:

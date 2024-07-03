@@ -2,9 +2,10 @@ import cv2 as cv
 from khafre.bricks import RatedSimpleQueue, ReifiedProcess
 from khafre.taskable import TaskableProcess
 from multiprocessing import Queue
+import math
 import numpy
 
-def inverseProjection(point, depthImg):
+def inverseProjection(point, depthImg, f):
     if isinstance(point, numpy.ndarray):
         u,v = point.ravel().astype(int)
     else:
@@ -37,14 +38,14 @@ def getFeatures(previousFeatures, previousGray, previousMaskImg, featureParams):
                     previousFeatures = newFeatures
     return previousFeatures
 
-def computeOpticalFlow(previousFeatures, previousGray, gray, maskImg, depthImgPrev, depthImg, lkParams):
+def computeOpticalFlow(previousFeatures, previousGray, gray, maskImg, depthImgPrev, depthImg, lkParams, f):
     def _insideMask(x, maskImg):
         cx, cy = x.ravel().astype(int)
-        cx = min(imgWidth-1,max(0,cx))
-        cy = min(imgHeight-1,max(0,cy))
+        cx = min(maskImg.shape[1]-1,max(0,cx))
+        cy = min(maskImg.shape[0]-1,max(0,cy))
         return 0 < maskImg[cy][cx]
     if (previousFeatures is None) or (0 == len(previousFeatures)):
-        return None, None, None, None
+        return [], [], None, None
     next, status, error = cv.calcOpticalFlowPyrLK(previousGray, gray, previousFeatures, None, **lkParams)
     good_old = numpy.array([],dtype=numpy.float32)
     good_new = numpy.array([],dtype=numpy.float32)
@@ -57,8 +58,8 @@ def computeOpticalFlow(previousFeatures, previousGray, gray, maskImg, depthImgPr
     aux = [(x,y) for x,y,z in zip(good_new, good_old, onSameObj) if z]
     good_new = numpy.array([x[0] for x in aux]).reshape((len(aux),1,2)).astype(numpy.float32)
     good_old = numpy.array([x[1] for x in aux]).reshape((len(aux),1,2)).astype(numpy.float32)
-    previous3D = [inverseProjection(x, depthImgPrev) for x in good_old]
-    now3D = [inverseProjection(x, depthImg) for x in good_new]
+    previous3D = [inverseProjection(x, depthImgPrev, f) for x in good_old]
+    now3D = [inverseProjection(x, depthImg, f) for x in good_new]
     return good_old, good_new, previous3D, now3D
 
 def getRobotRelativeKinematics(previous3D, now3D):
@@ -114,6 +115,7 @@ Additionally, gets goal data (sets of triples) from a queue.
         self._settings["lkParams"] = dict(winSize = (15,15), maxLevel = 2, criteria = (cv.TERM_CRITERIA_EPS | cv.TERM_CRITERIA_COUNT, 10, 0.03))
         self._settings["approachVelocity"] = -0.02
         self._settings["departVelocity"] = 0.02
+        self._settings["focalDistance"] = 200.0
         self._symmetricPredicates.add("opticalFlow/query/relativeMovement")
         self._imageResults = {}
         self._depthResults = {}
@@ -173,16 +175,18 @@ Additionally, gets goal data (sets of triples) from a queue.
                 return
             featureParams = self._settings["featureParams"]
             lkParams = self._settings["lkParams"]
-            qObjs = [x for x in set([x[1] for x in self._queries]).union([x[2] for x in self._queries]) if (x in self._previousMaskImgs) and (x in self._currentMaskImgs)]
+            f = self._settings["focalDistance"]
+            qObjs = [x for x in set([x[1] for x in self._queries]).union([x[2] for x in self._queries])]
             self._previousMaskImgs = self._currentMaskImgs
             self._currentMaskImgs = _getMaskImgs(self._currentMask, self._maskResults, qObjs)
+            qObjs = [x for x in qObjs if (x in self._currentMaskImgs) and (x in self._previousMaskImgs)]
             _=[self._previousFeatures.pop(x) for x in set(self._previousFeatures.keys()).difference(qObjs)]
             nowFeatures={}
             previous3D={}
             now3D={}
             for o in qObjs:
                 self._previousFeatures[o] = getFeatures(self._previousFeatures.get(o), self._previousImage, self._previousMaskImgs[o], featureParams)
-                self._previousFeatures[o], nowFeatures[o], previous3D[o], now3D[o] = computeOpticalFlow(previousFeatures.get(o), self._previousImage, self._currentImage, self._currentMaskImgs[o], self._previousDepth, self._currentDepth)
+                self._previousFeatures[o], nowFeatures[o], previous3D[o], now3D[o] = computeOpticalFlow(self._previousFeatures.get(o), self._previousImage, self._currentImage, self._currentMaskImgs[o], self._previousDepth, self._currentDepth, lkParams, f)
             relativeMovements = getRelativeMovements(previous3D, now3D, self._queries, self._settings["approachVelocity"], self._settings["departVelocity"])
             if "OutImg" in self._publishers:
                 self._publishers["OutImg"].sendNotifications({"imgId": self._maskResults.get("imgId"), "movements": relativeMovements})
@@ -198,8 +202,8 @@ Additionally, gets goal data (sets of triples) from a queue.
                         for i, (new, old) in enumerate(zip(nowFeatures[k], self._previousFeatures[k])):
                             a, b = new.ravel().astype(int)
                             c, d = old.ravel().astype(int)
-                            workImg = cv.line(workImg, (a,b), (c,d), (1.0,0.5,1.0), 2)
-                            workImg = cv.rectangle(workImg,(c-2,d-2),(c+2,c+2),(1.0,0.5,1.0),-1)
+                            workImg = cv.line(workImg, (a,b), (c,d), (1.0,0.5,1.0), 1)
+                            workImg = cv.rectangle(workImg,(c-2,d-2),(c+2,d+2),(1.0,0.5,1.0),-1)
                     if (self._currentImage.shape[0] != dbgImg.shape[0]) or (self._currentImage.shape[1] != dbgImg.shape[1]):
                         numpy.copyto(dbgImg, cv.resize(workImg, (dbgImg.shape[1], dbgImg.shape[0]), interpolation=cv.INTER_LINEAR))
                 self._publishers["DbgImg"].sendNotifications("%.02f %.02f ifps | %d%% %d%% obj drop" % (self._rateMask if self._rateMask is not None else 0.0, self._rateDepth if self._rateDepth is not None else 0.0, self._droppedMask, self._droppedDepth))

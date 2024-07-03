@@ -33,11 +33,12 @@ def on_release(key):
         return False
 
 ## An auxiliary function to set up a signal handler for SIGTERM and SIGINT
-def doExit(signum, frame, dbgP, objP, dptP, conP):
+def doExit(signum, frame, dbgP, objP, dptP, conP, optP):
     dbgP.stop()
     objP.stop()
     dptP.stop()
     conP.stop()
+    optP.stop()
     sys.exit()
 
 # Define a function to capture the image from the screen.
@@ -68,26 +69,29 @@ def main():
         # Monocular depth estimation is VERY computationally expensive, try to have it run on the GPU
         dptP = TransformerDepthSegmentationWrapper(device="cuda")
         conP = ContactDetection()
+        optP = OpticalFlow()
 
         # Set up the connections to dbg visualizer and object detection.
 
         drawWire("Screenshot Cam", [], [("Screenshot Cam", dbgP)], (imgHeight, imgWidth, 3), numpy.float32, RatedSimpleQueue, wireList=wireList)
-        drawWire("Input Image", [], [("InpImg", objP), ("InpImg", dptP)], (imgHeight, imgWidth, 3), numpy.uint8, RatedSimpleQueue, wireList=wireList)
+        drawWire("Input Image", [], [("InpImg", objP), ("InpImg", dptP), ("InpImg", optP)], (imgHeight, imgWidth, 3), numpy.uint8, RatedSimpleQueue, wireList=wireList)
         drawWire("Dbg Obj Seg", [("DbgImg", objP)], [("Object Detection/Segmentation", dbgP)], (imgHeight, imgWidth, 3), numpy.float32, RatedSimpleQueue, wireList=wireList)
         drawWire("Dbg Depth", [("DbgImg", dptP)], [("Depth Estimation", dbgP)], (imgHeight, imgWidth, 3), numpy.float32, RatedSimpleQueue, wireList=wireList)
-        drawWire("Mask Image", [("OutImg", objP)], [("MaskImg", conP)], (imgHeight, imgWidth), numpy.uint16, RatedSimpleQueue, wireList=wireList)
-        drawWire("Depth Image", [("OutImg", dptP)], [("DepthImg", conP)], (imgHeight, imgWidth), numpy.float32, RatedSimpleQueue, wireList=wireList)
+        drawWire("Mask Image", [("OutImg", objP)], [("MaskImg", conP), ("MaskImg", optP)], (imgHeight, imgWidth), numpy.uint16, RatedSimpleQueue, wireList=wireList)
+        drawWire("Depth Image", [("OutImg", dptP)], [("DepthImg", conP), ("DepthImg", optP)], (imgHeight, imgWidth), numpy.float32, RatedSimpleQueue, wireList=wireList)
         drawWire("Dbg Contact", [("DbgImg", conP)], [("Contact Detection", dbgP)], (imgHeight, imgWidth, 3), numpy.float32, RatedSimpleQueue, wireList=wireList)
+        drawWire("Dbg Optical Flow", [("DbgImg", optP)], [("Optical Flow (sparse)", dbgP)], (imgHeight, imgWidth, 3), numpy.float32, RatedSimpleQueue, wireList=wireList)
         
         # Optional, but STRONGLY recommended: set signal handlers that will ensure the subprocesses terminate on exit.
-        signal.signal(signal.SIGTERM, lambda signum, frame: doExit(signum, frame, dbgP, objP, dptP, conP))
-        signal.signal(signal.SIGINT, lambda signum, frame: doExit(signum, frame, dbgP, objP, dptP, conP))
+        signal.signal(signal.SIGTERM, lambda signum, frame: doExit(signum, frame, dbgP, objP, dptP, conP, optP))
+        signal.signal(signal.SIGINT, lambda signum, frame: doExit(signum, frame, dbgP, objP, dptP, conP, optP))
 
         # Only after all connection objects -- shared memories and notification queues -- are set up, we can start.
         dbgP.start()
         objP.start()
         dptP.start()
         conP.start()
+        optP.start()
         
         # RECOMMENDED: tell the object detection to load a model AFTER starting the process. This might avoid some unnecessary
         # copying of a large object when starting the process.
@@ -96,6 +100,7 @@ def main():
         dptP.sendCommand(("LOAD", ("vinvino02/glpn-nyu",)))
 
         conP.getGoalQueue().put([("contact/query", "cup", "table"), ("contact/query", "cup", "dining table")])
+        optP.getGoalQueue().put([("opticalFlow/query/relativeMovement", "cup", None)])
 
         print("Starting object segmentation and depth estimation will take a while, wait a few seconds for debug windows for them to show up.\nPress ESC to exit. (By the way, this is process %s)" % str(os.getpid()))
         with Listener(on_press=on_press, on_release=on_release) as listener:
@@ -112,6 +117,7 @@ def main():
 
         # A clean exit: stop all subprocesses.
         
+        optP.stop()
         objP.stop()
         dptP.stop()
         dbgP.stop()

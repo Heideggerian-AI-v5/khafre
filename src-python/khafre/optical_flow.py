@@ -163,7 +163,7 @@ Additionally, gets goal data (sets of triples) from a queue.
             self._previousImage = self._currentImage
             self._previousDepth = self._currentDepth
             self._previousMask = self._currentMask
-            with self._subscriptions["inpImg"] as inpImg:
+            with self._subscriptions["InpImg"] as inpImg:
                 self._currentImage = numpy.uint8(cv.cvtColor(inpImg, cv.COLOR_BGR2GRAY)*255)
             with self._subscriptions["DepthImg"] as depthImg:
                 self._currentDepth = numpy.copy(depthImg)
@@ -173,9 +173,9 @@ Additionally, gets goal data (sets of triples) from a queue.
                 return
             featureParams = self._settings["featureParams"]
             lkParams = self._settings["lkParams"]
+            qObjs = [x for x in set([x[1] for x in self._queries]).union([x[2] for x in self._queries]) if (x in self._previousMaskImgs) and (x in self._currentMaskImgs)]
             self._previousMaskImgs = self._currentMaskImgs
             self._currentMaskImgs = _getMaskImgs(self._currentMask, self._maskResults, qObjs)
-            qObs = [x for x in set([x[1] for x in self._queries]).union([x[2] for x in self._queries]) if (x in self._previousMaskImgs) and (x in self._currentMaskImgs)]
             _=[self._previousFeatures.pop(x) for x in set(self._previousFeatures.keys()).difference(qObjs)]
             nowFeatures={}
             previous3D={}
@@ -193,7 +193,7 @@ Additionally, gets goal data (sets of triples) from a queue.
                     workImg = dbgImg
                     if (self._currentImage.shape[0] != dbgImg.shape[0]) or (self._currentImage.shape[1] != dbgImg.shape[1]):
                         workImg = numpy.zeros((self._currentImage.shape[0], self._currentImage.shape[1], 3),dtype=dbgImg.dtype)
-                    numpy.copyto(workImg, self._currentImage.astype(dbgImg.dtype)/255.0)
+                    numpy.copyto(workImg, cv.cvtColor(self._currentImage.astype(dbgImg.dtype) / 255, cv.COLOR_GRAY2BGR))
                     for k in set(nowFeatures.keys()).intersection(self._previousFeatures.keys()):
                         for i, (new, old) in enumerate(zip(nowFeatures[k], self._previousFeatures[k])):
                             a, b = new.ravel().astype(int)

@@ -4,6 +4,7 @@
 
 import array
 import cv2 as cv
+import deepcopy
 from functools import reduce
 import os
 from multiprocessing import shared_memory, Process, RLock, Queue, SimpleQueue, Pipe
@@ -11,6 +12,8 @@ import numpy
 import time
 import signal
 import sys
+import threading
+from threading import Thread
 from typing import Sequence, Union
 import weakref
 
@@ -458,3 +461,40 @@ one may have a publisher sending "Output Image" to the wire while a subscriber c
         if 0<len(notifs):
             pub.addPublisher(name, notifs, _duplicate(consumer))
     return wireList
+
+class Peeker:
+    def __init__(self):
+        self._thread=None
+        self._subscriptions={}
+        self._data={}
+        self._lock=threading.Lock()
+        self._work=False
+    def addSubscriber(self, name, q, consumer):
+        self._subscriptions[name] = (q, consumer)
+        self._subscriptions[name] = None
+    def _run(self):
+        while self._work:
+            for name, (q, consumer) in self._subscriptions.items():
+                with self._lock:
+                    while not q.empty():
+                        self._data[name]=q.get()
+            time.sleep(0.01)
+    def getSubscribedNotification(self, subscriptionName):
+        with self._lock:
+            return deepcopy.copy(self._data.get(subscriptionName))
+    def getSubscribedSHM(self, subscriptionName):
+        if subscriptionName in self._subscriptions:
+            with self._subscriptions[subscriptionName][1] as consumerSHM:
+                a = numpy.copy(consumerSHM)
+            return a
+    def start(self):
+        if (self._thread is not None) and (self._thread.is_alive()):
+            return
+        self._work=True
+        self._thread = Thread(target=self._run)
+        self._thread.start()
+    def stop(self):
+        if (self._thread is None) or (not self._thread.is_alive()):
+            return
+        self._work = False
+        self._thread.join()

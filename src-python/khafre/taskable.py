@@ -28,14 +28,14 @@ class TaskableProcess(ReifiedProcess):
         cr[e] = s
         if address in self._onSettingsUpdate:
             self._onSettingsUpdate(s)
+    def _orderQuery(self,p,s,o):
+        if (p in self._symmetricPredicates) and (s>o):
+            return (p, o, s)
+        return (p, s, o)
     def _interpretGoal(self):
-        def _orderQuery(symmetricPs,p,s,o):
-            if (p in symmetricPs) and (s>o):
-                return (p, o, s)
-            return (p, s, o)
         if not self._goalQueue.empty():
             goals = [x for x in self._goalQueue.get() if self._isForMe(x[0])]
-            qobjs = {}
+            #qobjs = {}
             queries = set()
             queriesToExpand = []
             self._currentGoals = []
@@ -44,18 +44,20 @@ class TaskableProcess(ReifiedProcess):
                 if "set" == pSplit[0]:
                     self._update(pSplit[1:], s)
                 elif "query" == pSplit[0]:
-                    if p not in qobjs:
-                        qobjs[p] = set()
-                    qobjs[p].add(s)
+                    #if p not in qobjs:
+                    #    qobjs[p] = set()
+                    #qobjs[p].add(s)
                     if o is not None:
-                        queries.add(_orderQuery(self._symmetricPredicates,p,s,o))
-                        qobjs[p].add(o)
+                        queries.add(self._orderQuery(p,s,o))
+                        #qobjs[p].add(o)
                     else:
-                        queriesToExpand.append((p,s))
+                        queries.add((p,s,None))
+                        #queriesToExpand.append((p,s))
                 else:
                     self._currentGoals.append((p,s,o))
-            for p, s in queriesToExpand:
-                _=[queries.add(_orderQuery(self._symmetricPredicates,p,s,o)) for o in qobjs[p] if s!=o]
+            #for p, s in queriesToExpand:
+            #    #_=[queries.add(self._orderQuery(p,s,o)) for o in qobjs[p] if s!=o]
+            #    _=[queries.add(self._orderQuery(p,s,o)) for o in self.getQueryUniverseOfDiscourse(p) if s!=o]
             self._queries = queries
     def doWork(self):
         self._interpretGoal()

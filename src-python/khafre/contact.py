@@ -166,6 +166,14 @@ Additionally, gets goal data (sets of triples) from a queue.
             imgHeight, imgWidth = depthImgLocal.shape
             outputImg = numpy.zeros((imgHeight, imgWidth), dtype=numpy.uint32)
             results = {"imgId": self._maskResults.get("imgId"), "idx2Contact": {}, "contact2Idx": {}}
+            queries = []
+            qUniverse = [x["type"] for x in self._maskResults.get("segments", [])]
+            for q in self._queries:
+                if q[2] is not None:
+                    queries.append(q)
+                else:
+                    _=[queries.append(self._orderQuery(q[0],q[1],o)) for o in qUniverse]
+            self._queries = queries
             qobjs = set([x[1] for x in self._queries]).union([x[2] for x in self._queries])
             dilatedImgs = {k: cv.dilate(maskImgs[k], self._dilationKernel) for k in qobjs if k in maskImgs}
             for k, (p, s, o) in enumerate(self._queries):

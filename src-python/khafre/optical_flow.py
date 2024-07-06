@@ -176,6 +176,14 @@ Additionally, gets goal data (sets of triples) from a queue.
             featureParams = self._settings["featureParams"]
             lkParams = self._settings["lkParams"]
             f = self._settings["focalDistance"]
+            queries = []
+            qUniverse = [x["type"] for x in self._maskResults.get("segments", [])]
+            for q in self._queries:
+                if q[2] is not None:
+                    queries.append(q)
+                else:
+                    _=[queries.append(self._orderQuery(q[0],q[1],o)) for o in qUniverse]
+            self._queries = queries
             qObjs = [x for x in set([x[1] for x in self._queries]).union([x[2] for x in self._queries])]
             self._previousMaskImgs = self._currentMaskImgs
             self._currentMaskImgs = _getMaskImgs(self._currentMask, self._maskResults, qObjs)

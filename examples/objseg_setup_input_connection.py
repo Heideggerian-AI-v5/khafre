@@ -10,9 +10,12 @@ import signal
 import sys
 import time
 
-from khafre.bricks import RatedSimpleQueue, SHMPort
+from khafre.bricks import RatedSimpleQueue, SHMPort, drawWire
 from khafre.dbgvis import DbgVisualizer
-from khafre.nnwrappers import YOLOObjectSegmentationWrapper
+from khafre.depth import TransformerDepthSegmentationWrapper
+from khafre.segmentation import YOLOObjectSegmentationWrapper
+from khafre.contact import ContactDetection
+from khafre.optical_flow import OpticalFlow
 
 ### Object detection/segmentation example: shows how to set up a connection to the khafre object detection,
 # and between it and a debug visualizer. See the dbgvis_setup_input_connection.py example for more comments
@@ -30,9 +33,12 @@ def on_release(key):
         return False
 
 ## An auxiliary function to set up a signal handler for SIGTERM and SIGINT
-def doExit(signum, frame, dbgP, objP):
+def doExit(signum, frame, dbgP, objP, dptP, conP, optP):
     dbgP.stop()
     objP.stop()
+    dptP.stop()
+    conP.stop()
+    optP.stop()
     sys.exit()
 
 # Define a function to capture the image from the screen.
@@ -44,79 +50,76 @@ def getImg(sct, monitor):
 
 def main():
 
+    # IMPORTANT: this will be our registry of "wires", connections between khafre subprocesses.
+    # Keep this variable alive at least as long as the subprocesses are running.
+
+    wireList={}
+
     with mss.mss() as sct:
 
         monitor = sct.monitors[1]
 
         imgWidth,imgHeight = (int(monitor["width"]*240.0/monitor["height"]), 240)
         
-        # We will need a debug visualizer and object detection processes.
-        # We need to send a screenshot to the object detection, object detection will send a debug image
-        # to the visualizer, and we will also send the screenshot from here to the debug visualizer.
-        # Usually, the output from object detection will go somewhere else too, but for this example we will ignore it.
-        # We therefore set up the following shared memories:
-        
-        rawImgProducerPort, rawImgConsumerPort = SHMPort((imgHeight, imgWidth, 3), numpy.uint8) # input image for object detection
-        screenshotProducerPort, screenshotConsumerPort = SHMPort((imgHeight, imgWidth, 3), numpy.float32) # screenshot to show in dbgvis
-        dbgImgProducerPort, dbgImgConsumerPort = SHMPort((imgHeight, imgWidth, 3), numpy.float32) # segmentation mask image to show in dbgvis
-        
-        # Writing to shared memories will not notify their users. We need another way to send notifications:
-        inputNotification = RatedSimpleQueue() # Notification from this process to object detection: "a screenshot is ready"
-        outputQueue = Queue() # In order for object detection to do anything, it must have somewhere to send output
-
+        # We will need a debug visualizer, a depth estimator, and object detection processes.
         # Construct process objects. These are not started yet.
         
         dbgP = DbgVisualizer()
         objP = YOLOObjectSegmentationWrapper()
+        # Monocular depth estimation is VERY computationally expensive, try to have it run on the GPU
+        dptP = TransformerDepthSegmentationWrapper(device="cuda")
+        conP = ContactDetection()
+        optP = OpticalFlow()
 
-        # Set up DbgVis so that it will use the shared memories where we send images to it. It will provide us with notification queues
-        # to inform it when an image is ready.
+        # Set up the connections to dbg visualizer and object detection.
+
+        drawWire("Screenshot Cam", [], [("Screenshot Cam", dbgP)], (imgHeight, imgWidth, 3), numpy.float32, RatedSimpleQueue, wireList=wireList)
+        drawWire("Input Image", [], [("InpImg", objP), ("InpImg", dptP), ("InpImg", optP)], (imgHeight, imgWidth, 3), numpy.uint8, RatedSimpleQueue, wireList=wireList)
+        drawWire("Dbg Obj Seg", [("DbgImg", objP)], [("Object Detection/Segmentation", dbgP)], (imgHeight, imgWidth, 3), numpy.float32, RatedSimpleQueue, wireList=wireList)
+        drawWire("Dbg Depth", [("DbgImg", dptP)], [("Depth Estimation", dbgP)], (imgHeight, imgWidth, 3), numpy.float32, RatedSimpleQueue, wireList=wireList)
+        drawWire("Mask Image", [("OutImg", objP)], [("MaskImg", conP), ("MaskImg", optP)], (imgHeight, imgWidth), numpy.uint16, RatedSimpleQueue, wireList=wireList)
+        drawWire("Depth Image", [("OutImg", dptP)], [("DepthImg", conP), ("DepthImg", optP)], (imgHeight, imgWidth), numpy.float32, RatedSimpleQueue, wireList=wireList)
+        drawWire("Dbg Contact", [("DbgImg", conP)], [("Contact Detection", dbgP)], (imgHeight, imgWidth, 3), numpy.float32, RatedSimpleQueue, wireList=wireList)
+        drawWire("Dbg Optical Flow", [("DbgImg", optP)], [("Optical Flow (sparse)", dbgP)], (imgHeight, imgWidth, 3), numpy.float32, RatedSimpleQueue, wireList=wireList)
         
-        dbgNotificationQueue = dbgP.requestInputChannel("Object Detection/Segmentation", dbgImgConsumerPort)
-        dbgScreenshotNotificationQueue = dbgP.requestInputChannel("Screen capture", screenshotConsumerPort)
-
-        # Set up the connections to object detection.
-        
-        objP.setInputImagePort(rawImgConsumerPort, inputNotification)
-        objP.setOutputImagePort(None, outputQueue)
-        objP.setOutputDbgImagePort(dbgImgConsumerPort, dbgNotificationQueue)
-
         # Optional, but STRONGLY recommended: set signal handlers that will ensure the subprocesses terminate on exit.
-        signal.signal(signal.SIGTERM, lambda signum, frame: doExit(signum, frame, dbgP, objP))
-        signal.signal(signal.SIGINT, lambda signum, frame: doExit(signum, frame, dbgP, objP))
+        signal.signal(signal.SIGTERM, lambda signum, frame: doExit(signum, frame, dbgP, objP, dptP, conP, optP))
+        signal.signal(signal.SIGINT, lambda signum, frame: doExit(signum, frame, dbgP, objP, dptP, conP, optP))
 
         # Only after all connection objects -- shared memories and notification queues -- are set up, we can start.
         dbgP.start()
         objP.start()
+        dptP.start()
+        conP.start()
+        optP.start()
         
         # RECOMMENDED: tell the object detection to load a model AFTER starting the process. This might avoid some unnecessary
         # copying of a large object when starting the process.
         
         objP.sendCommand(("LOAD", ("yolov8n-seg.pt",)))
+        dptP.sendCommand(("LOAD", ("vinvino02/glpn-nyu",)))
 
-        print("Starting object segmentation will take a while, wait a few seconds for a debug window labeled \"Object Detection/Segmentation\".\nPress ESC to exit. (By the way, this is process %s)" % str(os.getpid()))
+        conP.getGoalQueue().put([("contact/query", "cup", "table"), ("contact/query", "cup", "dining table")])
+        optP.getGoalQueue().put([("opticalFlow/query/relativeMovement", "cup", "table"), ("opticalFlow/query/relativeMovement", "cup", "dining table")])
+
+        print("Starting object segmentation and depth estimation will take a while, wait a few seconds for debug windows for them to show up.\nPress ESC to exit. (By the way, this is process %s)" % str(os.getpid()))
         with Listener(on_press=on_press, on_release=on_release) as listener:
             while goOn["goOn"]:
 
-                # Ignore output from object detection.
-                            
-                while not outputQueue.empty():
-                    outputQueue.get()
-                
                 screenshot = getImg(sct, monitor)
 
                 # Send the screenshot to dbgvis and object detection.
                 
-                rawImgProducerPort.send((screenshot*255).astype(numpy.uint8))
-                inputNotification.put(True)
-                screenshotProducerPort.send(screenshot)
-                dbgScreenshotNotificationQueue.put("")
+                wireList["Input Image"].publish((screenshot*255).astype(numpy.uint8), {"imgId": str(time.perf_counter())})
+                wireList["Screenshot Cam"].publish(screenshot, "")
                 
             listener.join()
 
         # A clean exit: stop all subprocesses.
         
+        optP.stop()
         objP.stop()
+        dptP.stop()
         dbgP.stop()
 
 if "__main__" == __name__:

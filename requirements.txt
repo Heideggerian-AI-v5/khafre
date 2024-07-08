@@ -4,5 +4,6 @@ pillow
 py-build-cmake
 requests
 torch
+transformers
 typing
 ultralytics

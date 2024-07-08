@@ -9,7 +9,7 @@ import signal
 import sys
 import time
 
-from khafre.bricks import SHMPort
+from khafre.bricks import SHMPort, RatedSimpleQueue, drawWire
 from khafre.dbgvis import DbgVisualizer
 
 
@@ -45,6 +45,11 @@ def getImg(sct, monitor):
 
 def main():
 
+    # IMPORTANT: this will be our registry of "wires", connections between khafre subprocesses.
+    # Keep this variable alive at least as long as the subprocesses are running.
+
+    wireList = {}
+
     # Step 1: setting up your data source
     # In this case, the data source is one of your monitors, so will set up some variables 
     # to allow screen capture.
@@ -62,23 +67,10 @@ def main():
 
         imgWidth,imgHeight = (240,int(monitor["height"]*240.0/monitor["width"]))
         
-        # Step 2: set up the shared memory for a connection to the debug visualizer, and initializing a
-        # debug visualizer subprocess
-        # First, define a shared memory port for numpy arrays of appropriate size.
-        # Note, both producer and consumer(s) can write to the shared array. The producer is the one responsible
-        # for freeing it. 
-
-        producer, consumer = SHMPort((imgHeight, imgWidth, 3), numpy.float32)
-
-        # Initialize a DebugVisualizer object.
+        # Step 2: initialize a DebugVisualizer object.
         vp = DbgVisualizer()
 
-        # Request an input connection to the DbgVisualizer. This is used to notify it that something
-        # changed on the shared memory port and needs attention.
-        # IMPORTANT: subprocesses in khafre cannot be "hotwired" and you must make all settings, 
-        # including all interprocess connection channels, before you start the subprocesses.
-
-        inputChannel = vp.requestInputChannel("Screenshot Cam", consumer)
+        drawWire("Screenshot Cam", [], [("Screenshot Cam", vp)], (imgHeight, imgWidth, 3), numpy.float32, RatedSimpleQueue, wireList=wireList)
 
         # Optional, but STRONGLY recommended: set up signal handlers. The handlers must trigger the 
         # termination of the DbgVisualizer subprocess. Alternatively, ensure in some other way that
@@ -106,11 +98,10 @@ def main():
                 # Note: screenshot is likely larger than the producer's image. producer.send will automatically resize
                 # in this case.
 
-                producer.send(screenshot)
+                # DbgVis can also print something for us. We could also have sent a notification with an empty string
+                # instead.
+                wireList["Screenshot Cam"].publish(screenshot, "Hello World!")
                 
-                # DbgVis can also print something for us.
-                inputChannel.put("Hello World!")
-
                 # Usually, some waiting time between iterations of such a loop would also be needed. However, usually
                 # the kind of processes that generate images, such as screenshots and resizes, are "slow", and can
                 # function as a delay themselves.
@@ -118,7 +109,7 @@ def main():
             listener.join()
 
         # Step 4: A clean exit:
-        # Stop the debug visualizer.
+        # Stop and join the debug visualizer.
 
         vp.stop()
 

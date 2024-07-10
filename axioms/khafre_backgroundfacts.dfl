@@ -1,0 +1,131 @@
+
+
+
+# Roles declaration
+
+=> subclass(Boundary,Role)
+=> subclass(Containee,Role)
+=> subclass(Container,Role)
+=> subclass(Cuttee,Role)
+=> subclass(Cutter,Role)
+=> subclass(CuttingPoint,Role)
+=> subclass(CuttingTool,Role)
+=> subclass(FallingObject,Role)
+=> subclass(Grasped,Role)
+=> subclass(Grasper,Role)
+=> subclass(GraspingPoint,Role)
+=> subclass(Interior,Role)
+=> subclass(MovingObject,Role)
+=> subclass(Object,Role)
+=> subclass(Poured,Role)
+=> subclass(Pourer,Role)
+=> subclass(Source,Role)
+=> subclass(SourceContainer,Role)
+=> subclass(Stabbed,Role)
+=> subclass(Stabber,Role)
+=> subclass(StabbingPart,Role)
+=> subclass(StabbingPoint,Role)
+=> subclass(StabbingTool,Role)
+=> subclass(StableObject,Role)
+=> subclass(Supportee,Role)
+=> subclass(Supporter,Role)
+=> subclass(Target,Role)
+=> subclass(TargetContainer,Role)
+
+
+# Containment related axioms 
+isA(?x,Container) => isA(?x,Object)
+isA(?x,Containee) => isA(?x,Object)
+isA(?s,Containment) => isA(?s,Contact)
+contains(?x,?y) => inContactWith(?x,?y)
+isA(?s,Containment), hasParticipant(?s,?x), contains(?x,?y) => hasParticipant(?s,?y)
+hasParticipant(?s,?y), isA(?y,Container) => isA(?s,Containment)
+hasParticipant(?s,?y), isA(?y,Containee) => isA(?s,Containment)
+hasParticipant(?s,?y), isA(?y,Interior) => isA(?s,Containment)
+hasParticipant(?s,?y), isA(?y,Boundary) => isA(?s,Containment)
+isA(?x,Source), isA(?x,Container) => isA(?x,SourceContainer)
+isA(?x,Target), isA(?x,Container) => isA(?x,TargetContainer)
+contained(?x,?c) => isA(?x,Containee)
+contained(?x,?c) => isA(?c,Container)
+contains(?c,?x) => PP(?c,?x)
+
+
+# Stabbing related axioms 
+hasParticipant(?s,?x), isA(?x,Stabber) => isA(?s,Stabbing)
+hasParticipant(?s,?x), isA(?x,Stabbed) => isA(?s,Stabbing)
+hasParticipant(?s,?x), isA(?x,StabbingTool) => isA(?s,Stabbing)
+isA(?s,Stabbing) => isA(?s,Contact)
+hasParticipant(?s,?x), isA(?x,StabbingPoint) => isA(?s,Stabbing)
+hasParticipant(?s,?x), isA(?x,StabbingPart) => isA(?s,Stabbing)
+hasParticipant(?s,?x), inside(?x,?y), isA(?y,StabbingPart) => isA(?s,Stabbing)
+hasParticipant(?s,?x), stabs(?x,?y) => isA(?s,Stabbing)
+
+
+# Support relater axioms 
+isA(?x,Supporter) => isA(?x,Object)
+isA(?x,Supportee) => isA(?x,Object)
+hasParticipant(?s,?x), hasParticipant(?s,?y), isA(?x,Supporter), isA(?y,Supportee) => supports(?x,?y)
+hasParticipant(?s,?x), isA(?x,Supporter) => isA(?s,Support)
+hasParticipant(?s,?y), isA(?y,Supportee) => isA(?s,Support)
+
+
+# Pouring related axioms 
+isA(?s,Pouring), flowsFrom(?x,?y), isA(?y,SourceContainer) => isA(?s,Contact), hasParticipant(?s,?x), hasParticipant(?s,?y), inContactWith(?x, ?y)
+isA(?s,Pouring), flowsTo(?x,?y), isA(?y,TargetContainer) => isA(?s,Contact), hasParticipant(?s,?x), hasParticipant(?s,?y), inContactWith(?x, ?y)
+hasParticipant(?s,?x), isA(?x,Pourer) => isA(?s,Pouring)
+hasParticipant(?s,?x), isA(?x,Poured) => isA(?s,Pouring)
+hasParticipant(?s,?x), isA(?x,Pourer), isA(?y,poured) => hasParticipant(?s,?y)
+hasParticipant(?s,?y), isA(?x,Pourer), isA(?y,poured) => hasParticipant(?s,?x)
+hasParticipant(?s,?x), flowsFrom(?x,?w) => isA(?s,Pouring)
+hasParticipant(?s,?x), flowsTo(?x,?w) => isA(?s,Pouring)
+
+
+# Cutting related axioms 
+cuts(?x,?y) => inContactWith(?x,?y)
+isA(?s,Cutting) => isA(?s,Contact)
+isA(?x,Cuttee) => isA(?x,Object)
+isA(?x,Cutter) => isA(?x,Object)
+hasParticipant(?s,?x), hasCuttingPoint(?x,?k), cuts(?x,?y) => partOf(?k,?y)
+hasParticipant(?s,?x), isA(?x,Cutter) => isA(?s,Cutting)
+hasParticipant(?s,?x), isA(?x,Cuttee) => isA(?s,Cutting)
+hasParticipant(?s,?x), isA(?x,CuttingTool) => isA(?s,Cutting)
+hasParticipant(?s,?x), cuts(?x,?y) => isA(?s,Cutting), hasParticipant(?s,?y)
+hasParticipant(?s,?y), cuts(?x,?y) => isA(?s,Cutting), hasParticipant(?s,?x)
+hasParticipant(?s,?x), isA(?x,CuttingPoint) => isA(?s,Cutting)
+hasParticipant(?s,?y), hasParticipant(?s,?x), separatedFrom(?x,?y) => isA(?s,Separation)
+
+
+# Falling related axioms 
+hasParticipant(?s,?x), isA(?x,FallingObject) => isA(?s,Falling)
+isA(?x,FallingObject), contains(?x,?y) => isA(?y,FallingObject)
+grasps(?x,?y), isA(?x,FallingObject) => isA(?y,FallingObject)
+isA(?s,Falling), hasParticipant(?s,?x) => isA(?x,FallingObject)
+hasParticipant(?s,?x), isA(?x,FallingObject) => isA(?s,Falling)
+
+
+# Sequence related axioms 
+isA(?s1,Cutting), hasParticipant(?seq,?s1), isA(?s2,Separation), hasParticipant(?seq,?s2) => resultsIn(?seq,?s2), isA(?seq,CuttingSequence)
+
+
+# Grasping related axioms 
+grasps(?x,?y) => inContactWith(?x,?y)
+isA(?s,Grasping) => isA(?s,Contact)
+hasParticipant(?s,?x), grasps(?x,?y) => isA(?s,Grasping), hasParticipant(?s,?y)
+isA(?s,Grasping), hasParticipant(?s,?x), isA(?x,Grasper), hasParticipant(?s,?y), isA(?y,Grasped) => grasps(?x,?y)
+hasParticipant(?s,?k), isA(?k,GraspingPoint) => isA(?s,Grasping)
+hasParticipant(?s,?x), isA(?x,Grasper) => isA(?s, Grasping)
+hasParticipant(?s,?x), hasGraspingPoint(?x,?k), grasps(?x,?y) => partOf(?k,?y)
+hasParticipant(?s,?x), isA(?x,Grasped) => isA(?s,Grasping)
+grasps(?x,?y) => hasGripOn(?x,?y)
+
+
+# Movement related axioms 
+hasParticipant(?s,?x), isA(?x,MovingObject) => isA(?s,Movement)
+contains(?x,?y), isA(?x,MovingObject) => isA(?y,MovingObject)
+isA(?s,Falling), hasParticipant(?s,?x) => isA(?s,Movement), isA(x,MovingObject)
+isA(?x,Grasper), isA(?x,MovingObject), grasps(?x,?y) => isA(?y,MovingObject)
+isA(?s,Pouring) => isA(?s,Movement)
+
+
+# Taxonomy of physical objects
+# to be filled with objects

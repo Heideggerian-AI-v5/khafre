@@ -2,6 +2,7 @@ numpy
 opencv-python
 pillow
 py-build-cmake
+pycpd
 requests
 torch
 transformers

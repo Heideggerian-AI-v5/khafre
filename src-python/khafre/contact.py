@@ -1,6 +1,6 @@
 import cv2 as cv
 from khafre.bricks import RatedSimpleQueue
-from khafre.taskable import TaskableProcess
+from khafre.taskable import TaskableProcess, QueryOnObjectMasks
 from multiprocessing import Queue
 import numpy
 
@@ -104,7 +104,7 @@ Returns:
     contPO = _expand(imgHeight, imgWidth, maskImgs[o], contPO)
     return contPS, contPO
 
-class ContactDetection(TaskableProcess):
+class ContactDetection(QueryOnObjectMasks):
     """
 Subprocess in which contact masks are calculated based on an object mask image and a depth image.
 
@@ -119,6 +119,7 @@ Additionally, gets goal data (sets of triples) from a queue.
     def __init__(self):
         super().__init__()
         self._prefix="contact"
+        self._objectMaskSubscription = "MaskImg"
         self._settings["searchWidth"] = 7
         self._settings["threshold"] = 0.05
         self._settings["radius"] = 5
@@ -152,12 +153,10 @@ Additionally, gets goal data (sets of triples) from a queue.
             b,g,r = ((h&0xFF)), ((h&0xFF00)>>8), ((h&0xFF0000)>>16)
             return (b/255.0, g/255.0, r/255.0)
         haveNew = False
-        if not self._subscriptions["MaskImg"].empty():
-            haveNew = True
-            self._maskResults, self._rateMask, self._droppedMask = self._subscriptions["MaskImg"].getWithRates()
         if not self._subscriptions["DepthImg"].empty():
             haveNew = True
             self._depthResults, self._rateDepth, self._droppedDepth = self._subscriptions["DepthImg"].getWithRates()
+        haveNew = haveNew or self._checkObjectMaskSubscription()
         if haveNew and (self._maskResults.get("imgId") == self._depthResults.get("imgId")):
             with self._subscriptions["MaskImg"] as maskImg:
                 maskImgs = _getMaskImgs(maskImg, self._maskResults)

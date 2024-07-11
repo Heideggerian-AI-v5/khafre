@@ -59,8 +59,41 @@ class TaskableProcess(ReifiedProcess):
             #    #_=[queries.add(self._orderQuery(p,s,o)) for o in qobjs[p] if s!=o]
             #    _=[queries.add(self._orderQuery(p,s,o)) for o in self.getQueryUniverseOfDiscourse(p) if s!=o]
             self._queries = queries
+    def fillInGenericQueries(self, queryUniverseOfDiscourse):
+        """
+We have two kinds of queries:
+    1) specific queries of the form "are X and Y in a particular relationship?" and
+    2) generic queries of the form "what is in a particular relation with X?"
+
+The latter are expressed as a triple of form (p, s, None) in the TaskableProcess query list.
+This however should be filled in -- converted to a list of specific queries -- at a time
+when a "universe of discourse" is known. This universe of discourse is a list of all objects
+that could possibly be the answer.
+        """
+        queries = []
+        for q in self._queries:
+            if q[2] is not None:
+                queries.append(q)
+            else:
+                _=[queries.append(self._orderQuery(q[0],q[1],o)) for o in queryUniverseOfDiscourse]
+        self._queries = queries
     def doWork(self):
         self._interpretGoal()
         self._performStep()
     def _performStep(self):
         pass
+
+class QueryOnObjectMasks(TaskableProcess):
+    def __init__(self):
+        super().__init__()
+        self._objectMaskSubscription = None
+        self._maskResults = {}
+        self._rateMask = None
+        self._droppedMask = 0
+    def _checkObjectMaskSubscription(self):
+        if (self._objectMaskSubscription in self._subscriptions) and (not self._subscriptions[self._objectMaskSubscription].empty()):
+            self._maskResults, self._rateMask, self._droppedMask = self._subscriptions[self._objectMaskSubscription].getWithRates()
+            qUniverse = [x["type"] for x in self._maskResults.get("segments", [])]
+            self.fillInGenericQueries(qUniverse)
+            return True
+        return False

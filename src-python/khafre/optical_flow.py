@@ -1,6 +1,6 @@
 import cv2 as cv
 from khafre.bricks import RatedSimpleQueue, ReifiedProcess
-from khafre.taskable import TaskableProcess
+from khafre.taskable import TaskableProcess, QueryOnObjectMasks
 from multiprocessing import Queue
 import math
 import numpy
@@ -96,7 +96,7 @@ def getRelativeMovements(previous3D, now3D, queries, approachV, departV):
                 retq.append(("stillness", o, s))
     return retq
 
-class OpticalFlow(TaskableProcess):
+class OpticalFlow(QueryOnObjectMasks):
     """
 Subprocess in which contact masks are calculated based on an object mask image and a depth image.
 
@@ -111,6 +111,7 @@ Additionally, gets goal data (sets of triples) from a queue.
     def __init__(self):
         super().__init__()
         self._prefix="opticalFlow"
+        self._objectMaskSubscription = "MaskImg"
         self._settings["featureParams"] = dict(maxCorners = 10, qualityLevel = 0.2, minDistance = 2, blockSize = 5)
         self._settings["lkParams"] = dict(winSize = (15,15), maxLevel = 2, criteria = (cv.TERM_CRITERIA_EPS | cv.TERM_CRITERIA_COUNT, 10, 0.03))
         self._settings["approachVelocity"] = -0.02
@@ -119,14 +120,11 @@ Additionally, gets goal data (sets of triples) from a queue.
         self._symmetricPredicates.add("opticalFlow/query/relativeMovement")
         self._imageResults = {}
         self._depthResults = {}
-        self._maskResults = {}
         self._currentGoals = []
         self._rateImage = None
         self._droppedImage = 0
         self._rateDepth = None
         self._droppedDepth = 0
-        self._rateMask = None
-        self._droppedMask = 0
         self._previousImage = None
         self._previousDepth = None
         self._previousMask = None
@@ -158,9 +156,7 @@ Additionally, gets goal data (sets of triples) from a queue.
         if not self._subscriptions["DepthImg"].empty():
             haveNew = True
             self._depthResults, self._rateDepth, self._droppedDepth = self._subscriptions["DepthImg"].getWithRates()
-        if not self._subscriptions["MaskImg"].empty():
-            haveNew = True
-            self._maskResults, self._rateMask, self._droppedMask = self._subscriptions["MaskImg"].getWithRates()
+        haveNew = haveNew or self._checkObjectMaskSubscription()
         if haveNew and (self._imageResults.get("imgId") == self._depthResults.get("imgId")) and (self._maskResults.get("imgId") == self._depthResults.get("imgId")):
             self._previousImage = self._currentImage
             self._previousDepth = self._currentDepth
@@ -176,14 +172,6 @@ Additionally, gets goal data (sets of triples) from a queue.
             featureParams = self._settings["featureParams"]
             lkParams = self._settings["lkParams"]
             f = self._settings["focalDistance"]
-            queries = []
-            qUniverse = [x["type"] for x in self._maskResults.get("segments", [])]
-            for q in self._queries:
-                if q[2] is not None:
-                    queries.append(q)
-                else:
-                    _=[queries.append(self._orderQuery(q[0],q[1],o)) for o in qUniverse]
-            self._queries = queries
             qObjs = [x for x in set([x[1] for x in self._queries]).union([x[2] for x in self._queries])]
             self._previousMaskImgs = self._currentMaskImgs
             self._currentMaskImgs = _getMaskImgs(self._currentMask, self._maskResults, qObjs)

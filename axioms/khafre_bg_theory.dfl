@@ -1,0 +1,317 @@
+
+
+### General taxonomy related axioms
+subclass_transitivity:   subclass(?x,?y), subclass(?y,?z) => subclass(?x,?z)
+isA_weakening:           isA(?x,?y), subclass(?y,?z) => isA(?x,?z)
+disjoint_symmetry:       disjoint(?x,?y) => disjoint(?y,?x)
+disjoint_subclass:       subclass(?x,?y), disjoint(?y,?z) => disjoint(?x,?z)
+isA_exclusion:           isA(?x,?y), disjoint(?y,?z) => -isA(?x,?z)
+sameAs_transitivity:     sameAs(?x,?y), sameAs(?y,?z) => sameAs(?x,?z)
+sameAs_symmetry:         sameAs(?x,?y) => sameAs(?y,?x)
+isA_same:                sameAs(?x,?y), isA(?x,?z) => isA(?y,?z)
+nisA_same:               sameAs(?x,?y), -isA(?x,?z) => -isA(?y,?z)
+different_symmetry:      differentIndividuals(?x,?y) => differentIndividuals(?y,?x)
+different_vs_same:       differentIndividuals(?x,?y) => -sameAs(?x,?y)
+same_vs_different:       sameAs(?x,?y) => -differentIndividuals(?x,?y)
+ndifferent_vs_same:      -differentIndividuals(?x,?y) => sameAs(?x,?y)
+nsame_vs_different:      -sameAs(?x,?y) => differentIndividuals(?x,?y)
+disjoint_different:      isA(?x,?z), isA(?y,?w), disjoint(?z,?w) => differentIndividuals(?x,?y)
+
+
+
+#################################################################
+#    Object Properties
+#################################################################
+
+
+
+# Axioms from ISL2OWL
+
+
+###  http://www.ontologydesignpatterns.org/ont/ISL/2021/0/ISL_General_Vocabulary.owl#DC
+DC(?x,?y) => DC(?y,?x)
+
+
+###  http://www.ontologydesignpatterns.org/ont/ISL/2021/0/ISL_General_Vocabulary.owl#EC
+EC(?x,?y) => EC(?y,?x)
+
+###  http://www.ontologydesignpatterns.org/ont/ISL/2021/0/ISL_General_Vocabulary.owl#NTTP
+NTTP(?x,?y) => PP(?x,?y)
+NTTP(?x,?y) => NTTPi(?y,?x)
+
+###  http://www.ontologydesignpatterns.org/ont/ISL/2021/0/ISL_General_Vocabulary.owl#NTTPi
+NTTPi(?x,?y) => NTTP(?y,?x)
+
+###  http://www.ontologydesignpatterns.org/ont/ISL/2021/0/ISL_General_Vocabulary.owl#PO
+PO(?x,?y) => PO(?y,?x)
+
+###  http://www.ontologydesignpatterns.org/ont/ISL/2021/0/ISL_General_Vocabulary.owl#PP
+PP(?x,?y) => -PP(?y,?x)
+
+###  http://www.ontologydesignpatterns.org/ont/ISL/2021/0/ISL_General_Vocabulary.owl#TPP
+TPP(?x,?y) => PP(?x,?y)
+TPP(?x,?y) => TPPi(?y,?x)
+
+###  http://www.ontologydesignpatterns.org/ont/ISL/2021/0/ISL_General_Vocabulary.owl#TPPi
+TPPi(?x,?y) => TPP(?y,?x)
+
+
+
+# Axioms from frame-like approach to image-schematic affordances
+
+
+###  http://www.W3C.org/khafre/affordances_situations.owl#above
+above(?x,?y) => below(?y,?x)
+
+
+###  http://www.W3C.org/khafre/affordances_situations.owl#back
+back(?x,?y) => front(?y,?x)
+
+###  http://www.W3C.org/khafre/affordances_situations.owl#below
+below(?x,?y) => above(?y,?x)
+
+###  http://www.W3C.org/khafre/affordances_situations.owl#front
+front(?x,?y) => back(?y,?x)
+
+###  http://www.W3C.org/khafre/affordances_situations.owl#left
+left(?x,?y) => right(?y,?x)
+
+###  http://www.W3C.org/khafre/affordances_situations.owl#right
+right(?x,?y) => left(?y,?x)
+
+http://www.W3C.org/khafre/affordances_situations.owl#inContactWith
+inContactWith(?x,?y) => inContactWith(?y,?x)
+
+###  http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant
+hasParticipant(?s,?x) => isParticipantIn(?x,?s)
+
+###  http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#isParticipantIn
+isParticipantIn(?s,?x) => hasParticipant(?x,?s)
+
+###  http://www.W3C.org/khafre/affordances_situations.owl#blockedBy
+blockedBy(?x,?y) => inContactWith(?x,?y)
+blockedBy(?x,?y) => blocks(?y,?x)
+blockedBy(?x,?y) => isA(?x,Blocked)
+blockedBy(?x,?y) => isA(?y,Blocker)
+
+###  http://www.W3C.org/khafre/affordances_situations.owl#blocks
+blocks(?x,?y) => inContactWith(?x,?y)
+blocks(?x,?y) => blockedBy(?y,?x)
+blocks(?x,?y) => isA(?x,Blocker)
+blocks(?x,?y) => isA(?y,Blocked)
+
+###  http://www.W3C.org/khafre/affordances_situations.owl#supportedBy
+supportedBy(?x,?y) => inContactWith(?x,?y)
+supportedBy(?x,?y) => above(?x,?y)
+supportedBy(?x,?y) => supports(?y,?x)
+supportedBy(?x,?y) => isA(?x,Supportee)
+supportedBy(?x,?y) => isA(?y,Supporter)
+
+###  http://www.W3C.org/khafre/affordances_situations.owl#supports
+supports(?x,?y) => inContactWith(?x,?y)
+supports(?x,?y) => below(?x,?y)
+supports(?x,?y) => supportedBy(?y,?x)
+supports(?x,?y) => isA(?x,Supporter)
+supports(?x,?y) => isA(?y,Supportee)
+
+###  http://www.W3C.org/khafre/affordances_situations.owl#cuts
+cuts(?x,?y) => inContactWith(?x,?y)
+cuts(?x,?y) => cutBy(?y,?x)
+cuts(?x,?y) => isA(?x,Cutter)
+cuts(?x,?y) => isA(?y,Cuttee)
+
+###  http://www.W3C.org/khafre/affordances_situations.owl#cutBy
+cutBy(?x,?y) => inContactWith(?x,?y)
+cutBy(?x,?y) => cuts(?y,?x)
+cutBy(?x,?y) => isA(?x,Cuttee)
+cutBy(?x,?y) => isA(?y,Cutter)
+
+### http://www.W3C.org/khafre/affordances_situations.owl#contains
+contains(?x,?y) => inContactWith(?x,?y)
+contains(?x,?y) => inside(?y,?x)
+contains(?x,?y) => isA(?x,Container)
+contains(?x,?y) => isA(?y,Containee)
+
+### http://www.W3C.org/khafre/affordances_situations.owl#inside
+inside(?x,?y) => inContactWith(?x,?y)
+inside(?x,?y) => contains(?y,?x)
+inside(?x,?y) => isA(?x,Containee)
+inside(?x,?y) => isA(?y,Container)
+
+### http://www.W3C.org/khafre/affordances_situations.owl#fallingFrom
+fallingFrom(?x,?y) => isA(?y,Source)
+fallingFrom(?x,?y) => isA(?x,FallingObject)
+
+### http://www.W3C.org/khafre/affordances_situations.owl#flowsFrom
+flowsFrom(?x,?y) => isA(?y,Source)
+
+### http://www.W3C.org/khafre/affordances_situations.owl#flowsTo
+flowsTo(?x,?y) => isA(?y,Target)
+
+### http://www.W3C.org/khafre/affordances_situations.owl#grasps
+grasps(?x,?y) => inContactWith(?x,?y)
+grasps(?x,?y) => graspedBy(?y,?x)
+grasps(?x,?y) => isA(?x,Grasper)
+grasps(?x,?y) => isA(?y,Grasped)
+
+### http://www.W3C.org/khafre/affordances_situations.owl#graspedBy
+graspedBy(?x,?y) => inContactWith(?x,?y)
+graspedBy(?x,?y) => grasps(?y,?x)
+graspedBy(?x,?y) => isA(?x,Grasped)
+graspedBy(?x,?y) => isA(?y,Grasper)
+
+### http://www.W3C.org/khafre/affordances_situations.owl#hasGraspingPoint
+hasGraspingPoint(?x,?y) => isA(?y,GraspingPoint)
+
+### http://www.W3C.org/khafre/affordances_situations.owl#hasGripOn
+hasGripOn(?x,?y) => isA(?y, StableObject)
+
+### http://www.W3C.org/khafre/affordances_situations.owl#pours
+pours(?x,?y) => inContactWith(?x,?y)
+pours(?x,?y) => pouredBy(?y,?x)
+pours(?x,?y) => isA(?x,Pourer)
+pours(?x,?y) => isA(?y,Poured)
+
+### http://www.W3C.org/khafre/affordances_situations.owl#pouredBy
+pouredBy(?x,?y) => inContactWith(?x,?y)
+pouredBy(?x,?y) => pours(?y,?x)
+pouredBy(?x,?y) => isA(?x,Poured)
+pouredBy(?x,?y) => isA(?y,Pourer)
+
+### http://www.W3C.org/khafre/affordances_situations.owl#separatedFrom
+separatedFrom(?x,?y) => separatedFrom(?y,?x)
+
+### http://www.W3C.org/khafre/affordances_situations.owl#stabs
+stabs(?x,?y) => inContactWith(?x,?y)
+stabs(?x,?y) => stabbedBy(?y,?x)
+stabs(?x,?y) => isA(?x,Stabber)
+stabs(?x,?y) => isA(?y,Stabbed)
+
+### http://www.W3C.org/khafre/affordances_situations.owl#stabbedBy
+stabbedBy(?x,?y) => inContactWith(?x,?y)
+stabbedBy(?x,?y) => stabs(?y,?x)
+stabbedBy(?x,?y) => isA(?x,Stabbed)
+stabbedBy(?x,?y) => isA(?y,Stabber)
+
+### http://www.W3C.org/khafre/affordances_situations.owl#separatedFrom
+separatedFrom(?x,?y) => separatedFrom(?y,?x)
+
+
+#################################################################
+#    Classes
+#################################################################
+
+
+###  http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#Description
+
+###  http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#Role
+
+###  http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#Situation
+
+### http://www.W3C.org/khafre/affordances_situations.owl#SemanticType
+
+
+### Specific classes
+
+### http://www.W3C.org/khafre/affordances_situations.owl#Blockage
+hasParticipant(?s,?x), isA(?x,Blocked) => isA(?s,Blockage)
+hasParticipant(?s,?y), isA(?y,Blocker) => isA(?s,Blockage)
+blocks(?x,?y), hasParticipant(?s,?x) => isA(?s,Blockage)
+blocks(?x,?y), hasParticipant(?s,?y) => isA(?s,Blockage)
+
+# Taxonomy axiom -- blockage implies contact -- in backgroundfacts.dfl
+
+### http://www.W3C.org/khafre/affordances_situations.owl#Blocked
+# Taxonomy axiom -- blocked is role -- in backgroundfacts.dfl
+
+### http://www.W3C.org/khafre/affordances_situations.owl#Blocked
+# Taxonomy axiom -- blocker is role -- in backgroundfacts.dfl
+
+
+### http://www.W3C.org/khafre/affordances_situations.owl#Containment
+hasParticipant(?s,?x), isA(?x,Containee) => isA(?s,Containment)
+hasParticipant(?s,?y), isA(?y,Container) => isA(?s,Containment)
+contains(?x,?y), hasParticipant(?s,?x) => isA(?s,Containment)
+contains(?x,?y), hasParticipant(?s,?y) => isA(?s,Containment)
+# Taxonomy axiom -- containment implies contact -- in backgroundfacts.dfl
+
+###  http://www.W3C.org/khafre/affordances_situations.owl#Containee
+# Taxonomy axiom -- containee is role -- in backgroundfacts.dfl
+
+###  http://www.W3C.org/khafre/affordances_situations.owl#Container
+# Taxonomy axiom -- container is role -- in backgroundfacts.dfl
+
+
+
+###  http://www.W3C.org/khafre/affordances_situations.owl#Contact
+inContactWith(?x,?y),hasParticipant(?s,?x) => isA(?s,Contact)
+inContactWith(?x,?y),hasParticipant(?s,?y) => isA(?s,Contact)
+
+
+###  http://www.W3C.org/khafre/affordances_situations.owl#Movement
+hasParticipant(?s,?x), isA(?x,MovingObject), => isA(?s,Movement)
+# Taxonomy axiom -- movement is description -- in backgroundfacts.dfl
+
+###  http://www.W3C.org/khafre/affordances_situations.owl#Mover
+# Taxonomy axiom -- mover is role -- in backgroundfacts.dfl
+
+
+# to be updated with new affordances axioms
+###  http://www.W3C.org/khafre/affordances_situations.owl#Support
+hasParticipant(?s,?x), isA(?x,Supporter) => isA(?s,Support)
+hasParticipant(?s,?y), isA(?y,Supportee) => isA(?s,Support)
+supports(?x,?y), hasParticipant(?s,?x) => isA(?s,Support)
+supports(?x,?y), hasParticipant(?s,?y) => isA(?s,Support)
+# Taxonomy axiom -- support is contact -- in backgroundfacts.dfl
+
+###  http://www.W3C.org/khafre/affordances_situations.owl#Supportee
+# Taxonomy axiom -- supportee is role -- in backgroundfacts.dfl
+
+###  http://www.W3C.org/khafre/affordances_situations.owl#Supporter
+# Taxonomy axiom -- supporter is role -- in backgroundfacts.dfl
+
+
+### http://www.W3C.org/khafre/affordances_situations.owl#Cutting
+hasParticipant(?s,?x), isA(?x,Cutter) => isA(?s,Cutting)
+hasParticipant(?s,?y), isA(?y,Cuttee) => isA(?s,Cutting)
+cuts(?x,?y), hasParticipant(?s,?x) => isA(?s,Cutting)
+cuts(?x,?y), hasParticipant(?s,?y) => isA(?s,Cutting)
+# Taxonomy axiom -- support is contact -- in backgroundfacts.dfl
+
+###  http://www.W3C.org/khafre/affordances_situations.owl#Cuttee
+# Taxonomy axiom -- supportee is role -- in backgroundfacts.dfl
+
+###  http://www.W3C.org/khafre/affordances_situations.owl#Cutter
+# Taxonomy axiom -- supporter is role -- in backgroundfacts.dfl
+
+### http://www.W3C.org/khafre/affordances_situations.owl#Falling
+fallingFrom(?x,?y), hasParticipant(?s,?x) => isA(?s,Falling)
+fallingFrom(?x,?y), hasParticipant(?s,?y) => isA(?s,Falling)
+
+
+### http://www.W3C.org/khafre/affordances_situations.owl#Grasping
+hasParticipant(?s,?x), isA(?x,Grasper) => isA(?s,Grasping)
+hasParticipant(?s,?y), isA(?y,Grasped) => isA(?s,Grasping)
+grasps(?x,?y), hasParticipant(?s,?x) => isA(?s,Grasping)
+grasps(?x,?y), hasParticipant(?s,?y) => isA(?s,Grasping)
+hasParticipant(?s,?x), isA(?x,GraspingPoint) => isA(?s,Grasping)
+
+
+### http://www.W3C.org/khafre/affordances_situations.owl#Pouring
+hasParticipant(?s,?x), isA(?x,Pourer) => isA(?s,Pouring)
+hasParticipant(?s,?y), isA(?y,Poured) => isA(?s,Pouring)
+pours(?x,?y), hasParticipant(?s,?x) => isA(?s,Pouring)
+pours(?x,?y), hasParticipant(?s,?y) => isA(?s,Pouring)
+
+
+### http://www.W3C.org/khafre/affordances_situations.owl#Separation
+separatedFrom(?x,?y), hasParticipant(?s,?x) => isA(?s,Separation)
+separatedFrom(?x,?y), hasParticipant(?s,?y) => isA(?s,Separation)
+
+
+### http://www.W3C.org/khafre/affordances_situations.owl#Stabbing
+hasParticipant(?s,?x), isA(?x,Stabber) => isA(?s,Stabbing)
+hasParticipant(?s,?y), isA(?y,Stabbed) => isA(?s,Stabbing)
+stabs(?x,?y), hasParticipant(?s,?x) => isA(?s,Stabbing)
+stabs(?x,?y), hasParticipant(?s,?y) => isA(?s,Stabbing)
+

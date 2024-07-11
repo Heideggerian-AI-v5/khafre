@@ -9,6 +9,11 @@ Prefix(affordances_situations:=<http://www.W3C.org/khafre/affordances_situations
 
 Ontology(<http://www.W3C.org/khafre/affordances_situations.owl>
 
+<<<<<<< HEAD
+Declaration(Class(affordances_situations:Blocked))
+Declaration(Class(affordances_situations:Blocker))
+=======
+>>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
 Declaration(Class(affordances_situations:Boundary))
 Declaration(Class(affordances_situations:Contact))
 Declaration(Class(affordances_situations:Containee))
@@ -37,7 +42,10 @@ Declaration(Class(affordances_situations:Object))
 Declaration(Class(affordances_situations:Poured))
 Declaration(Class(affordances_situations:Pourer))
 Declaration(Class(affordances_situations:Pouring))
+<<<<<<< HEAD
+=======
 Declaration(Class(affordances_situations:Role))
+>>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
 Declaration(Class(affordances_situations:SemanticType))
 Declaration(Class(affordances_situations:Separation))
 Declaration(Class(affordances_situations:Sequence))
@@ -57,6 +65,27 @@ Declaration(Class(affordances_situations:Target))
 Declaration(Class(affordances_situations:TargetContainer))
 Declaration(Class(<http://www.ontologydesignpatterns.org/cp/owl/description.owl#Description>))
 Declaration(Class(<http://www.ontologydesignpatterns.org/cp/owl/situation.owl#Situation>))
+<<<<<<< HEAD
+Declaration(Class(<http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#Role>))
+Declaration(Class(<https://w3id.org/framester/schema/ConceptualFrame>))
+Declaration(Class(<https://w3id.org/framester/schema/FrameOccurrence>))
+Declaration(ObjectProperty(affordances_situations:above))
+Declaration(ObjectProperty(affordances_situations:affects))
+Declaration(ObjectProperty(affordances_situations:attracts))
+Declaration(ObjectProperty(affordances_situations:back))
+Declaration(ObjectProperty(affordances_situations:below))
+Declaration(ObjectProperty(affordances_situations:blockedBy))
+Declaration(ObjectProperty(affordances_situations:blocks))
+Declaration(ObjectProperty(affordances_situations:contains))
+Declaration(ObjectProperty(affordances_situations:cutBy))
+Declaration(ObjectProperty(affordances_situations:cuts))
+Declaration(ObjectProperty(affordances_situations:defines))
+Declaration(ObjectProperty(affordances_situations:fallingFrom))
+Declaration(ObjectProperty(affordances_situations:flowsFrom))
+Declaration(ObjectProperty(affordances_situations:flowsTo))
+Declaration(ObjectProperty(affordances_situations:front))
+Declaration(ObjectProperty(affordances_situations:graspedBy))
+=======
 Declaration(Class(<https://w3id.org/framester/schema/ConceptualFrame>))
 Declaration(Class(<https://w3id.org/framester/schema/FrameOccurrence>))
 Declaration(ObjectProperty(affordances_situations:affects))
@@ -67,10 +96,28 @@ Declaration(ObjectProperty(affordances_situations:defines))
 Declaration(ObjectProperty(affordances_situations:falling))
 Declaration(ObjectProperty(affordances_situations:flowsFrom))
 Declaration(ObjectProperty(affordances_situations:flowsTo))
+>>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
 Declaration(ObjectProperty(affordances_situations:grasps))
 Declaration(ObjectProperty(affordances_situations:hasCuttingPoint))
 Declaration(ObjectProperty(affordances_situations:hasGraspingPoint))
 Declaration(ObjectProperty(affordances_situations:hasGripOn))
+<<<<<<< HEAD
+Declaration(ObjectProperty(affordances_situations:inContactWith))
+Declaration(ObjectProperty(affordances_situations:inside))
+Declaration(ObjectProperty(affordances_situations:left))
+Declaration(ObjectProperty(affordances_situations:partOf))
+Declaration(ObjectProperty(affordances_situations:pouredBy))
+Declaration(ObjectProperty(affordances_situations:pours))
+Declaration(ObjectProperty(affordances_situations:resultsIn))
+Declaration(ObjectProperty(affordances_situations:right))
+Declaration(ObjectProperty(affordances_situations:separatedFrom))
+Declaration(ObjectProperty(affordances_situations:stabbedBy))
+Declaration(ObjectProperty(affordances_situations:stabs))
+Declaration(ObjectProperty(affordances_situations:supportedBy))
+Declaration(ObjectProperty(affordances_situations:supports))
+Declaration(ObjectProperty(<http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant>))
+Declaration(ObjectProperty(<http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#isParticipantIn>))
+=======
 Declaration(ObjectProperty(affordances_situations:hasParticipant))
 Declaration(ObjectProperty(affordances_situations:inContactWith))
 Declaration(ObjectProperty(affordances_situations:inside))
@@ -80,6 +127,7 @@ Declaration(ObjectProperty(affordances_situations:resultsIn))
 Declaration(ObjectProperty(affordances_situations:separatedFrom))
 Declaration(ObjectProperty(affordances_situations:stabs))
 Declaration(ObjectProperty(affordances_situations:supports))
+>>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
 Declaration(NamedIndividual(affordances_situations:Contact))
 Declaration(NamedIndividual(affordances_situations:Containment))
 Declaration(NamedIndividual(affordances_situations:Cutting))
@@ -125,25 +173,68 @@ Declaration(NamedIndividual(affordances_situations:stabber1))
 Declaration(NamedIndividual(affordances_situations:stabbing1))
 Declaration(NamedIndividual(affordances_situations:stabbingPoint1))
 Declaration(AnnotationProperty(<http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled>))
+<<<<<<< HEAD
+Declaration(AnnotationProperty(rdfs:comment))
+Declaration(AnnotationProperty(rdfs:label))
+Declaration(Datatype(xsd:boolean))
+Declaration(Datatype(xsd:string))
+=======
+>>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
 
 ############################
 #   Object Properties
 ############################
 
+<<<<<<< HEAD
+# Object Property: affordances_situations:above (affordances_situations:above)
+
+InverseObjectProperties(affordances_situations:above affordances_situations:below)
+
+# Object Property: affordances_situations:back (affordances_situations:back)
+
+InverseObjectProperties(affordances_situations:back affordances_situations:front)
+
+# Object Property: affordances_situations:blockedBy (affordances_situations:blockedBy)
+
+ObjectPropertyDomain(affordances_situations:blockedBy affordances_situations:Blocked)
+ObjectPropertyRange(affordances_situations:blockedBy affordances_situations:Blocker)
+
+# Object Property: affordances_situations:blocks (affordances_situations:blocks)
+
+ObjectPropertyDomain(affordances_situations:blocks affordances_situations:Blocker)
+ObjectPropertyRange(affordances_situations:blocks affordances_situations:Blocked)
+
+=======
+>>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
 # Object Property: affordances_situations:contains (affordances_situations:contains)
 
 InverseObjectProperties(affordances_situations:contains affordances_situations:inside)
 ObjectPropertyDomain(affordances_situations:contains affordances_situations:Container)
 ObjectPropertyRange(affordances_situations:contains affordances_situations:Containee)
 
+<<<<<<< HEAD
+# Object Property: affordances_situations:cutBy (affordances_situations:cutBy)
+
+InverseObjectProperties(affordances_situations:cutBy affordances_situations:cuts)
+ObjectPropertyDomain(affordances_situations:cutBy affordances_situations:Cuttee)
+ObjectPropertyRange(affordances_situations:cutBy affordances_situations:Cutter)
+
+=======
+>>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
 # Object Property: affordances_situations:cuts (affordances_situations:cuts)
 
 ObjectPropertyDomain(affordances_situations:cuts affordances_situations:Cutter)
 ObjectPropertyRange(affordances_situations:cuts affordances_situations:Cuttee)
 
+<<<<<<< HEAD
+# Object Property: affordances_situations:fallingFrom (affordances_situations:fallingFrom)
+
+ObjectPropertyRange(affordances_situations:fallingFrom affordances_situations:Source)
+=======
 # Object Property: affordances_situations:falling (affordances_situations:falling)
 
 ObjectPropertyRange(affordances_situations:falling affordances_situations:FallingObject)
+>>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
 
 # Object Property: affordances_situations:flowsFrom (affordances_situations:flowsFrom)
 
@@ -153,6 +244,13 @@ ObjectPropertyRange(affordances_situations:flowsFrom affordances_situations:Sour
 
 ObjectPropertyRange(affordances_situations:flowsTo affordances_situations:Target)
 
+<<<<<<< HEAD
+# Object Property: affordances_situations:graspedBy (affordances_situations:graspedBy)
+
+InverseObjectProperties(affordances_situations:graspedBy affordances_situations:grasps)
+
+=======
+>>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
 # Object Property: affordances_situations:grasps (affordances_situations:grasps)
 
 ObjectPropertyDomain(affordances_situations:grasps affordances_situations:Grasper)
@@ -166,14 +264,28 @@ ObjectPropertyRange(affordances_situations:hasGraspingPoint affordances_situatio
 
 ObjectPropertyRange(affordances_situations:hasGripOn affordances_situations:StableObject)
 
+<<<<<<< HEAD
+=======
 # Object Property: affordances_situations:hasParticipant (affordances_situations:hasParticipant)
 
 TransitiveObjectProperty(affordances_situations:hasParticipant)
 
+>>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
 # Object Property: affordances_situations:inContactWith (affordances_situations:inContactWith)
 
 SymmetricObjectProperty(affordances_situations:inContactWith)
 
+<<<<<<< HEAD
+# Object Property: affordances_situations:left (affordances_situations:left)
+
+InverseObjectProperties(affordances_situations:left affordances_situations:right)
+
+# Object Property: affordances_situations:pouredBy (affordances_situations:pouredBy)
+
+InverseObjectProperties(affordances_situations:pouredBy affordances_situations:pours)
+
+=======
+>>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
 # Object Property: affordances_situations:pours (affordances_situations:pours)
 
 ObjectPropertyDomain(affordances_situations:pours affordances_situations:Pourer)
@@ -188,20 +300,51 @@ SymmetricObjectProperty(affordances_situations:separatedFrom)
 ObjectPropertyDomain(affordances_situations:stabs affordances_situations:Stabber)
 ObjectPropertyRange(affordances_situations:stabs affordances_situations:Stabbed)
 
+<<<<<<< HEAD
+# Object Property: affordances_situations:supportedBy (affordances_situations:supportedBy)
+
+InverseObjectProperties(affordances_situations:supportedBy affordances_situations:supports)
+ObjectPropertyDomain(affordances_situations:supportedBy affordances_situations:Supportee)
+ObjectPropertyRange(affordances_situations:supportedBy affordances_situations:Supporter)
+
+=======
+>>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
 # Object Property: affordances_situations:supports (affordances_situations:supports)
 
 ObjectPropertyDomain(affordances_situations:supports affordances_situations:Supporter)
 ObjectPropertyRange(affordances_situations:supports affordances_situations:Supportee)
 
+<<<<<<< HEAD
+# Object Property: <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant> (<http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant>)
+
+InverseObjectProperties(<http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant> <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#isParticipantIn>)
+TransitiveObjectProperty(<http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant>)
+
+=======
+>>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
 
 
 ############################
 #   Classes
 ############################
 
+<<<<<<< HEAD
+# Class: affordances_situations:Blocked (affordances_situations:Blocked)
+
+SubClassOf(affordances_situations:Blocked <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#Role>)
+
+# Class: affordances_situations:Blocker (affordances_situations:Blocker)
+
+SubClassOf(affordances_situations:Blocker <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#Role>)
+
+# Class: affordances_situations:Boundary (affordances_situations:Boundary)
+
+SubClassOf(affordances_situations:Boundary <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#Role>)
+=======
 # Class: affordances_situations:Boundary (affordances_situations:Boundary)
 
 SubClassOf(affordances_situations:Boundary affordances_situations:Role)
+>>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
 
 # Class: affordances_situations:Contact (affordances_situations:Contact)
 
@@ -209,11 +352,19 @@ SubClassOf(affordances_situations:Contact affordances_situations:ImageSchematicS
 
 # Class: affordances_situations:Containee (affordances_situations:Containee)
 
+<<<<<<< HEAD
+SubClassOf(affordances_situations:Containee <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#Role>)
+
+# Class: affordances_situations:Container (affordances_situations:Container)
+
+SubClassOf(affordances_situations:Container <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#Role>)
+=======
 SubClassOf(affordances_situations:Containee affordances_situations:Role)
 
 # Class: affordances_situations:Container (affordances_situations:Container)
 
 SubClassOf(affordances_situations:Container affordances_situations:Role)
+>>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
 
 # Class: affordances_situations:Containment (affordances_situations:Containment)
 
@@ -221,11 +372,19 @@ SubClassOf(affordances_situations:Containment affordances_situations:ImageSchema
 
 # Class: affordances_situations:Cuttee (affordances_situations:Cuttee)
 
+<<<<<<< HEAD
+SubClassOf(affordances_situations:Cuttee <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#Role>)
+
+# Class: affordances_situations:Cutter (affordances_situations:Cutter)
+
+SubClassOf(affordances_situations:Cutter <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#Role>)
+=======
 SubClassOf(affordances_situations:Cuttee affordances_situations:Role)
 
 # Class: affordances_situations:Cutter (affordances_situations:Cutter)
 
 SubClassOf(affordances_situations:Cutter affordances_situations:Role)
+>>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
 
 # Class: affordances_situations:Cutting (affordances_situations:Cutting)
 
@@ -233,7 +392,11 @@ SubClassOf(affordances_situations:Cutting affordances_situations:ImageSchematicS
 
 # Class: affordances_situations:CuttingPoint (affordances_situations:CuttingPoint)
 
+<<<<<<< HEAD
+SubClassOf(affordances_situations:CuttingPoint <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#Role>)
+=======
 SubClassOf(affordances_situations:CuttingPoint affordances_situations:Role)
+>>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
 
 # Class: affordances_situations:CuttingSequence (affordances_situations:CuttingSequence)
 
@@ -241,7 +404,11 @@ SubClassOf(affordances_situations:CuttingSequence affordances_situations:Sequenc
 
 # Class: affordances_situations:CuttingTool (affordances_situations:CuttingTool)
 
+<<<<<<< HEAD
+SubClassOf(affordances_situations:CuttingTool <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#Role>)
+=======
 SubClassOf(affordances_situations:CuttingTool affordances_situations:Role)
+>>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
 
 # Class: affordances_situations:Falling (affordances_situations:Falling)
 
@@ -249,7 +416,11 @@ SubClassOf(affordances_situations:Falling affordances_situations:ImageSchematicS
 
 # Class: affordances_situations:FallingObject (affordances_situations:FallingObject)
 
+<<<<<<< HEAD
+SubClassOf(affordances_situations:FallingObject <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#Role>)
+=======
 SubClassOf(affordances_situations:FallingObject affordances_situations:Role)
+>>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
 
 # Class: affordances_situations:Floor (affordances_situations:Floor)
 
@@ -257,11 +428,19 @@ SubClassOf(affordances_situations:Floor affordances_situations:SemanticType)
 
 # Class: affordances_situations:Grasped (affordances_situations:Grasped)
 
+<<<<<<< HEAD
+SubClassOf(affordances_situations:Grasped <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#Role>)
+
+# Class: affordances_situations:Grasper (affordances_situations:Grasper)
+
+SubClassOf(affordances_situations:Grasper <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#Role>)
+=======
 SubClassOf(affordances_situations:Grasped affordances_situations:Role)
 
 # Class: affordances_situations:Grasper (affordances_situations:Grasper)
 
 SubClassOf(affordances_situations:Grasper affordances_situations:Role)
+>>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
 
 # Class: affordances_situations:Grasping (affordances_situations:Grasping)
 
@@ -269,7 +448,11 @@ SubClassOf(affordances_situations:Grasping affordances_situations:ImageSchematic
 
 # Class: affordances_situations:GraspingPoint (affordances_situations:GraspingPoint)
 
+<<<<<<< HEAD
+SubClassOf(affordances_situations:GraspingPoint <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#Role>)
+=======
 SubClassOf(affordances_situations:GraspingPoint affordances_situations:Role)
+>>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
 
 # Class: affordances_situations:Gravity (affordances_situations:Gravity)
 
@@ -281,7 +464,11 @@ SubClassOf(affordances_situations:ImageSchematicSituation <https://w3id.org/fram
 
 # Class: affordances_situations:Interior (affordances_situations:Interior)
 
+<<<<<<< HEAD
+SubClassOf(affordances_situations:Interior <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#Role>)
+=======
 SubClassOf(affordances_situations:Interior affordances_situations:Role)
+>>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
 
 # Class: affordances_situations:Liquid (affordances_situations:Liquid)
 
@@ -293,6 +480,21 @@ SubClassOf(affordances_situations:Movement affordances_situations:ImageSchematic
 
 # Class: affordances_situations:MovingObject (affordances_situations:MovingObject)
 
+<<<<<<< HEAD
+SubClassOf(affordances_situations:MovingObject <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#Role>)
+
+# Class: affordances_situations:Object (affordances_situations:Object)
+
+SubClassOf(affordances_situations:Object <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#Role>)
+
+# Class: affordances_situations:Poured (affordances_situations:Poured)
+
+SubClassOf(affordances_situations:Poured <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#Role>)
+
+# Class: affordances_situations:Pourer (affordances_situations:Pourer)
+
+SubClassOf(affordances_situations:Pourer <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#Role>)
+=======
 SubClassOf(affordances_situations:MovingObject affordances_situations:Role)
 
 # Class: affordances_situations:Object (affordances_situations:Object)
@@ -306,6 +508,7 @@ SubClassOf(affordances_situations:Poured affordances_situations:Role)
 # Class: affordances_situations:Pourer (affordances_situations:Pourer)
 
 SubClassOf(affordances_situations:Pourer affordances_situations:Role)
+>>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
 
 # Class: affordances_situations:Pouring (affordances_situations:Pouring)
 
@@ -321,6 +524,21 @@ SubClassOf(affordances_situations:Sequence affordances_situations:ImageSchematic
 
 # Class: affordances_situations:Source (affordances_situations:Source)
 
+<<<<<<< HEAD
+SubClassOf(affordances_situations:Source <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#Role>)
+
+# Class: affordances_situations:SourceContainer (affordances_situations:SourceContainer)
+
+SubClassOf(affordances_situations:SourceContainer <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#Role>)
+
+# Class: affordances_situations:Stabbed (affordances_situations:Stabbed)
+
+SubClassOf(affordances_situations:Stabbed <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#Role>)
+
+# Class: affordances_situations:Stabber (affordances_situations:Stabber)
+
+SubClassOf(affordances_situations:Stabber <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#Role>)
+=======
 SubClassOf(affordances_situations:Source affordances_situations:Role)
 
 # Class: affordances_situations:SourceContainer (affordances_situations:SourceContainer)
@@ -334,6 +552,7 @@ SubClassOf(affordances_situations:Stabbed affordances_situations:Role)
 # Class: affordances_situations:Stabber (affordances_situations:Stabber)
 
 SubClassOf(affordances_situations:Stabber affordances_situations:Role)
+>>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
 
 # Class: affordances_situations:Stabbing (affordances_situations:Stabbing)
 
@@ -341,6 +560,21 @@ SubClassOf(affordances_situations:Stabbing affordances_situations:ImageSchematic
 
 # Class: affordances_situations:StabbingPart (affordances_situations:StabbingPart)
 
+<<<<<<< HEAD
+SubClassOf(affordances_situations:StabbingPart <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#Role>)
+
+# Class: affordances_situations:StabbingPoint (affordances_situations:StabbingPoint)
+
+SubClassOf(affordances_situations:StabbingPoint <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#Role>)
+
+# Class: affordances_situations:StabbingTool (affordances_situations:StabbingTool)
+
+SubClassOf(affordances_situations:StabbingTool <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#Role>)
+
+# Class: affordances_situations:StableObject (affordances_situations:StableObject)
+
+SubClassOf(affordances_situations:StableObject <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#Role>)
+=======
 SubClassOf(affordances_situations:StabbingPart affordances_situations:Role)
 
 # Class: affordances_situations:StabbingPoint (affordances_situations:StabbingPoint)
@@ -354,6 +588,7 @@ SubClassOf(affordances_situations:StabbingTool affordances_situations:Role)
 # Class: affordances_situations:StableObject (affordances_situations:StableObject)
 
 SubClassOf(affordances_situations:StableObject affordances_situations:Role)
+>>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
 
 # Class: affordances_situations:Support (affordances_situations:Support)
 
@@ -361,6 +596,21 @@ SubClassOf(affordances_situations:Support affordances_situations:ImageSchematicS
 
 # Class: affordances_situations:Supportee (affordances_situations:Supportee)
 
+<<<<<<< HEAD
+SubClassOf(affordances_situations:Supportee <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#Role>)
+
+# Class: affordances_situations:Supporter (affordances_situations:Supporter)
+
+SubClassOf(affordances_situations:Supporter <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#Role>)
+
+# Class: affordances_situations:Target (affordances_situations:Target)
+
+SubClassOf(affordances_situations:Target <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#Role>)
+
+# Class: affordances_situations:TargetContainer (affordances_situations:TargetContainer)
+
+SubClassOf(affordances_situations:TargetContainer <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#Role>)
+=======
 SubClassOf(affordances_situations:Supportee affordances_situations:Role)
 
 # Class: affordances_situations:Supporter (affordances_situations:Supporter)
@@ -374,6 +624,7 @@ SubClassOf(affordances_situations:Target affordances_situations:Role)
 # Class: affordances_situations:TargetContainer (affordances_situations:TargetContainer)
 
 SubClassOf(affordances_situations:TargetContainer affordances_situations:Role)
+>>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
 
 # Class: <https://w3id.org/framester/schema/ConceptualFrame> (<https://w3id.org/framester/schema/ConceptualFrame>)
 
@@ -430,11 +681,19 @@ ClassAssertion(<https://w3id.org/framester/schema/ConceptualFrame> affordances_s
 
 # Individual: affordances_situations:c1 (affordances_situations:c1)
 
+<<<<<<< HEAD
+ObjectPropertyAssertion(<http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant> affordances_situations:c1 affordances_situations:container1)
+
+# Individual: affordances_situations:c2 (affordances_situations:c2)
+
+ObjectPropertyAssertion(<http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant> affordances_situations:c2 affordances_situations:liquid2)
+=======
 ObjectPropertyAssertion(affordances_situations:hasParticipant affordances_situations:c1 affordances_situations:container1)
 
 # Individual: affordances_situations:c2 (affordances_situations:c2)
 
 ObjectPropertyAssertion(affordances_situations:hasParticipant affordances_situations:c2 affordances_situations:liquid2)
+>>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
 
 # Individual: affordances_situations:container1 (affordances_situations:container1)
 
@@ -456,21 +715,38 @@ ObjectPropertyAssertion(affordances_situations:hasCuttingPoint affordances_situa
 
 # Individual: affordances_situations:cutting1 (affordances_situations:cutting1)
 
+<<<<<<< HEAD
+ObjectPropertyAssertion(<http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant> affordances_situations:cutting1 affordances_situations:cuttee1)
+
+# Individual: affordances_situations:cuttingSequence1 (affordances_situations:cuttingSequence1)
+
+ObjectPropertyAssertion(<http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant> affordances_situations:cuttingSequence1 affordances_situations:cutting1)
+ObjectPropertyAssertion(<http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant> affordances_situations:cuttingSequence1 affordances_situations:separation1)
+=======
 ObjectPropertyAssertion(affordances_situations:hasParticipant affordances_situations:cutting1 affordances_situations:cuttee1)
 
 # Individual: affordances_situations:cuttingSequence1 (affordances_situations:cuttingSequence1)
 
 ObjectPropertyAssertion(affordances_situations:hasParticipant affordances_situations:cuttingSequence1 affordances_situations:cutting1)
 ObjectPropertyAssertion(affordances_situations:hasParticipant affordances_situations:cuttingSequence1 affordances_situations:separation1)
+>>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
 
 # Individual: affordances_situations:g1 (affordances_situations:g1)
 
 ObjectPropertyAssertion(affordances_situations:hasGraspingPoint affordances_situations:g1 affordances_situations:graspingPoint1)
+<<<<<<< HEAD
+ObjectPropertyAssertion(<http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant> affordances_situations:g1 affordances_situations:grasper1)
+
+# Individual: affordances_situations:g2 (affordances_situations:g2)
+
+ObjectPropertyAssertion(<http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant> affordances_situations:g2 affordances_situations:grasped2)
+=======
 ObjectPropertyAssertion(affordances_situations:hasParticipant affordances_situations:g1 affordances_situations:grasper1)
 
 # Individual: affordances_situations:g2 (affordances_situations:g2)
 
 ObjectPropertyAssertion(affordances_situations:hasParticipant affordances_situations:g2 affordances_situations:grasped2)
+>>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
 
 # Individual: affordances_situations:grasper1 (affordances_situations:grasper1)
 
@@ -489,7 +765,11 @@ ObjectPropertyAssertion(affordances_situations:flowsTo affordances_situations:li
 
 # Individual: affordances_situations:p1 (affordances_situations:p1)
 
+<<<<<<< HEAD
+ObjectPropertyAssertion(<http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant> affordances_situations:p1 affordances_situations:pourer1)
+=======
 ObjectPropertyAssertion(affordances_situations:hasParticipant affordances_situations:p1 affordances_situations:pourer1)
+>>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
 
 # Individual: affordances_situations:part1 (affordances_situations:part1)
 
@@ -505,8 +785,13 @@ ObjectPropertyAssertion(affordances_situations:pours affordances_situations:pour
 
 # Individual: affordances_situations:separation1 (affordances_situations:separation1)
 
+<<<<<<< HEAD
+ObjectPropertyAssertion(<http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant> affordances_situations:separation1 affordances_situations:part1)
+ObjectPropertyAssertion(<http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant> affordances_situations:separation1 affordances_situations:part2)
+=======
 ObjectPropertyAssertion(affordances_situations:hasParticipant affordances_situations:separation1 affordances_situations:part1)
 ObjectPropertyAssertion(affordances_situations:hasParticipant affordances_situations:separation1 affordances_situations:part2)
+>>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
 
 # Individual: affordances_situations:stabber1 (affordances_situations:stabber1)
 
@@ -514,6 +799,75 @@ ObjectPropertyAssertion(affordances_situations:stabs affordances_situations:stab
 
 # Individual: affordances_situations:stabbing1 (affordances_situations:stabbing1)
 
+<<<<<<< HEAD
+ObjectPropertyAssertion(<http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant> affordances_situations:stabbing1 affordances_situations:pointyPart1)
+ObjectPropertyAssertion(<http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant> affordances_situations:stabbing1 affordances_situations:stabbed1)
+
+
+DLSafeRule(Body(ClassAtom(affordances_situations:Boundary Variable(:y)) ObjectPropertyAtom(<http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant> Variable(:x) Variable(:y)))Head(ClassAtom(affordances_situations:Containment Variable(:x))))
+DLSafeRule(Body(ClassAtom(affordances_situations:Containee Variable(:x)))Head(ClassAtom(affordances_situations:Object Variable(:x))))
+DLSafeRule(Body(ClassAtom(affordances_situations:Containee Variable(:y)) ObjectPropertyAtom(<http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant> Variable(:x) Variable(:y)))Head(ClassAtom(affordances_situations:Containment Variable(:x))))
+DLSafeRule(Body(ClassAtom(affordances_situations:Container Variable(:x)))Head(ClassAtom(affordances_situations:Object Variable(:x))))
+DLSafeRule(Body(ClassAtom(affordances_situations:Container Variable(:x)) ClassAtom(affordances_situations:Source Variable(:x)))Head(ClassAtom(affordances_situations:SourceContainer Variable(:x))))
+DLSafeRule(Body(ClassAtom(affordances_situations:Container Variable(:x)) ClassAtom(affordances_situations:Target Variable(:x)))Head(ClassAtom(affordances_situations:TargetContainer Variable(:x))))
+DLSafeRule(Annotation(<http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean) Annotation(rdfs:comment "") Annotation(rdfs:label "S17") Body(ClassAtom(affordances_situations:Container Variable(:y)) ObjectPropertyAtom(<http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant> Variable(:x) Variable(:y)))Head(ClassAtom(affordances_situations:Containment Variable(:x))))
+DLSafeRule(Body(ClassAtom(affordances_situations:Containment Variable(:s)))Head(ClassAtom(affordances_situations:Contact Variable(:s))))
+DLSafeRule(Body(ObjectPropertyAtom(affordances_situations:contains Variable(:x) Variable(:y)) ClassAtom(affordances_situations:Containment Variable(:s)) ObjectPropertyAtom(<http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant> Variable(:s) Variable(:x)))Head(ObjectPropertyAtom(<http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant> Variable(:s) Variable(:y))))
+DLSafeRule(Body(ClassAtom(affordances_situations:Cuttee Variable(:s)))Head(ClassAtom(affordances_situations:Object Variable(:s))))
+DLSafeRule(Body(ObjectPropertyAtom(<http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant> Variable(:s) Variable(:x)) ClassAtom(affordances_situations:Cuttee Variable(:x)))Head(ClassAtom(affordances_situations:Cutting Variable(:s))))
+DLSafeRule(Body(ClassAtom(affordances_situations:Cutter Variable(:s)))Head(ClassAtom(affordances_situations:Object Variable(:s))))
+DLSafeRule(Body(ObjectPropertyAtom(<http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant> Variable(:s) Variable(:x)) ClassAtom(affordances_situations:Cutter Variable(:x)))Head(ClassAtom(affordances_situations:Cutting Variable(:s))))
+DLSafeRule(Body(ClassAtom(affordances_situations:Cutting Variable(:s)))Head(ClassAtom(affordances_situations:Contact Variable(:s))))
+DLSafeRule(Body(ObjectPropertyAtom(<http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant> Variable(:seq) Variable(:s1)) ClassAtom(affordances_situations:Cutting Variable(:s1)) ObjectPropertyAtom(<http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant> Variable(:seq) Variable(:s2)) ClassAtom(affordances_situations:Separation Variable(:s2)))Head(ClassAtom(affordances_situations:CuttingSequence Variable(:seq)) ObjectPropertyAtom(affordances_situations:resultsIn Variable(:seq) Variable(:s2))))
+DLSafeRule(Body(ObjectPropertyAtom(<http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant> Variable(:s) Variable(:x)) ClassAtom(affordances_situations:CuttingPoint Variable(:x)))Head(ClassAtom(affordances_situations:Cutting Variable(:s))))
+DLSafeRule(Body(ObjectPropertyAtom(<http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant> Variable(:s) Variable(:x)) ClassAtom(affordances_situations:CuttingTool Variable(:x)))Head(ClassAtom(affordances_situations:Cutting Variable(:s))))
+DLSafeRule(Body(ObjectPropertyAtom(<http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant> Variable(:s) Variable(:x)) ClassAtom(affordances_situations:Falling Variable(:s)))Head(ClassAtom(affordances_situations:FallingObject Variable(:x))))
+DLSafeRule(Body(ObjectPropertyAtom(<http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant> Variable(:s) Variable(:x)) ClassAtom(affordances_situations:Falling Variable(:s)))Head(ClassAtom(affordances_situations:MovingObject Variable(:x)) ClassAtom(affordances_situations:Movement Variable(:s))))
+DLSafeRule(Body(ObjectPropertyAtom(affordances_situations:contains Variable(:x) Variable(:y)) ClassAtom(affordances_situations:FallingObject Variable(:x)))Head(ClassAtom(affordances_situations:FallingObject Variable(:y))))
+DLSafeRule(Body(ClassAtom(affordances_situations:FallingObject Variable(:x)) ObjectPropertyAtom(affordances_situations:grasps Variable(:x) Variable(:y)))Head(ClassAtom(affordances_situations:FallingObject Variable(:y))))
+DLSafeRule(Body(ObjectPropertyAtom(<http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant> Variable(:s) Variable(:x)) ClassAtom(affordances_situations:FallingObject Variable(:x)))Head(ClassAtom(affordances_situations:Falling Variable(:s))))
+DLSafeRule(Body(ObjectPropertyAtom(<http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant> Variable(:s) Variable(:x)) ClassAtom(affordances_situations:Grasped Variable(:x)))Head(ClassAtom(affordances_situations:Grasping Variable(:s))))
+DLSafeRule(Body(ClassAtom(affordances_situations:Grasped Variable(:y)) ClassAtom(affordances_situations:Grasper Variable(:x)) ClassAtom(affordances_situations:Grasping Variable(:s)) ObjectPropertyAtom(<http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant> Variable(:s) Variable(:y)) ObjectPropertyAtom(<http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant> Variable(:s) Variable(:x)))Head(ObjectPropertyAtom(affordances_situations:grasps Variable(:x) Variable(:y))))
+DLSafeRule(Body(ClassAtom(affordances_situations:Grasper Variable(:x)) ClassAtom(affordances_situations:MovingObject Variable(:x)) ObjectPropertyAtom(affordances_situations:grasps Variable(:x) Variable(:y)))Head(ClassAtom(affordances_situations:MovingObject Variable(:y))))
+DLSafeRule(Body(ObjectPropertyAtom(<http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant> Variable(:s) Variable(:x)) ClassAtom(affordances_situations:Grasper Variable(:x)))Head(ClassAtom(affordances_situations:Grasping Variable(:s))))
+DLSafeRule(Body(ClassAtom(affordances_situations:Grasping Variable(:s)))Head(ClassAtom(affordances_situations:Contact Variable(:s))))
+DLSafeRule(Body(ObjectPropertyAtom(<http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant> Variable(:s) Variable(:k)) ClassAtom(affordances_situations:GraspingPoint Variable(:k)))Head(ClassAtom(affordances_situations:Grasping Variable(:s))))
+DLSafeRule(Body(ObjectPropertyAtom(<http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant> Variable(:x) Variable(:y)) ClassAtom(affordances_situations:Interior Variable(:y)))Head(ClassAtom(affordances_situations:Containment Variable(:x))))
+DLSafeRule(Body(ClassAtom(affordances_situations:MovingObject Variable(:x)) ObjectPropertyAtom(affordances_situations:contains Variable(:x) Variable(:y)))Head(ClassAtom(affordances_situations:MovingObject Variable(:y))))
+DLSafeRule(Body(ObjectPropertyAtom(<http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant> Variable(:s) Variable(:x)) ClassAtom(affordances_situations:MovingObject Variable(:x)))Head(ClassAtom(affordances_situations:Movement Variable(:s))))
+DLSafeRule(Body(ObjectPropertyAtom(<http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant> Variable(:s) Variable(:x)) ClassAtom(affordances_situations:Poured Variable(:x)))Head(ClassAtom(affordances_situations:Pouring Variable(:s))))
+DLSafeRule(Body(ClassAtom(affordances_situations:Poured Variable(:y)) ClassAtom(affordances_situations:Pourer Variable(:x)) ObjectPropertyAtom(<http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant> Variable(:s) Variable(:x)))Head(ObjectPropertyAtom(<http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant> Variable(:s) Variable(:y))))
+DLSafeRule(Body(ClassAtom(affordances_situations:Poured Variable(:y)) ClassAtom(affordances_situations:Pourer Variable(:x)) ObjectPropertyAtom(<http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant> Variable(:s) Variable(:y)))Head(ObjectPropertyAtom(<http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant> Variable(:s) Variable(:x))))
+DLSafeRule(Body(ObjectPropertyAtom(<http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant> Variable(:s) Variable(:x)) ClassAtom(affordances_situations:Pourer Variable(:x)))Head(ClassAtom(affordances_situations:Pouring Variable(:s))))
+DLSafeRule(Body(ClassAtom(affordances_situations:Pouring Variable(:s)))Head(ClassAtom(affordances_situations:Movement Variable(:s))))
+DLSafeRule(Body(ObjectPropertyAtom(affordances_situations:flowsFrom Variable(:x) Variable(:y)) ClassAtom(affordances_situations:Pouring Variable(:s)) ClassAtom(affordances_situations:SourceContainer Variable(:y)))Head(ClassAtom(affordances_situations:Contact Variable(:s)) ObjectPropertyAtom(affordances_situations:inContactWith Variable(:x) Variable(:y)) ObjectPropertyAtom(<http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant> Variable(:s) Variable(:y)) ObjectPropertyAtom(<http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant> Variable(:s) Variable(:x))))
+DLSafeRule(Body(ClassAtom(affordances_situations:Pouring Variable(:s)) ObjectPropertyAtom(affordances_situations:flowsTo Variable(:x) Variable(:y)) ClassAtom(affordances_situations:TargetContainer Variable(:y)))Head(ClassAtom(affordances_situations:Contact Variable(:s)) ObjectPropertyAtom(affordances_situations:inContactWith Variable(:x) Variable(:y)) ObjectPropertyAtom(<http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant> Variable(:s) Variable(:y)) ObjectPropertyAtom(<http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant> Variable(:s) Variable(:x))))
+DLSafeRule(Body(ObjectPropertyAtom(<http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant> Variable(:s) Variable(:x)) ClassAtom(affordances_situations:Stabbed Variable(:x)))Head(ClassAtom(affordances_situations:Stabbing Variable(:s))))
+DLSafeRule(Body(ObjectPropertyAtom(<http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant> Variable(:s) Variable(:x)) ClassAtom(affordances_situations:Stabber Variable(:x)))Head(ClassAtom(affordances_situations:Stabbing Variable(:s))))
+DLSafeRule(Body(ClassAtom(affordances_situations:Stabbing Variable(:s)))Head(ClassAtom(affordances_situations:Contact Variable(:s))))
+DLSafeRule(Body(ObjectPropertyAtom(<http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant> Variable(:s) Variable(:x)) ClassAtom(affordances_situations:StabbingPart Variable(:x)))Head(ClassAtom(affordances_situations:Stabbing Variable(:s))))
+DLSafeRule(Body(ObjectPropertyAtom(affordances_situations:inside Variable(:x) Variable(:y)) ClassAtom(affordances_situations:StabbingPart Variable(:y)) ObjectPropertyAtom(<http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant> Variable(:s) Variable(:x)))Head(ClassAtom(affordances_situations:Stabbing Variable(:s))))
+DLSafeRule(Body(ObjectPropertyAtom(<http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant> Variable(:s) Variable(:x)) ClassAtom(affordances_situations:StabbingPoint Variable(:x)))Head(ClassAtom(affordances_situations:Stabbing Variable(:s))))
+DLSafeRule(Body(ObjectPropertyAtom(<http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant> Variable(:s) Variable(:x)) ClassAtom(affordances_situations:StabbingTool Variable(:x)))Head(ClassAtom(affordances_situations:Stabbing Variable(:s))))
+DLSafeRule(Body(ClassAtom(affordances_situations:Supportee Variable(:x)))Head(ClassAtom(affordances_situations:Object Variable(:x))))
+DLSafeRule(Body(ClassAtom(affordances_situations:Supportee Variable(:y)) ClassAtom(affordances_situations:Supporter Variable(:x)) ObjectPropertyAtom(<http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant> Variable(:s) Variable(:y)) ObjectPropertyAtom(<http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant> Variable(:s) Variable(:x)))Head(ObjectPropertyAtom(affordances_situations:supports Variable(:x) Variable(:y))))
+DLSafeRule(Body(ObjectPropertyAtom(<http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant> Variable(:s) Variable(:y)) ClassAtom(affordances_situations:Supportee Variable(:y)))Head(ClassAtom(affordances_situations:Support Variable(:s))))
+DLSafeRule(Body(ClassAtom(affordances_situations:Supporter Variable(:x)))Head(ClassAtom(affordances_situations:Object Variable(:x))))
+DLSafeRule(Body(ObjectPropertyAtom(<http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant> Variable(:s) Variable(:x)) ClassAtom(affordances_situations:Supporter Variable(:x)))Head(ClassAtom(affordances_situations:Support Variable(:s))))
+DLSafeRule(Body(ObjectPropertyAtom(affordances_situations:contains Variable(:x) Variable(:y)))Head(ObjectPropertyAtom(affordances_situations:inContactWith Variable(:x) Variable(:y))))
+DLSafeRule(Body(ObjectPropertyAtom(affordances_situations:cuts Variable(:x) Variable(:y)))Head(ObjectPropertyAtom(affordances_situations:inContactWith Variable(:x) Variable(:y))))
+DLSafeRule(Body(ObjectPropertyAtom(affordances_situations:hasCuttingPoint Variable(:x) Variable(:k)) ObjectPropertyAtom(<http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant> Variable(:s) Variable(:x)) ObjectPropertyAtom(affordances_situations:cuts Variable(:x) Variable(:y)))Head(ObjectPropertyAtom(affordances_situations:partOf Variable(:k) Variable(:y))))
+DLSafeRule(Body(ObjectPropertyAtom(affordances_situations:cuts Variable(:x) Variable(:y)) ObjectPropertyAtom(<http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant> Variable(:s) Variable(:x)))Head(ClassAtom(affordances_situations:Cutting Variable(:s)) ObjectPropertyAtom(<http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant> Variable(:s) Variable(:y))))
+DLSafeRule(Body(ObjectPropertyAtom(affordances_situations:cuts Variable(:x) Variable(:y)) ObjectPropertyAtom(<http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant> Variable(:s) Variable(:y)))Head(ObjectPropertyAtom(<http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant> Variable(:s) Variable(:x)) ClassAtom(affordances_situations:Cutting Variable(:s))))
+DLSafeRule(Body(ObjectPropertyAtom(<http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant> Variable(:s) Variable(:x)) ObjectPropertyAtom(affordances_situations:flowsFrom Variable(:x) Variable(:w)))Head(ClassAtom(affordances_situations:Pouring Variable(:s))))
+DLSafeRule(Body(ObjectPropertyAtom(<http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant> Variable(:s) Variable(:x)) ObjectPropertyAtom(affordances_situations:flowsTo Variable(:x) Variable(:w)))Head(ClassAtom(affordances_situations:Pouring Variable(:s))))
+DLSafeRule(Body(ObjectPropertyAtom(affordances_situations:grasps Variable(:x) Variable(:y)))Head(ObjectPropertyAtom(affordances_situations:hasGripOn Variable(:x) Variable(:y))))
+DLSafeRule(Body(ObjectPropertyAtom(affordances_situations:grasps Variable(:x) Variable(:y)))Head(ObjectPropertyAtom(affordances_situations:inContactWith Variable(:x) Variable(:y))))
+DLSafeRule(Annotation(<http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean) Annotation(rdfs:comment "") Annotation(rdfs:label "S18") Body(ObjectPropertyAtom(affordances_situations:hasGraspingPoint Variable(:x) Variable(:k)) ObjectPropertyAtom(affordances_situations:grasps Variable(:x) Variable(:y)) ObjectPropertyAtom(<http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant> Variable(:s) Variable(:x)))Head(ObjectPropertyAtom(affordances_situations:partOf Variable(:k) Variable(:y))))
+DLSafeRule(Body(ObjectPropertyAtom(<http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant> Variable(:s) Variable(:x)) ObjectPropertyAtom(affordances_situations:grasps Variable(:x) Variable(:y)))Head(ObjectPropertyAtom(<http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant> Variable(:s) Variable(:y)) ClassAtom(affordances_situations:Grasping Variable(:s))))
+DLSafeRule(Body(ObjectPropertyAtom(affordances_situations:separatedFrom Variable(:x) Variable(:y)) ObjectPropertyAtom(<http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant> Variable(:s) Variable(:y)) ObjectPropertyAtom(<http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant> Variable(:s) Variable(:x)))Head(ClassAtom(affordances_situations:Separation Variable(:s))))
+DLSafeRule(Body(ObjectPropertyAtom(<http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant> Variable(:s) Variable(:x)) ObjectPropertyAtom(affordances_situations:stabs Variable(:x) Variable(:y)))Head(ClassAtom(affordances_situations:Stabbing Variable(:s))))
+=======
 ObjectPropertyAssertion(affordances_situations:hasParticipant affordances_situations:stabbing1 affordances_situations:pointyPart1)
 ObjectPropertyAssertion(affordances_situations:hasParticipant affordances_situations:stabbing1 affordances_situations:stabbed1)
 
@@ -582,4 +936,5 @@ DLSafeRule(Annotation(<http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleE
 DLSafeRule(Annotation(<http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean) Annotation(rdfs:comment "") Annotation(rdfs:label "Grasping Roles") Body(ObjectPropertyAtom(affordances_situations:grasps Variable(:x) Variable(:y)) ObjectPropertyAtom(affordances_situations:hasParticipant Variable(:s) Variable(:x)))Head(ObjectPropertyAtom(affordances_situations:hasParticipant Variable(:s) Variable(:y)) ClassAtom(affordances_situations:Grasping Variable(:s))))
 DLSafeRule(Annotation(<http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean) Annotation(rdfs:comment "") Annotation(rdfs:label "SeparationSituaiton 1") Body(ObjectPropertyAtom(affordances_situations:hasParticipant Variable(:s) Variable(:y)) ObjectPropertyAtom(affordances_situations:hasParticipant Variable(:s) Variable(:x)) ObjectPropertyAtom(affordances_situations:separatedFrom Variable(:x) Variable(:y)))Head(ClassAtom(affordances_situations:Separation Variable(:s))))
 DLSafeRule(Annotation(<http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean) Annotation(rdfs:comment "") Annotation(rdfs:label "StabbingSituation 8") Body(ObjectPropertyAtom(affordances_situations:stabs Variable(:x) Variable(:y)) ObjectPropertyAtom(affordances_situations:hasParticipant Variable(:s) Variable(:x)))Head(ClassAtom(affordances_situations:Stabbing Variable(:s))))
+>>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
 )

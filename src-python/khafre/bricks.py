@@ -4,7 +4,7 @@
 
 import array
 import cv2 as cv
-import deepcopy
+import copy
 from functools import reduce
 import os
 from multiprocessing import shared_memory, Process, RLock, Queue, SimpleQueue, Pipe
@@ -361,6 +361,8 @@ class ProducerWire():
     def __init__(self, producer, notifications):
         self._producer = producer
         self._notifications = notifications
+    def hasSHM(self):
+        return self._producer is not None
     def sendNotification(self, data):
         _=[x.put(data) for x in self._notifications]
     def publish(self, shmData, notifData):
@@ -380,6 +382,8 @@ class PublisherConsumerWire():
     def __init__(self, consumer, notifications):
         self._consumer = consumer
         self._notifications = notifications
+    def hasSHM(self):
+        return self._consumer is not None
     def sendNotification(self, data):
         _=[x.put(data) for x in self._notifications]
     def publish(self, shmData, notifData):
@@ -399,6 +403,8 @@ class SubscriberConsumerWire():
     def __init__(self, consumer, notification):
         self._consumer = consumer
         self._notification = notification
+    def hasSHM(self):
+        return self._consumer is not None
     def empty(self):
         return self._notification.empty()
     def get(self):
@@ -442,6 +448,8 @@ The name that a publisher uses for a wire need not be the same as the name used 
 one may have a publisher sending "Output Image" to the wire while a subscriber calls it "Input Image".
     '''
     def _duplicate(x):
+        if x is None:
+            return None
         return SHMConsumerPort(x._lock, x._name, x._shape, x._dtype)
     if wireList is None:
         wireList={}
@@ -481,9 +489,9 @@ class Peeker:
             time.sleep(0.01)
     def getSubscribedNotification(self, subscriptionName):
         with self._lock:
-            return deepcopy.copy(self._data.get(subscriptionName))
+            return copy.deepcopy(self._data.get(subscriptionName))
     def getSubscribedSHM(self, subscriptionName):
-        if subscriptionName in self._subscriptions:
+        if (self._subscriptions.get(subscriptionName, [None, None])[1] is not None):
             with self._subscriptions[subscriptionName][1] as consumerSHM:
                 a = numpy.copy(consumerSHM)
             return a

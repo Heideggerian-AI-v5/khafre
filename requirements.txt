@@ -1,3 +1,4 @@
+networkx
 numpy
 opencv-python
 pillow

@@ -115,7 +115,7 @@ last 100. Reported in %.
 
 # lambdas and bound methods cannot be pickled on Windows (or perhaps more generally
 # on architectures without process forking?)
-# Workaround: send the reifiedObject as an argument to a function
+# Workaround: send the ReifiedProcess as an argument to a function
 # that then calls its run function 
 def picklePusher(rp):
     rp._run()
@@ -311,6 +311,36 @@ it to terminate if it has not done so already.
         if isinstance(self._process, Process):
             self._process.join(timeout)
         self._process=None
+    def onStart(self):
+        """
+Derived classes should extend this method. This is where startup code
+should be placed.
+
+In particular, code that constructs objects so as to acquire resources
+should be in here. This is a somewhat fuzzy notion which will require
+developper judgement, but some examples will help clarify this. It
+also helps understanding to consider that when a subprocess starts, it
+will have access to copies of the objects available at its creation
+(including this object). Therefore, to decide whether something should
+be done in __init__ or here, ask yourself:
+
+1) can this thing be copied at all? Not all python objects can be copied.
+In particular, if something cannot be pickled, it cannot be copied for
+access by a subprocess.
+2) is it wasteful to copy this thing? Some objects can be copied, but will
+be so large that one wants to avoid having useless copies of them. Remember,
+the main process copy of this reified object will mostly be sitting idle!
+Also, some objects imply the use of some system resource (e.g. file handles)
+that may be limited. Avoid encumbering the system too much.
+
+Some examples:
+1) numeric paremeters: safe to have them in __init__.
+2) helper thread object: might be declared in __init__, but definitely only
+start it in onStart!
+3) neural network model: these things tend to be huge, so better in onStart.
+Even better, have models loadable during the handling of some command.
+        """
+        pass
     def doWork(self):
         """
 Derived classes should extend this method. This is where the useful
@@ -347,6 +377,7 @@ Runs the object's process and sets up graceful exit on SIGTERM.
         signal.signal(signal.SIGINT, lambda s,f: None)
         self._keepOn = True
         try:
+            self.onStart()
             while self._keepOn:
                 self.doWork()
         except _GracefulExit:

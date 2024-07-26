@@ -106,7 +106,7 @@ class SapienSim(ReifiedProcess):
         """TODO: here is the actual work"""
         self._scene.step()
         self._scene.update_render()
-        self._camera.take_picture()  # submit rendering jobs to the GPU
+        self._camera.take_picture()
         
         # rgba is a numpy array
         rgb = self._camera.get_color_rgba()[:, :, :3]

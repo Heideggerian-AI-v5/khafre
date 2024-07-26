@@ -52,7 +52,7 @@ def main():
     # Keep this variable alive at least as long as the subprocesses are running.
 
     # TODO: have this written in some other way, e.g. by having this relative to this file
-    asset_path = "/home/nick/git/khafre/assets/"
+    asset_path = os.path.join(os.path.dirname(os.path.abspath(__file__)),"../assets")
 
     wireList={}
 

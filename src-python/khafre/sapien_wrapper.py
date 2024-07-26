@@ -14,7 +14,7 @@ class SapienSim(ReifiedProcess):
     OutImg: publisher. Output image from a camera.
     DbgImg: publisher. Output image for debug visualizer.
     """
-    def __init__(self, dt=0.01,near=0.1,far=100,width=640,height=480):
+    def __init__(self, dt=0.01,near=0.1,far=100,width=640,height=480, viewer=False):
         super().__init__()
         
         self._rateMask = None
@@ -24,6 +24,8 @@ class SapienSim(ReifiedProcess):
         self._scene = None
         self._loader = None
         self._builder = None
+        self._viewer = None
+        self._haveViewer = viewer
         self._dt = dt
         self._near = near
         self._far = far
@@ -39,7 +41,6 @@ class SapienSim(ReifiedProcess):
     def sendCommand(self, command, block=False, timeout=None):
         self._command.put(command, block=block, timeout=timeout)
     def onStart(self):
-        """TODO: Initialize the simulator object and the scene"""
         self._assets = {}
         self._actors = {}
         self._scene : sapien.Scene = sapien.Scene()
@@ -47,11 +48,15 @@ class SapienSim(ReifiedProcess):
         self._scene.add_ground(0)
         self._loader = self._scene.create_urdf_loader()
         self._builder = self._scene.create_actor_builder()
-
-
-        # Add a camera to get images
-        # TODO: remove hardcoded stuff
-
+        if self._haveViewer:
+            self._viewer = self._scene.create_viewer()  # Create a viewer (window)
+            # # The coordinate frame in Sapien is: x(forward), y(left), z(upward)
+            # # The principle axis of the camera is the x-axis
+            self._viewer.set_camera_xyz(x=-4, y=0, z=2)
+            # # The rotation of the free camera is represented as [roll(x), pitch(-y), yaw(-z)]
+            # # The camera now looks at the origin
+            self._viewer.set_camera_rpy(r=0, p=-np.arctan2(2, 4), y=0)
+            self._viewer.window.set_camera_parameters(near=0.05, far=100, fovy=1)
         self._camera = self._scene.add_camera(
             name="camera",
             width=self._width,
@@ -60,19 +65,6 @@ class SapienSim(ReifiedProcess):
             near=self._near,
             far=self._far,
         )
-        #TODO Viewer is mainly for debug. Should be instantiated with a param.
-        # self._viewer = self._scene.create_viewer()  # Create a viewer (window)
-        # # The coordinate frame in Sapien is: x(forward), y(left), z(upward)
-        # # The principle axis of the camera is the x-axis
-        # self._viewer.set_camera_xyz(x=-4, y=0, z=2)
-
-        # # The rotation of the free camera is represented as [roll(x), pitch(-y), yaw(-z)]
-        # # The camera now looks at the origin
-        # self._viewer.set_camera_rpy(r=0, p=-np.arctan2(2, 4), y=0)
-        # self._viewer.window.set_camera_parameters(near=0.05, far=100, fovy=1)
-
-        # Compute the camera pose by specifying forward(x), left(y) and up(z)
-
     def _handleCommand(self, command):
         op, args = command
         if "SET AMBIENT LIGHT" == op:
@@ -117,18 +109,11 @@ class SapienSim(ReifiedProcess):
         self._camera.take_picture()  # submit rendering jobs to the GPU
         
         # rgba is a numpy array
-        # rgba = self._camera.get_picture("Color")  # [H, W, 4]
-        
-        # if "DbgImg" in self._publishers:
-        #         # Here we can hog the shared memory as long as we like -- dbgvis won't use it until we notify it that there's a new frame to show.
-        #         with self._publishers["DbgImg"] as dbgImg:
-        #             workImg = dbgImg
-        #             if (rgba.shape[0] != dbgImg.shape[0]) or (rgba.shape[1] != dbgImg.shape[1]):
-        #                 np.copyto(dbgImg, cv.resize(workImg, (dbgImg.shape[1], dbgImg.shape[0]), interpolation=cv.INTER_LINEAR))
-        #         self._publishers["DbgSimCam"].sendNotifications("%.02f %.02f ifps | %d%% %d%% obj drop" % (self._rateMask if self._rateMask is not None else 0.0, self._rateDepth if self._rateDepth is not None else 0.0, self._droppedMask, self._droppedDepth))
-
-        """
-        TODO The viewer doesn't seem to be working. 
-        Something seems to be blocking, which usually shouldn't be the case.
-        """
-        # self._viewer.render()
+        rgb = self._camera.get_color_rgba()[:, :, :3]
+        outImg = (rgb * 255).clip(0, 255).astype(np.uint8)
+        if "DbgImg" in self._publishers:
+            self._publishers["DbgImg"].publish(rgb, "")
+        if "OutImg" in self._publishers:
+            self._publishers["OutImg"].publish(outImg, {"idx": str(time.perf_counter())})
+        if self._haveViewer:
+            self._viewer.render()

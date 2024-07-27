@@ -1,8 +1,9 @@
-from multiprocessing import Queue
-import sapien
-import numpy as np
-
 import cv2 as cv
+from multiprocessing import Queue
+import numpy as np
+import sapien
+
+import time
 
 from khafre.bricks import ReifiedProcess
 
@@ -37,7 +38,7 @@ class SapienSim(ReifiedProcess):
         self._actors = {}
         
     def _checkPublisherRequest(self, name, queues, consumerSHM):
-        return (name in {"OutImg", "DbgImg"}) and ((self._height, self._width)==tuple(consumerSHM._shape))
+        return (name in {"OutImg", "DbgImg"}) and ((self._height, self._width)==tuple(consumerSHM._shape[:2]))
     def sendCommand(self, command, block=False, timeout=None):
         self._command.put(command, block=block, timeout=timeout)
     def onStart(self):
@@ -109,7 +110,7 @@ class SapienSim(ReifiedProcess):
         self._camera.take_picture()
         
         # rgba is a numpy array
-        rgb = self._camera.get_color_rgba()[:, :, :3]
+        rgb = self._camera.get_picture("Color")[:, :, :3]
         outImg = (rgb * 255).clip(0, 255).astype(np.uint8)
         if "DbgImg" in self._publishers:
             self._publishers["DbgImg"].publish(rgb, "")

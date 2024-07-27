@@ -78,9 +78,9 @@ def main():
     sim.start()
     sim.sendCommand(["SET AMBIENT LIGHT",[[0.5, 0.5, 0.5]]])
     sim.sendCommand(["ADD DIRECTIONAL LIGHT",[[0, 1, -1], [0.5, 0.5, 0.5]]])
-    sim.sendCommand(["LOAD ASSET", ["table", os.path.join(asset_path, "table/table.urdf"), [0, 0, 0.44], [1, 0, 0, 0]])
-    sim.sendCommand(["LOAD ACTOR", ["mug", os.path.join(asset_path, "beermug/BeerMugCollision.obj"), os.path.join(asset_path, "beermug/BeerMugVisual.obj"), [-0.2, 0, 0.44 + 0.05], [1, 0, 0, 0]])
-    sim.sendCommand(["SET CAMERA POSE", [np.array([-2, -2, 3])]])
+    sim.sendCommand(["LOAD ASSET", ["table", os.path.join(asset_path, "table/table.urdf"), [0, 0, 0.44], [1, 0, 0, 0]]])
+    sim.sendCommand(["LOAD ACTOR", ["mug", os.path.join(asset_path, "beermug/BeerMugCollision.obj"), os.path.join(asset_path, "beermug/BeerMugVisual.obj"), [-0.2, 0, 0.44 + 0.05], [1, 0, 0, 0]]])
+    sim.sendCommand(["SET CAMERA POSE", [numpy.array([-2, -2, 3])]])
 
     with Listener(on_press=on_press, on_release=on_release) as listener:
             while goOn["goOn"]:

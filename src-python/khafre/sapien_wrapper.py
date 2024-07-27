@@ -110,7 +110,7 @@ class SapienSim(ReifiedProcess):
         self._camera.take_picture()
         
         # rgba is a numpy array
-        rgb = self._camera.get_picture("Color")[:, :, :3]
+        rgb = self._camera.get_picture("Color")[:, :, [2,1,0]]
         outImg = (rgb * 255).clip(0, 255).astype(np.uint8)
         if "DbgImg" in self._publishers:
             self._publishers["DbgImg"].publish(rgb, "")

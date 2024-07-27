@@ -75,7 +75,11 @@ Subclasses should implement command handling code here.
             self._handleCommand(self._command.get())
         # Do we even have a model loaded? Do we even have an output to send to?
         # Note: it is possible for the user of this process to not want an image as a result, and only a list of detections/polygons etc.
-        if (self._model is not None):
+        if (self._model is None):
+            while not self._subscriptions["InpImg"].empty():
+                # Keep input empty
+                self._subscriptions["InpImg"].getWithRates()
+        else:
             # Do we even have an image to work on?
             if not self._subscriptions["InpImg"].empty():
                 # We only get the latest image -- need to check how many were dropped along the way.

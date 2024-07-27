@@ -58,7 +58,7 @@ def main():
 
     imgWidth,imgHeight = 640,480
 
-    sim = SapienSim(height=imgHeight,width=imgWidth)
+    sim = SapienSim(height=imgHeight,width=imgWidth,viewer=False)
     dbgP = DbgVisualizer()
     objP = YOLOObjectSegmentationWrapper()
 
@@ -76,6 +76,7 @@ def main():
     dbgP.start()
     objP.start()
     sim.start()
+    objP.sendCommand(("LOAD", ("yolov8n-seg.pt",)))
     sim.sendCommand(["SET AMBIENT LIGHT",[[0.5, 0.5, 0.5]]])
     sim.sendCommand(["ADD DIRECTIONAL LIGHT",[[0, 1, -1], [0.5, 0.5, 0.5]]])
     sim.sendCommand(["LOAD ASSET", ["table", os.path.join(asset_path, "table/table.urdf"), [0, 0, 0.44], [1, 0, 0, 0]]])

@@ -115,6 +115,6 @@ class SapienSim(ReifiedProcess):
         if "DbgImg" in self._publishers:
             self._publishers["DbgImg"].publish(rgb, "")
         if "OutImg" in self._publishers:
-            self._publishers["OutImg"].publish(outImg, {"idx": str(time.perf_counter())})
+            self._publishers["OutImg"].publish(outImg, {"imgId": str(time.perf_counter())})
         if self._haveViewer:
             self._viewer.render()

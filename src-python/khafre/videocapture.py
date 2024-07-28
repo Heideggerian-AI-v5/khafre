@@ -58,10 +58,12 @@ class RecordedVideoFeed(ReifiedProcess):
             self._videoCapture.set(cv.CAP_PROP_POS_MSEC,self._atVideoT*1000)
             hasFrames, image = self._videoCapture.read()
             if hasFrames:
-                image = image.astype(numpy.float32)/255.0
-                for name in {"OutImg", "DbgImg"}:
-                    if self._publishers.get(name):
-                        self._publishers[name].publish(image, True)
+                idData = {"imgId": str(time.perf_counter())}
+                if "OutImg" in self._publishers:
+                    self._publishers["OutImg"].publish(image, idData)
+                if "DbgImg" in self._publishers:
+                    image = image.astype(numpy.float32)/255.0
+                    self._publishers["DbgImg"].publish(image, idData)
             else:
                 self._ended.put(True)
     def doWork(self):

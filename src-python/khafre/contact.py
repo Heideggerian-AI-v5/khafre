@@ -164,7 +164,7 @@ Additionally, gets goal data (sets of triples) from a queue.
                 depthImgLocal = numpy.copy(depthImg)
             imgHeight, imgWidth = depthImgLocal.shape
             outputImg = numpy.zeros((imgHeight, imgWidth), dtype=numpy.uint32)
-            results = {"imgId": self._maskResults.get("imgId"), "idx2Contact": {}, "contact2Idx": {}}
+            results = {"imgId": self._maskResults.get("imgId"), "idx2Contact": {}, "contact2Idx": {}, "triples": set()}
             queries = []
             qUniverse = [x["type"] for x in self._maskResults.get("segments", [])]
             for q in self._queries:
@@ -181,11 +181,17 @@ Additionally, gets goal data (sets of triples) from a queue.
                 k = (k+1)*2
                 idSO = k
                 idOS = k-1
-                results["idx2Contact"][idSO] = (s,o) 
+                results["idx2Contact"][idSO] = (s,o)
                 results["idx2Contact"][idOS] = (o,s)
-                results["contact2Idx"][(s,o)] = idSO 
-                results["contact2Idx"][(o,s)] = idOS 
+                results["contact2Idx"][(s,o)] = idSO
+                results["contact2Idx"][(o,s)] = idOS
                 contPS, contPO = contact(self._settings["searchWidth"], self._settings["threshold"], imgHeight, imgWidth, s, o, dilatedImgs, maskImgs, depthImgLocal)
+                if (contPS>0).any():
+                    results["triples"].add(("contact", s, o))
+                    results["triples"].add(("contact", o, s))
+                else:
+                    results["triples"].add(("-contact", s, o))
+                    results["triples"].add(("-contact", o, s))
                 outputImg[contPS>0] = idSO
                 outputImg[contPO>0] = idOS
             if "OutImg" in self._publishers:

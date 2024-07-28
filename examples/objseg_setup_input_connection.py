@@ -119,6 +119,7 @@ def main():
         
         optP.stop()
         objP.stop()
+        conP.stop()
         dptP.stop()
         dbgP.stop()
 

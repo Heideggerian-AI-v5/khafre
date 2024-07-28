@@ -39,6 +39,11 @@ Wire shared memories:
         for k, p in enumerate(polys):
             cv.fillPoly(outputImg, pts = [p], color = k+1)
         return {"segments": retq}, outputImg
+    def _sortByArea(self, segments):
+        def _area(segment):
+            aux = cv.boundingRect(segment["polygon"])
+            return -aux[2]*aux[3]            
+        return [y[1] for y in sorted([(_area(x), x) for x in segments], key=lambda x: x[0])]
     def _prepareDbgImg(self, results, outputImg, dbgImg):
         def _s2c(s):
             h = hash(s)
@@ -49,10 +54,11 @@ Wire shared memories:
            workImg = numpy.zeros((outputImg.shape[0], outputImg.shape[1], 3),dtype=dbgImg.dtype)
         else:
             workImg.fill(0)
-        for e in results.get("segments",[]):
+        sortedSegments = self._sortByArea(results.get("segments",[]))
+        for e in sortedSegments:
             aux = cv.boundingRect(e["polygon"])
             left, top, right, bottom = [aux[0],aux[1], aux[0]+aux[2], aux[1]+aux[3]]
-            cv.fillPoly(workImg, pts=[e["polygon"]], color=_s2c(e["type"]))
+            cv.polylines(workImg, [e["polygon"]], True, _s2c(e["type"]))
             (text_width, text_height), baseline = cv.getTextSize(e["type"], cv.FONT_HERSHEY_SIMPLEX, 0.5, cv.LINE_AA)
             cv.rectangle(workImg,(left,top),(right, bottom),(1.0,1.0,0.0),1)
             cv.putText(workImg, e["type"], (left, top+text_height), cv.FONT_HERSHEY_SIMPLEX, 0.5, (1.0,1.0,1.0), 1, cv.LINE_AA)

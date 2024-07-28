@@ -79,21 +79,21 @@ def getRelativeMovements(previous3D, now3D, queries, approachV, departV):
         return sum(a*b for a,b in zip(dPDir, dVVec))
     kinematicData = {k: getRobotRelativeKinematics(previous3D[k], now3D[k]) for k in now3D.keys() if (previous3D.get(k) is not None) and (now3D[k] is not None)}
     kinematicData["self"] = (numpy.array([0,0,0]), numpy.array([0,0,0]))
-    retq = []
+    retq = set()
     for p, s, o in queries:
         if (s in kinematicData) and (o in kinematicData):
             dV = _relativeSpeed(kinematicData[s][1], kinematicData[o][1], kinematicData[s][0], kinematicData[o][0])
             if dV is None:
                 continue
             if approachV >= dV:
-                retq.append(("approaches", s, o))
-                retq.append(("approaches", o, s))
+                retq.add(("approaches", s, o))
+                retq.add(("approaches", o, s))
             elif departV <= dV:
-                retq.append(("departs", s, o))
-                retq.append(("departs", o, s))
+                retq.add(("departs", s, o))
+                retq.add(("departs", o, s))
             else:
-                retq.append(("stillness", s, o))
-                retq.append(("stillness", o, s))
+                retq.add(("stillness", s, o))
+                retq.add(("stillness", o, s))
     return retq
 
 class OpticalFlow(QueryOnObjectMasks):
@@ -185,7 +185,7 @@ Additionally, gets goal data (sets of triples) from a queue.
                 self._previousFeatures[o], nowFeatures[o], previous3D[o], now3D[o] = computeOpticalFlow(self._previousFeatures.get(o), self._previousImage, self._currentImage, self._currentMaskImgs[o], self._previousDepth, self._currentDepth, lkParams, f)
             relativeMovements = getRelativeMovements(previous3D, now3D, self._queries, self._settings["approachVelocity"], self._settings["departVelocity"])
             if "OutImg" in self._publishers:
-                self._publishers["OutImg"].sendNotifications({"imgId": self._maskResults.get("imgId"), "movements": relativeMovements})
+                self._publishers["OutImg"].sendNotifications({"imgId": self._maskResults.get("imgId"), "triples": relativeMovements})
             # Do we need to prepare a debug image?
             if "DbgImg" in self._publishers:
                 # Here we can hog the shared memory as long as we like -- dbgvis won't use it until we notify it that there's a new frame to show.

@@ -1,0 +1,124 @@
+<?xml version="1.0"?>
+<robot name="table">
+  <link name="top">
+    <inertial>
+        <origin rpy="0 0 0" xyz="0 0 0"/>
+        <mass value="5.0"/>
+        <inertia ixx="4.4e-5" ixy="0.00001" ixz="0.00001" iyy="0.00001" iyz="0.00001" izz="4.4e-5"/>
+    </inertial>
+    <visual>
+      <geometry>
+        <mesh filename="top.obj"/>
+      </geometry>
+    </visual>
+    <collision>
+      <geometry>
+        <mesh filename="top.obj"/>
+      </geometry>
+      <surface>
+           <bounce restitution_coefficient = "0.1"/>
+      </surface>
+    </collision>
+  </link>
+  <link name="leg_1">
+    <inertial>
+        <origin rpy="0 0 0" xyz="0 0 0"/>
+        <mass value="0.5"/>
+        <inertia ixx="4.4e-5" ixy="0.00001" ixz="0.00001" iyy="0.00001" iyz="0.00001" izz="4.4e-5"/>
+    </inertial>
+    <visual>
+      <geometry>
+        <mesh filename="leg.obj"/>
+      </geometry>
+    </visual>
+    <collision>
+      <geometry>
+        <mesh filename="leg.obj"/>
+      </geometry>
+      <surface>
+           <bounce restitution_coefficient = "0.1"/>
+      </surface>
+    </collision>
+  </link>
+  <link name="leg_2">
+    <inertial>
+        <origin rpy="0 0 0" xyz="0 0 0"/>
+        <mass value="0.5"/>
+        <inertia ixx="4.4e-5" ixy="0.00001" ixz="0.00001" iyy="0.00001" iyz="0.00001" izz="4.4e-5"/>
+    </inertial>
+    <visual>
+      <geometry>
+        <mesh filename="leg.obj"/>
+      </geometry>
+    </visual>
+    <collision>
+      <geometry>
+        <mesh filename="leg.obj"/>
+      </geometry>
+      <surface>
+           <bounce restitution_coefficient = "0.1"/>
+      </surface>
+    </collision>
+  </link>
+  <link name="leg_3">
+    <inertial>
+        <origin rpy="0 0 0" xyz="0 0 0"/>
+        <mass value="0.5"/>
+        <inertia ixx="4.4e-5" ixy="0.00001" ixz="0.00001" iyy="0.00001" iyz="0.00001" izz="4.4e-5"/>
+    </inertial>
+    <visual>
+      <geometry>
+        <mesh filename="leg.obj"/>
+      </geometry>
+    </visual>
+    <collision>
+      <geometry>
+        <mesh filename="leg.obj"/>
+      </geometry>
+      <surface>
+           <bounce restitution_coefficient = "0.1"/>
+      </surface>
+    </collision>
+  </link>
+  <link name="leg_4">
+    <inertial>
+        <origin rpy="0 0 0" xyz="0 0 0"/>
+        <mass value="0.5"/>
+        <inertia ixx="4.4e-5" ixy="0.00001" ixz="0.00001" iyy="0.00001" iyz="0.00001" izz="4.4e-5"/>
+    </inertial>
+    <visual>
+      <geometry>
+        <mesh filename="leg.obj"/>
+      </geometry>
+    </visual>
+    <collision>
+      <geometry>
+        <mesh filename="leg.obj"/>
+      </geometry>
+      <surface>
+           <bounce restitution_coefficient = "0.1"/>
+      </surface>
+    </collision>
+  </link>
+  <joint name="top_to_leg_1" type="fixed">
+    <parent link="top"/>
+    <child link="leg_1"/>
+    <origin rpy="0 0 0" xyz="-0.4 0.2 -0.232"/>
+  </joint>
+  <joint name="top_to_leg_2" type="fixed">
+    <parent link="top"/>
+    <child link="leg_2"/>
+    <origin rpy="0 0 0" xyz="0.4 -0.2 -0.232"/>
+  </joint>
+  <joint name="top_to_leg_3" type="fixed">
+    <parent link="top"/>
+    <child link="leg_3"/>
+    <origin rpy="0 0 0" xyz="-0.4 -0.2 -0.232"/>
+  </joint>
+  <joint name="top_to_leg_4" type="fixed">
+    <parent link="top"/>
+    <child link="leg_4"/>
+    <origin rpy="0 0 0" xyz="0.4 0.2 -0.232"/>
+  </joint>
+</robot>
+

@@ -22,7 +22,7 @@ images, not images used in other perception subprocesses.
         if (name in self._subscriptions) or (not isinstance(queue, RatedSimpleQueue)) or (not isinstance(consumerSHM, SHMConsumerPort)):
             return False
         return True
-    def doWork(self):
+    def _doWork(self):
         """
 Loop through the registered input channels. If something
 is in a channel, display it (together with frame rate and
@@ -46,7 +46,7 @@ dropped frame info).
                         cv.putText(segImg,e,(0,text_height+e_height), cv.FONT_HERSHEY_SIMPLEX, 0.5, (0.0,0.5,1.0), 1, cv.LINE_AA)
                     cv.imshow(k, segImg)
         cv.waitKey(10)
-    def cleanup(self):
+    def _cleanup(self):
         """
 Loop through registered input channels and flush them.
 Also close opened visualization windows.

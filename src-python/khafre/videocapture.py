@@ -30,14 +30,11 @@ class RecordedVideoFeed(ReifiedProcess):
         self._videoCapture = None
         self._atVideoT = 0
         self._atRealT = None
-        self._command = Queue()
         self._ended = Queue()
     def _checkPublisherRequest(self, name, queues, consumerSHM):
         return name in {"OutImg", "DbgImg"}
     def _checkSubscriptionRequest(self, name, queue, consumerSHM):
         return False
-    def sendCommand(self, command, block=False, timeout=None):
-        self._command.put(command, block=block, timeout=timeout)
     def hasEnded(self):
         if not self._ended.empty():
             self._ended.get()
@@ -66,8 +63,7 @@ class RecordedVideoFeed(ReifiedProcess):
                     self._publishers["DbgImg"].publish(image, idData)
             else:
                 self._ended.put(True)
-    def doWork(self):
-        while not self._command.empty():
-            self._handleCommand(self._command.get())
-    def cleanup(self):
+    def _doWork(self):
+        pass
+    def _cleanup(self):
         pass

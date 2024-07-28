@@ -204,5 +204,5 @@ Additionally, gets goal data (sets of triples) from a queue.
                         numpy.copyto(dbgImg, cv.resize(workImg, (dbgImg.shape[1], dbgImg.shape[0]), interpolation=cv.INTER_LINEAR))
                 self._publishers["DbgImg"].sendNotifications("%.02f %.02f ifps | %d%% %d%% obj drop" % (self._rateMask if self._rateMask is not None else 0.0, self._rateDepth if self._rateDepth is not None else 0.0, self._droppedMask, self._droppedDepth))
             self._previousFeatures = nowFeatures
-    def cleanup(self):
+    def _cleanup(self):
         pass

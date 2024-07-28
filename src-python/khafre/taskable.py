@@ -59,7 +59,7 @@ class TaskableProcess(ReifiedProcess):
             #    #_=[queries.add(self._orderQuery(p,s,o)) for o in qobjs[p] if s!=o]
             #    _=[queries.add(self._orderQuery(p,s,o)) for o in self.getQueryUniverseOfDiscourse(p) if s!=o]
             self._queries = queries
-    def fillInGenericQueries(self, queryUniverseOfDiscourse):
+    def _fillInGenericQueries(self, queryUniverseOfDiscourse):
         """
 We have two kinds of queries:
     1) specific queries of the form "are X and Y in a particular relationship?" and
@@ -77,7 +77,7 @@ that could possibly be the answer.
             else:
                 _=[queries.append(self._orderQuery(q[0],q[1],o)) for o in queryUniverseOfDiscourse]
         self._queries = queries
-    def doWork(self):
+    def _doWork(self):
         self._interpretGoal()
         self._performStep()
     def _performStep(self):
@@ -94,6 +94,6 @@ class QueryOnObjectMasks(TaskableProcess):
         if (self._objectMaskSubscription in self._subscriptions) and (not self._subscriptions[self._objectMaskSubscription].empty()):
             self._maskResults, self._rateMask, self._droppedMask = self._subscriptions[self._objectMaskSubscription].getWithRates()
             qUniverse = [x["type"] for x in self._maskResults.get("segments", [])]
-            self.fillInGenericQueries(qUniverse)
+            self._fillInGenericQueries(qUniverse)
             return True
         return False

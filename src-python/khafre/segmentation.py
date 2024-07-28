@@ -64,7 +64,7 @@ Wire shared memories:
             cv.putText(workImg, e["type"], (left, top+text_height), cv.FONT_HERSHEY_SIMPLEX, 0.5, (1.0,1.0,1.0), 1, cv.LINE_AA)
         if (outputImg.shape[0] != dbgImg.shape[0]) or (outputImg.shape[1] != dbgImg.shape[1]):
             numpy.copyto(dbgImg, cv.resize(workImg, (dbgImg.shape[1], dbgImg.shape[0]), interpolation=cv.INTER_LINEAR))
-    def customCommand(self, command):
+    def _customCommand(self, command):
         op, args = command
         if "CONFIDENCE" == op:
             self._confidenceThreshold = args[0]

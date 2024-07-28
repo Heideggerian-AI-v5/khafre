@@ -245,9 +245,21 @@ it on request and do custom cleanup code in such cases.
     def __init__(self):
         self._process=None
         self._daemon=False
+        self._command = Queue()
         self._keepOn=False
         self._subscriptions={}
         self._publishers={}
+    def sendCommand(self, command, block=False, timeout=None):
+        self._command.put(command, block=block, timeout=timeout)
+    def _handleCommand(self, command):
+        """
+Subclasses should place command handling code here.
+
+The command queue is checked every iteration. All pending commands
+will be run before doWork. Therefore, keep commands easy to handle
+OR be about rare events (e.g. loading a model).
+        """
+        pass
     def _checkPublisherRequest(self, name, queues, consumerSHM):
         """
 Subclasses should place here the code that will check whether a request
@@ -314,7 +326,7 @@ it to terminate if it has not done so already.
         if isinstance(self._process, Process):
             self._process.join(timeout)
         self._process=None
-    def onStart(self):
+    def _onStart(self):
         """
 Derived classes should extend this method. This is where startup code
 should be placed.
@@ -344,7 +356,7 @@ start it in onStart!
 Even better, have models loadable during the handling of some command.
         """
         pass
-    def doWork(self):
+    def _doWork(self):
         """
 Derived classes should extend this method. This is where the useful
 code, i.e. the one that does the actual work, gets put.
@@ -354,7 +366,7 @@ as long as the process does. This function MUST terminate, e.g. it
 should not include any while True loops.
         """
         pass
-    def cleanup(self):
+    def _cleanup(self):
         """
 Derived classes should extend this method. This is where the cleanup
 code, i.e. the code to call so that the process can exit gracefully
@@ -380,11 +392,13 @@ Runs the object's process and sets up graceful exit on SIGTERM.
         signal.signal(signal.SIGINT, lambda s,f: None)
         self._keepOn = True
         try:
-            self.onStart()
+            self._onStart()
             while self._keepOn:
-                self.doWork()
+                while not self._command.empty():
+                    self._handleCommand(self._command.get())
+                self._doWork()
         except _GracefulExit:
-            self.cleanup()
+            self._cleanup()
             # This will take care of terminating all daemon subprocesses started by this process.
             sys.exit(0)
 

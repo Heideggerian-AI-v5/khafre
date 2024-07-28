@@ -39,5 +39,5 @@ Wire shared memories:
         if (outputImg.shape[0] != dbgImg.shape[0]) or (outputImg.shape[1] != dbgImg.shape[1]):
             cv.resize(workImg, (dbgImg.shape[1], dbgImg.shape[0]), interpolation=cv.INTER_LINEAR)
         numpy.copyto(dbgImg, workImg)
-    def customCommand(self, command):
+    def _customCommand(self, command):
         pass

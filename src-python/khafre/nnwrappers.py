@@ -20,15 +20,12 @@ Wires supported by this subprocess:
     def __init__(self):
         super().__init__()
         self._model = None
-        self._command = Queue()
     def _checkSubscriptionRequest(self, name, queue, consumerSHM):
         return ("InpImg" == name)
     def _checkPublisherRequest(self, name, queues, consumerSHM):
         return name in {"OutImg", "DbgImg"}
     def setModel(self, model):
         self._model = model
-    def sendCommand(self, command, block=False, timeout=None):
-        self._command.put(command, block=block, timeout=timeout)
     def _unloadModel(self):
         if self._model is not None:
             del self._model
@@ -50,7 +47,7 @@ Subclasses should overload this with code appropriate to preparing a dbg image
 from the neural network results.        
         """
         pass
-    def customCommand(self, command):
+    def _customCommand(self, command):
         """
 Subclasses should implement command handling code here.
 
@@ -64,15 +61,8 @@ Subclasses should implement command handling code here.
         elif "UNLOAD" == op:
             self._unloadModel()
         else:
-            self.customCommand(command)
-    def doWork(self):
-        """
-        """
-        # First, check for commands.
-        # This may result in (re)loading a model, and will take time.
-        # Expect some frame drops when that happens.
-        while not self._command.empty():
-            self._handleCommand(self._command.get())
+            self._customCommand(command)
+    def _doWork(self):
         # Do we even have a model loaded? Do we even have an output to send to?
         # Note: it is possible for the user of this process to not want an image as a result, and only a list of detections/polygons etc.
         if (self._model is None):
@@ -97,5 +87,5 @@ Subclasses should implement command handling code here.
                     with self._publishers["DbgImg"] as dbgImg:
                         self._prepareDbgImg(results, outputImg, dbgImg)
                     self._publishers["DbgImg"].sendNotifications("%.02f ifps | %d%% obj drop" % (rate if rate is not None else 0.0, dropped))
-    def cleanup(self):
+    def _cleanup(self):
         self._unloadModel()

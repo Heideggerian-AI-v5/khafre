@@ -33,15 +33,12 @@ class SapienSim(ReifiedProcess):
         self._width = width
         self._height = height
         self._camera = None
-        self._command = Queue()
         self._assets = {}
         self._actors = {}
         
     def _checkPublisherRequest(self, name, queues, consumerSHM):
         return (name in {"OutImg", "DbgImg"}) and ((self._height, self._width)==tuple(consumerSHM._shape[:2]))
-    def sendCommand(self, command, block=False, timeout=None):
-        self._command.put(command, block=block, timeout=timeout)
-    def onStart(self):
+    def _onStart(self):
         self._assets = {}
         self._actors = {}
         self._scene : sapien.Scene = sapien.Scene()
@@ -99,12 +96,7 @@ class SapienSim(ReifiedProcess):
             self._camera.entity.set_pose(sapien.Pose(mat44))
         else:
             pass
-    def doWork(self):
-        """TODO: move command interface to ReifiedProcess
-        """
-        while not self._command.empty():
-            self._handleCommand(self._command.get())
-        """TODO: here is the actual work"""
+    def _doWork(self):
         self._scene.step()
         self._scene.update_render()
         self._camera.take_picture()

@@ -19,7 +19,7 @@ classifiers = [
     "Operating System :: MacOS",
 ]
 urls = { "Documentation" = "https://Heideggerian-AI-v5.github.io/khafre" }
-dependencies = ["argparse", "networkx", "numpy", "opencv-python", "pillow", "py-build-cmake", "pycpd", "requests", "torch", "transformers", "typing", "ultralytics"]
+dependencies = ["argparse", "networkx", "numpy", "opencv-python", "pillow", "py-build-cmake", "pycpd", "pynput", "requests", "torch", "transformers", "typing", "ultralytics"]
 dynamic = ["version", "description"]
 
 [build-system]

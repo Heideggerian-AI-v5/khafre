@@ -5,6 +5,7 @@ opencv-python
 pillow
 py-build-cmake
 pycpd
+pynput
 requests
 torch
 transformers

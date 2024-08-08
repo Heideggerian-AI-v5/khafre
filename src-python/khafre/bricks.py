@@ -616,3 +616,4 @@ class Peeker:
             return
         self._work = False
         self._thread.join()
+

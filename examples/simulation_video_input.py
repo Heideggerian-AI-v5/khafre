@@ -16,21 +16,12 @@ from khafre.segmentation import YOLOObjectSegmentationWrapper
 from khafre.contact import ContactDetection
 from khafre.optical_flow import OpticalFlow
 from khafre.sapien_wrapper import SapienSim
+from khafre.utils import repeatUntilKey
 
 ### Object detection/segmentation example: shows how to set up a connection to the khafre object detection,
 # and between it and a debug visualizer. See the dbgvis_setup_input_connection.py example for more comments
 # on the debug visualizer.
 # In this example, we will attempt to have a pretrained YOLO model recognize objects visible on screen.
-
-# Auxiliary objects to exit on key press (or rather, release)
-goOn={"goOn":True}
-def on_press(key):
-    pass
-def on_release(key):
-    if key == Key.esc:
-        goOn["goOn"] = False
-        # Stop listener
-        return False
 
 def main():
 
@@ -77,10 +68,21 @@ def main():
     procs["sim"].sendCommand(["LOAD ACTOR", ["mug", os.path.join(asset_path, "beermug/BeerMugCollision.obj"), os.path.join(asset_path, "beermug/BeerMugVisual.obj"), [-0.2, 0, 0.44 + 0.05], [1, 0, 0, 0]]])
     procs["sim"].sendCommand(["SET CAMERA POSE", [numpy.array([-2, -2, 3])]])
 
-    with Listener(on_press=on_press, on_release=on_release) as listener:
-            while goOn["goOn"]:
-                time.sleep(0.01)
-            listener.join()
+    # Define and run some code that actually does something with the set up processes.
+
+    # This function will be called repeatedly until some condition happens: either a key is released,
+    # or something inside the function triggers the end.
+        
+    # In this case, we don't need to do anything here but wait, since the simulator is its own subprocess.
+
+    def exampleFn():
+        time.sleep(0.01)
+
+    print("Looking at a simulated scene in Sapien.\nPress ESC to exit. (By the way, this is process %s)" % str(os.getpid()))
+    
+    # Loop the above function until a key is released. For this example, that will be the ESCAPE key.
+    
+    repeatUntilKey(exampleFn)
 
     # A clean exit: stop all subprocesses.
     # In general, you can use stopKhafreProcesses to do what it says. Note that by default it will not raise exceptions.

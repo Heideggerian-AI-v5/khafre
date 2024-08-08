@@ -13,6 +13,7 @@ from khafre.bricks import SHMPort, RatedSimpleQueue, drawWire, setSignalHandlers
 from khafre.dbgvis import DbgVisualizer
 from khafre.segmentation import YOLOObjectSegmentationWrapper
 from khafre.videocapture import RecordedVideoFeed
+from khafre.utils import repeatUntilKey
 
 
 ## DbgVis example: shows how to set up a connection to the khafre debug visualizer.
@@ -87,31 +88,30 @@ def main():
     procs["vc"].sendCommand(("LOAD", (arguments.input_video,)))
     procs["objP"].sendCommand(("LOAD", ("yolov8x-seg.pt",)))
 
-    # Finally, you can enter a loop in which the screen is captured and sent to the DbgVisualizer.
-    # You will also see how many fps your system can manage with this code.
-    # Just as an example, setting up a way to exit the loop without signals as well -- in this case,
-    # when releasing the ESC key.
+    # Define and run some code that actually does something with the set up processes.
+
+    # This function will be called repeatedly until some condition happens: either a key is released,
+    # or something inside the function triggers the end.
+        
+    # This function tells the stored video process to produce a new frame, and will return false when
+    # there are no more frames so that the looping is stopped.
+
+    def exampleFn(procs):
+        # Place the image into the shared port. Also, notify the consumer (DbgVis) that something happened.
+        # Note: screenshot is likely larger than the producer's image. producer.send will automatically resize
+        # in this case.
+
+        # DbgVis can also print something for us. We could also have sent a notification with an empty string
+        # instead.
+        procs["vc"].sendCommand(("FRAME", ()))
+        time.sleep(0.1)
+        return not procs["vc"].hasEnded()
 
     print("Press ESC to exit. (By the way, this is process %s)" % str(os.getpid()))
-    with Listener(on_press=on_press, on_release=on_release) as listener:
-        while goOn["goOn"]:
-
-            # Place the image into the shared port. Also, notify the consumer (DbgVis) that something happened.
-            # Note: screenshot is likely larger than the producer's image. producer.send will automatically resize
-            # in this case.
-
-            # DbgVis can also print something for us. We could also have sent a notification with an empty string
-            # instead.
-            procs["vc"].sendCommand(("FRAME", ()))
-            time.sleep(0.1)
-            if procs["vc"].hasEnded():
-                goOn["goOn"] = False
-                listener.stop()
-            # Usually, some waiting time between iterations of such a loop would also be needed. However, usually
-            # the kind of processes that generate images, such as screenshots and resizes, are "slow", and can
-            # function as a delay themselves.
-
-        listener.join()
+    
+    # Loop the above function until a key is released. For this example, that will be the ESCAPE key.
+    
+    repeatUntilKey(lambda : exampleFn(procs))
 
     # A clean exit: stop all subprocesses.
     # In general, you can use stopKhafreProcesses to do what it says. Note that by default it will not raise exceptions.

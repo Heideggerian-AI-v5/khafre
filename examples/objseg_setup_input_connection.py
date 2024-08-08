@@ -16,21 +16,12 @@ from khafre.depth import TransformerDepthSegmentationWrapper
 from khafre.segmentation import YOLOObjectSegmentationWrapper
 from khafre.contact import ContactDetection
 from khafre.optical_flow import OpticalFlow
+from khafre.utils import repeatUntilKey
 
 ### Object detection/segmentation example: shows how to set up a connection to the khafre object detection,
 # and between it and a debug visualizer. See the dbgvis_setup_input_connection.py example for more comments
 # on the debug visualizer.
 # In this example, we will attempt to have a pretrained YOLO model recognize objects visible on screen.
-
-# Auxiliary objects to exit on key press (or rather, release)
-goOn={"goOn":True}
-def on_press(key):
-    pass
-def on_release(key):
-    if key == Key.esc:
-        goOn["goOn"] = False
-        # Stop listener
-        return False
 
 # Define a function to capture the image from the screen.
 def getImg(sct, monitor):
@@ -99,18 +90,28 @@ def main():
         procs["conP"].getGoalQueue().put([("contact/query", "cup", "table"), ("contact/query", "cup", "dining table")])
         procs["optP"].getGoalQueue().put([("opticalFlow/query/relativeMovement", "cup", "table"), ("opticalFlow/query/relativeMovement", "cup", "dining table")])
 
+        # Define and run some code that actually does something with the set up processes.
+
+        # This function will be called repeatedly until some condition happens: either a key is released,
+        # or something inside the function triggers the end.
+        
+        # This function grabs the screen and sends it to the various processes.
+        # You will also see how many fps your system can manage with this code.
+
+        def exampleFn(sct, monitor, wireList):
+            
+            screenshot = getImg(sct, monitor)
+
+            # Send the screenshot to dbgvis and object detection.
+                
+            wireList["Input Image"].publish((screenshot*255).astype(numpy.uint8), {"imgId": str(time.perf_counter())})
+            wireList["Screenshot Cam"].publish(screenshot, "")
+                
         print("Starting object segmentation and depth estimation will take a while, wait a few seconds for debug windows for them to show up.\nPress ESC to exit. (By the way, this is process %s)" % str(os.getpid()))
-        with Listener(on_press=on_press, on_release=on_release) as listener:
-            while goOn["goOn"]:
 
-                screenshot = getImg(sct, monitor)
-
-                # Send the screenshot to dbgvis and object detection.
-                
-                wireList["Input Image"].publish((screenshot*255).astype(numpy.uint8), {"imgId": str(time.perf_counter())})
-                wireList["Screenshot Cam"].publish(screenshot, "")
-                
-            listener.join()
+        # Loop the above function until a key is released. For this example, that will be the ESCAPE key.
+        
+        repeatUntilKey(lambda : exampleFn(sct, monitor, wireList))
 
         # A clean exit: stop all subprocesses.
         # In general, you can use stopKhafreProcesses to do what it says. Note that by default it will not raise exceptions.

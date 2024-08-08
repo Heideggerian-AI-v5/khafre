@@ -11,6 +11,7 @@ import time
 
 from khafre.bricks import SHMPort, RatedSimpleQueue, drawWire, setSignalHandlers, startKhafreProcesses, stopKhafreProcesses
 from khafre.dbgvis import DbgVisualizer
+from khafre.utils import repeatUntilKey
 
 
 ## DbgVis example: shows how to set up a connection to the khafre debug visualizer.
@@ -20,16 +21,6 @@ from khafre.dbgvis import DbgVisualizer
 # The CPU usage of this process will be 100%: it will send images as fast as it can.
 # The debug visualizer meanwhile doesn't need to do much and its CPU usage will be
 # much lower.
-
-# Auxiliary objects to exit on key press (or rather, release)
-goOn={"goOn":True}
-def on_press(key):
-    pass
-def on_release(key):
-    if key == Key.esc:
-        goOn["goOn"] = False
-        # Stop listener
-        return False
 
 # Define a function to capture the image from the screen.
 def getImg(sct, monitor):
@@ -85,31 +76,40 @@ def main():
 
         startKhafreProcesses(procs)
 
-        # Finally, you can enter a loop in which the screen is captured and sent to the DbgVisualizer.
+        # Step 4: define and run some code that actually does something with the set up processes.
+
+        # This function will be called repeatedly until some condition happens: either a key is released,
+        # or something inside the function triggers the end.
+        
+        # This function grabs the screen and sends it to the debug visualizer.
         # You will also see how many fps your system can manage with this code.
-        # Just as an example, setting up a way to exit the loop without signals as well -- in this case,
-        # when releasing the ESC key.
 
-        print("Press ESC to exit. (By the way, this is process %s)" % str(os.getpid()))
-        with Listener(on_press=on_press, on_release=on_release) as listener:
-            while goOn["goOn"]:
-                screenshot = getImg(sct, monitor)
+        def exampleFn(sct, monitor, wireList):
 
-                # Place the image into the shared port. Also, notify the consumer (DbgVis) that something happened.
-                # Note: screenshot is likely larger than the producer's image. producer.send will automatically resize
-                # in this case.
+            screenshot = getImg(sct, monitor)
 
-                # DbgVis can also print something for us. We could also have sent a notification with an empty string
-                # instead.
-                wireList["Screenshot Cam"].publish(screenshot, "Hello World!")
+            # Place the image into the shared port. Also, notify the consumer (DbgVis) that something happened.
+            # Note: screenshot is likely larger than the producer's image. producer.send will automatically resize
+            # in this case.
+
+            # DbgVis can also print something for us. We could also have sent a notification with an empty string
+            # instead.
+            wireList["Screenshot Cam"].publish(screenshot, "Hello World!")
                 
-                # Usually, some waiting time between iterations of such a loop would also be needed. However, usually
-                # the kind of processes that generate images, such as screenshots and resizes, are "slow", and can
-                # function as a delay themselves.
+            # Usually, some waiting time between iterations of such a loop would also be needed. However, usually
+            # the kind of processes that generate images, such as screenshots and resizes, are "slow", and can
+            # function as a delay themselves.
+            
+            # Returning False will also exit the loop. For this example, we don't need this.
+            return True
+        
+        print("Press ESC to exit. (By the way, this is process %s)" % str(os.getpid()))
 
-            listener.join()
+        # Loop the above function until a key is released. For this example, that will be the ESCAPE key.
+        
+        repeatUntilKey(lambda : exampleFn(sct, monitor, wireList))
 
-        # Step 4: A clean exit:
+        # Step 5: A clean exit:
         # Stop and join the debug visualizer.
         # In general, you can use stopKhafreProcesses to do what it says. Note that by default it will not raise exceptions.
         # If you want to stop processes and handle exceptions yourself, run stopKhafreProcesses(procs, exceptions=True)

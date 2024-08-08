@@ -28,7 +28,14 @@ Wire shared memories:
         self._dbgImg = None
         self._device = device
     def _loadModel(self, modelFileName):
-        self._model = pipeline("depth-estimation", model=modelFileName, device=self._device)
+        try:
+            self._model = pipeline("depth-estimation", model=modelFileName, device=self._device)
+        except RuntimeError as e:
+            if "cpu" != self._device:
+                print("Encountered exception: %s\nWill attempt to fall back to running the model on cpu, but this will be very slow!" % str(e))
+                self._model = pipeline("depth-estimation", model=modelFileName, device="cpu")
+            else:
+                raise e
     def _useModel(self, img):
         predictions = self._model(Image.fromarray(img))
         # interpolate to original size

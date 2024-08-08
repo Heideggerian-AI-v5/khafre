@@ -9,7 +9,7 @@ import signal
 import sys
 import time
 
-from khafre.bricks import SHMPort, RatedSimpleQueue, drawWire
+from khafre.bricks import SHMPort, RatedSimpleQueue, drawWire, setSignalHandlers, startKhafreProcesses, stopKhafreProcesses
 from khafre.dbgvis import DbgVisualizer
 
 
@@ -31,11 +31,6 @@ def on_release(key):
         # Stop listener
         return False
 
-## An auxiliary function to set up a signal handler for SIGTERM and SIGINT
-def doExit(signum, frame, vp):
-    vp.stop()
-    sys.exit()
-
 # Define a function to capture the image from the screen.
 def getImg(sct, monitor):
     sct_img = sct.grab(monitor)
@@ -49,6 +44,10 @@ def main():
     # Keep this variable alive at least as long as the subprocesses are running.
 
     wireList = {}
+    
+    # For ease of start up, cleanup, and setting up termination handlers, process objects should be stored in a dictionary.
+    
+    procs = {}
 
     # Step 1: setting up your data source
     # In this case, the data source is one of your monitors, so will set up some variables 
@@ -68,21 +67,23 @@ def main():
         imgWidth,imgHeight = (240,int(monitor["height"]*240.0/monitor["width"]))
         
         # Step 2: initialize a DebugVisualizer object.
-        vp = DbgVisualizer()
+        procs["vp"] = DbgVisualizer()
 
-        drawWire("Screenshot Cam", [], [("Screenshot Cam", vp)], (imgHeight, imgWidth, 3), numpy.float32, RatedSimpleQueue, wireList=wireList)
+        drawWire("Screenshot Cam", [], [("Screenshot Cam", procs["vp"])], (imgHeight, imgWidth, 3), numpy.float32, RatedSimpleQueue, wireList=wireList)
 
-        # Optional, but STRONGLY recommended: set up signal handlers. The handlers must trigger the 
+        # Optional, but STRONGLY recommended: set up signal handlers. The handlers will trigger the 
         # termination of the DbgVisualizer subprocess. Alternatively, ensure in some other way that
         # subprocesses are terminated at exit.
+        # Note that the previously registered sigint and sigterm handlers are returned, so you can
+        # restore them if you need to. That may be the case when you stop the khafre processes manually,
+        # and then wish to continue running your program anyway.
 
-        signal.signal(signal.SIGTERM, lambda signum, frame: doExit(signum, frame, vp))
-        signal.signal(signal.SIGINT, lambda signum, frame: doExit(signum, frame, vp))
-
+        sigintHandler, sigtermHandler = setSignalHandlers(procs)
+        
         # Step 3: running the visualizer
         # You can start the debug visualizer process now.
 
-        vp.start()
+        startKhafreProcesses(procs)
 
         # Finally, you can enter a loop in which the screen is captured and sent to the DbgVisualizer.
         # You will also see how many fps your system can manage with this code.
@@ -110,8 +111,10 @@ def main():
 
         # Step 4: A clean exit:
         # Stop and join the debug visualizer.
+        # In general, you can use stopKhafreProcesses to do what it says. Note that by default it will not raise exceptions.
+        # If you want to stop processes and handle exceptions yourself, run stopKhafreProcesses(procs, exceptions=True)
 
-        vp.stop()
+        stopKhafreProcesses(procs)
 
 if "__main__" == __name__:
     main()

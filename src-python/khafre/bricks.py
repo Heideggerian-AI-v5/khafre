@@ -52,6 +52,71 @@ in your codebase.
     """
     raise _GracefulExit()
 
+def _getProcs(procs, exceptions):
+    if isinstance(procs, list) or isinstance(procs, tuple):
+        procs = procs
+    elif isinstance(procs, dict):
+        procs = procs.values()
+    else:
+        if exceptions:
+            raise ValueError("ValueError: procs argument not a list or dictionary")
+        procs = []
+    return procs
+
+def startKhafreProcesses(procs):
+    procs = _getProcs(procs, True)
+    _ = [e.start() for e in procs]
+
+def stopKhafreProcesses(procs, exceptions=False):
+    """
+Utility function to stop khafre reified processes.
+
+By default, function will try to ignore exceptions, i.e. it will return
+without doing anything if procs is not a list or dictionary,
+and any element of procs that is not a ReifiedProcess is ignored.
+Any exceptions thrown by the stopping of a reified process are
+also caught and, apart from printing an error message, ignored.
+
+This is an attempt to make it safe to use in signal handlers, with
+the intention being that nothing that happens in a signal handler
+should raise further exceptions and allow the signal handler to do
+its job, e.g. terminate the program.
+
+Input arguments:
+    procs: list or dictionary of reified processes to stop.
+    """
+    def _tryStop(proc, exceptions):
+        try:
+            proc.stop()
+        except Exception as e:
+            print("Encountered exception while attempting to stop %s:\n%s" % (str(proc), str(e)))
+            if exceptions:
+                raise e
+    procs = _getProcs(procs, exceptions)
+    _ = [_tryStop(e, exceptions) for e in procs if (exceptions or isinstance(e, ReifiedProcess))]
+
+def setSignalHandlers(procs):
+    """
+Sets up khafre process termination on signal.SIGTERM and signal.SIGINT.
+
+The previously set handlers will be called after stop requests are sent
+to khafre reified processes in procs.
+
+Input arguments:
+    procs: list or dictionary of ReifiedProcess objects
+Output arguments:
+    sigintHandler: previous handler for signal.SIGINT
+    sigtermHandler: previous handler for signal.SIGTERM
+    """
+    def _sigHandler(signum, frame, procs, handler):
+        stopKhafreProcesses(procs)
+        handler(signum, frame)
+    sigintHandler = signal.getsignal(signal.SIGINT)
+    sigtermHandler = signal.getsignal(signal.SIGTERM)
+    signal.signal(signal.SIGINT, lambda signum, frame: _sigHandler(signum, frame, procs, sigintHandler))
+    signal.signal(signal.SIGTERM, lambda signum, frame: _sigHandler(signum, frame, procs, sigtermHandler))
+    return sigintHandler, sigtermHandler
+
 class RatedSimpleQueue:
    """
 Wraps around a multiprocessing queue, maintains information about rate of 

@@ -10,7 +10,7 @@ import signal
 import sys
 import time
 
-from khafre.bricks import RatedSimpleQueue, SHMPort, drawWire
+from khafre.bricks import RatedSimpleQueue, SHMPort, drawWire, setSignalHandlers, startKhafreProcesses, stopKhafreProcesses
 from khafre.dbgvis import DbgVisualizer
 from khafre.depth import TransformerDepthSegmentationWrapper
 from khafre.segmentation import YOLOObjectSegmentationWrapper
@@ -32,15 +32,6 @@ def on_release(key):
         # Stop listener
         return False
 
-## An auxiliary function to set up a signal handler for SIGTERM and SIGINT
-def doExit(signum, frame, dbgP, objP, dptP, conP, optP):
-    dbgP.stop()
-    objP.stop()
-    dptP.stop()
-    conP.stop()
-    optP.stop()
-    sys.exit()
-
 # Define a function to capture the image from the screen.
 def getImg(sct, monitor):
     sct_img = sct.grab(monitor)
@@ -55,6 +46,10 @@ def main():
 
     wireList={}
 
+    # For ease of start up, cleanup, and setting up termination handlers, process objects should be stored in a dictionary.
+    
+    procs = {}
+
     with mss.mss() as sct:
 
         monitor = sct.monitors[1]
@@ -64,43 +59,45 @@ def main():
         # We will need a debug visualizer, a depth estimator, and object detection processes.
         # Construct process objects. These are not started yet.
         
-        dbgP = DbgVisualizer()
-        objP = YOLOObjectSegmentationWrapper()
+        procs["dbgP"] = DbgVisualizer()
+        procs["objP"] = YOLOObjectSegmentationWrapper()
         # Monocular depth estimation is VERY computationally expensive, try to have it run on the GPU
-        dptP = TransformerDepthSegmentationWrapper(device="cuda")
-        conP = ContactDetection()
-        optP = OpticalFlow()
+        procs["dptP"] = TransformerDepthSegmentationWrapper(device="cuda")
+        procs["conP"] = ContactDetection()
+        procs["optP"] = OpticalFlow()
 
         # Set up the connections to dbg visualizer and object detection.
 
-        drawWire("Screenshot Cam", [], [("Screenshot Cam", dbgP)], (imgHeight, imgWidth, 3), numpy.float32, RatedSimpleQueue, wireList=wireList)
-        drawWire("Input Image", [], [("InpImg", objP), ("InpImg", dptP), ("InpImg", optP)], (imgHeight, imgWidth, 3), numpy.uint8, RatedSimpleQueue, wireList=wireList)
-        drawWire("Dbg Obj Seg", [("DbgImg", objP)], [("Object Detection/Segmentation", dbgP)], (imgHeight, imgWidth, 3), numpy.float32, RatedSimpleQueue, wireList=wireList)
-        drawWire("Dbg Depth", [("DbgImg", dptP)], [("Depth Estimation", dbgP)], (imgHeight, imgWidth, 3), numpy.float32, RatedSimpleQueue, wireList=wireList)
-        drawWire("Mask Image", [("OutImg", objP)], [("MaskImg", conP), ("MaskImg", optP)], (imgHeight, imgWidth), numpy.uint16, RatedSimpleQueue, wireList=wireList)
-        drawWire("Depth Image", [("OutImg", dptP)], [("DepthImg", conP), ("DepthImg", optP)], (imgHeight, imgWidth), numpy.float32, RatedSimpleQueue, wireList=wireList)
-        drawWire("Dbg Contact", [("DbgImg", conP)], [("Contact Detection", dbgP)], (imgHeight, imgWidth, 3), numpy.float32, RatedSimpleQueue, wireList=wireList)
-        drawWire("Dbg Optical Flow", [("DbgImg", optP)], [("Optical Flow (sparse)", dbgP)], (imgHeight, imgWidth, 3), numpy.float32, RatedSimpleQueue, wireList=wireList)
+        drawWire("Screenshot Cam", [], [("Screenshot Cam", procs["dbgP"])], (imgHeight, imgWidth, 3), numpy.float32, RatedSimpleQueue, wireList=wireList)
+        drawWire("Input Image", [], [("InpImg", procs["objP"]), ("InpImg", procs["dptP"]), ("InpImg", procs["optP"])], (imgHeight, imgWidth, 3), numpy.uint8, RatedSimpleQueue, wireList=wireList)
+        drawWire("Dbg Obj Seg", [("DbgImg", procs["objP"])], [("Object Detection/Segmentation", procs["dbgP"])], (imgHeight, imgWidth, 3), numpy.float32, RatedSimpleQueue, wireList=wireList)
+        drawWire("Dbg Depth", [("DbgImg", procs["dptP"])], [("Depth Estimation", procs["dbgP"])], (imgHeight, imgWidth, 3), numpy.float32, RatedSimpleQueue, wireList=wireList)
+        drawWire("Mask Image", [("OutImg", procs["objP"])], [("MaskImg", procs["conP"]), ("MaskImg", procs["optP"])], (imgHeight, imgWidth), numpy.uint16, RatedSimpleQueue, wireList=wireList)
+        drawWire("Depth Image", [("OutImg", procs["dptP"])], [("DepthImg", procs["conP"]), ("DepthImg", procs["optP"])], (imgHeight, imgWidth), numpy.float32, RatedSimpleQueue, wireList=wireList)
+        drawWire("Dbg Contact", [("DbgImg", procs["conP"])], [("Contact Detection", procs["dbgP"])], (imgHeight, imgWidth, 3), numpy.float32, RatedSimpleQueue, wireList=wireList)
+        drawWire("Dbg Optical Flow", [("DbgImg", procs["optP"])], [("Optical Flow (sparse)", procs["dbgP"])], (imgHeight, imgWidth, 3), numpy.float32, RatedSimpleQueue, wireList=wireList)
         
-        # Optional, but STRONGLY recommended: set signal handlers that will ensure the subprocesses terminate on exit.
-        signal.signal(signal.SIGTERM, lambda signum, frame: doExit(signum, frame, dbgP, objP, dptP, conP, optP))
-        signal.signal(signal.SIGINT, lambda signum, frame: doExit(signum, frame, dbgP, objP, dptP, conP, optP))
+        # Optional, but STRONGLY recommended: set up signal handlers. The handlers will trigger the 
+        # termination of the various subprocesses. Alternatively, ensure in some other way that
+        # subprocesses are terminated at exit.
+        # Note that the previously registered sigint and sigterm handlers are returned, so you can
+        # restore them if you need to. That may be the case when you stop the khafre processes manually,
+        # and then wish to continue running your program anyway.
+
+        sigintHandler, sigtermHandler = setSignalHandlers(procs)
 
         # Only after all connection objects -- shared memories and notification queues -- are set up, we can start.
-        dbgP.start()
-        objP.start()
-        dptP.start()
-        conP.start()
-        optP.start()
+
+        startKhafreProcesses(procs)
         
         # RECOMMENDED: tell the object detection to load a model AFTER starting the process. This might avoid some unnecessary
         # copying of a large object when starting the process.
         
-        objP.sendCommand(("LOAD", ("yolov8n-seg.pt",)))
-        dptP.sendCommand(("LOAD", ("vinvino02/glpn-nyu",)))
+        procs["objP"].sendCommand(("LOAD", ("yolov8n-seg.pt",)))
+        procs["dptP"].sendCommand(("LOAD", ("vinvino02/glpn-nyu",)))
 
-        conP.getGoalQueue().put([("contact/query", "cup", "table"), ("contact/query", "cup", "dining table")])
-        optP.getGoalQueue().put([("opticalFlow/query/relativeMovement", "cup", "table"), ("opticalFlow/query/relativeMovement", "cup", "dining table")])
+        procs["conP"].getGoalQueue().put([("contact/query", "cup", "table"), ("contact/query", "cup", "dining table")])
+        procs["optP"].getGoalQueue().put([("opticalFlow/query/relativeMovement", "cup", "table"), ("opticalFlow/query/relativeMovement", "cup", "dining table")])
 
         print("Starting object segmentation and depth estimation will take a while, wait a few seconds for debug windows for them to show up.\nPress ESC to exit. (By the way, this is process %s)" % str(os.getpid()))
         with Listener(on_press=on_press, on_release=on_release) as listener:
@@ -116,12 +113,10 @@ def main():
             listener.join()
 
         # A clean exit: stop all subprocesses.
-        
-        optP.stop()
-        objP.stop()
-        conP.stop()
-        dptP.stop()
-        dbgP.stop()
+        # In general, you can use stopKhafreProcesses to do what it says. Note that by default it will not raise exceptions.
+        # If you want to stop processes and handle exceptions yourself, run stopKhafreProcesses(procs, exceptions=True)
+
+        stopKhafreProcesses(procs)
 
 if "__main__" == __name__:
     main()

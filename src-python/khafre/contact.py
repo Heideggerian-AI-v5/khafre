@@ -1,7 +1,5 @@
 import cv2 as cv
-from khafre.bricks import RatedSimpleQueue
-from khafre.taskable import TaskableProcess, QueryOnObjectMasks
-from multiprocessing import Queue
+from khafre.taskable import TaskableProcess
 import numpy
 
 from .contactcpp import _contact
@@ -104,7 +102,7 @@ Returns:
     contPO = _expand(imgHeight, imgWidth, maskImgs[o], contPO)
     return contPS, contPO
 
-class ContactDetection(QueryOnObjectMasks):
+class ContactDetection(TaskableProcess):
     """
 Subprocess in which contact masks are calculated based on an object mask image and a depth image.
 
@@ -118,25 +116,18 @@ Additionally, gets goal data (sets of triples) from a queue.
     """
     def __init__(self):
         super().__init__()
+        self._dbgImg = None
         self._prefix="contact"
-        self._objectMaskSubscription = "MaskImg"
         self._settings["searchWidth"] = 7
         self._settings["threshold"] = 0.05
         self._settings["radius"] = 5
         self._dilationKernel = cv.getStructuringElement(cv.MORPH_ELLIPSE, (2*5 + 1, 2*5 + 1), (5, 5))
         self._symmetricPredicates.add("contact/query")
-        self._maskResults = {}
-        self._depthResults = {}
-        self._currentGoals = []
-        self._rateMask = None
-        self._droppedMask = 0
-        self._rateDepth = None
-        self._droppedDepth = 0
     def _adjustDilationKernel(self, dr):
         self._dilationKernel = cv.getStructuringElement(cv.MORPH_ELLIPSE, (2*dr + 1, 2*dr + 1), (dr, dr))
-    def _checkSubscriptionRequest(self, name, queue, consumerSHM):
+    def _checkSubscriptionRequest(self, name, wire):
         return name in {"MaskImg", "DepthImg"}
-    def _checkPublisherRequest(self, name, queues, consumerSHM):
+    def _checkPublisherRequest(self, name, wire):
         return name in {"OutImg", "DbgImg"}
     def _performStep(self):
         """
@@ -152,64 +143,44 @@ Additionally, gets goal data (sets of triples) from a queue.
             h = hash(s)
             b,g,r = ((h&0xFF)), ((h&0xFF00)>>8), ((h&0xFF0000)>>16)
             return (b/255.0, g/255.0, r/255.0)
-        haveNew = False
-        if not self._subscriptions["DepthImg"].empty():
-            haveNew = True
-            self._depthResults, self._rateDepth, self._droppedDepth = self._subscriptions["DepthImg"].getWithRates()
-        haveNew = haveNew or self._checkObjectMaskSubscription()
-        if haveNew and (self._maskResults.get("imgId") == self._depthResults.get("imgId")):
-            with self._subscriptions["MaskImg"] as maskImg:
-                maskImgs = _getMaskImgs(maskImg, self._maskResults)
-            with self._subscriptions["DepthImg"] as depthImg:
-                depthImgLocal = numpy.copy(depthImg)
-            imgHeight, imgWidth = depthImgLocal.shape
-            outputImg = numpy.zeros((imgHeight, imgWidth), dtype=numpy.uint32)
-            results = {"imgId": self._maskResults.get("imgId"), "idx2Contact": {}, "contact2Idx": {}, "triples": set()}
-            queries = []
-            qUniverse = [x["type"] for x in self._maskResults.get("segments", [])]
-            for q in self._queries:
-                if q[2] is not None:
-                    queries.append(q)
-                else:
-                    _=[queries.append(self._orderQuery(q[0],q[1],o)) for o in qUniverse]
-            self._queries = queries
-            qobjs = set([x[1] for x in self._queries]).union([x[2] for x in self._queries])
-            dilatedImgs = {k: cv.dilate(maskImgs[k], self._dilationKernel) for k in qobjs if k in maskImgs}
-            for k, (p, s, o) in enumerate(self._queries):
-                if (s not in maskImgs) or (o not in maskImgs):
-                    continue
-                k = (k+1)*2
-                idSO = k
-                idOS = k-1
-                results["idx2Contact"][idSO] = (s,o)
-                results["idx2Contact"][idOS] = (o,s)
-                results["contact2Idx"][(s,o)] = idSO
-                results["contact2Idx"][(o,s)] = idOS
-                contPS, contPO = contact(self._settings["searchWidth"], self._settings["threshold"], imgHeight, imgWidth, s, o, dilatedImgs, maskImgs, depthImgLocal)
-                if (contPS>0).any():
-                    results["triples"].add(("contact", s, o))
-                    results["triples"].add(("contact", o, s))
-                else:
-                    results["triples"].add(("-contact", s, o))
-                    results["triples"].add(("-contact", o, s))
-                outputImg[contPS>0] = idSO
-                outputImg[contPO>0] = idOS
-            if "OutImg" in self._publishers:
-                self._publishers["OutImg"].publish(outputImg, results)
-            # Do we need to prepare a debug image?
-            if "DbgImg" in self._publishers:
-                # Here we can hog the shared memory as long as we like -- dbgvis won't use it until we notify it that there's a new frame to show.
-                with self._publishers["DbgImg"] as dbgImg:
-                    workImg = dbgImg
-                    if (outputImg.shape[0] != dbgImg.shape[0]) or (outputImg.shape[1] != dbgImg.shape[1]):
-                        workImg = numpy.zeros((outputImg.shape[0], outputImg.shape[1], 3),dtype=dbgImg.dtype)
-                    else:
-                        workImg.fill(0)
-                    todos = [(k, _s2c(str(k))) for k in results["idx2Contact"].keys()]
-                    for k, color in todos:
-                        workImg[outputImg==k]=color
-                    if (outputImg.shape[0] != dbgImg.shape[0]) or (outputImg.shape[1] != dbgImg.shape[1]):
-                        numpy.copyto(dbgImg, cv.resize(workImg, (dbgImg.shape[1], dbgImg.shape[0]), interpolation=cv.INTER_LINEAR))
-                self._publishers["DbgImg"].sendNotifications("%.02f %.02f ifps | %d%% %d%% obj drop" % (self._rateMask if self._rateMask is not None else 0.0, self._rateDepth if self._rateDepth is not None else 0.0, self._droppedMask, self._droppedDepth))
+        maskResults, maskImg, rateMask, droppedMask = self._requestSubscribedData("MaskImg")
+        maskImgs = _getMaskImgs(maskImg, maskResults)
+        depthResults, depthImg, rateDepth, droppedDepth = self._requestSubscribedData("DepthImg")
+        imgHeight, imgWidth = depthImg.shape
+        outputImg = numpy.zeros((imgHeight, imgWidth), dtype=numpy.uint32)
+        results = {"imgId": maskResults.get("imgId"), "idx2Contact": {}, "contact2Idx": {}, "triples": set()}
+        qUniverse = [x["type"] for x in maskResults.get("segments", [])]
+        self._fillInGenericQueries(qUniverse)
+        qobjs = set([x[1] for x in self._queries]).union([x[2] for x in self._queries])
+        dilatedImgs = {k: cv.dilate(maskImgs[k], self._dilationKernel) for k in qobjs if k in maskImgs}
+        for k, (p, s, o) in enumerate(self._queries):
+            if (s not in maskImgs) or (o not in maskImgs):
+                continue
+            k = (k+1)*2
+            idSO = k
+            idOS = k-1
+            results["idx2Contact"][idSO] = (s,o)
+            results["idx2Contact"][idOS] = (o,s)
+            results["contact2Idx"][(s,o)] = idSO
+            results["contact2Idx"][(o,s)] = idOS
+            contPS, contPO = contact(self._settings["searchWidth"], self._settings["threshold"], imgHeight, imgWidth, s, o, dilatedImgs, maskImgs, depthImg)
+            if (contPS>0).any():
+                results["triples"].add(("contact", s, o))
+                results["triples"].add(("contact", o, s))
+            else:
+                results["triples"].add(("-contact", s, o))
+                results["triples"].add(("-contact", o, s))
+            outputImg[contPS>0] = idSO
+            outputImg[contPO>0] = idOS
+        self._requestToPublish("OutImg", results, outputImg)
+        # Do we need to prepare a debug image?
+        if self.havePublisher("DbgImg"):
+            if self._dbgImg is None:
+                self._dbgImg = numpy.zeros((outputImg.shape[0], outputImg.shape[1], 3), numpy.float32)
+            self._dbgImg[:,:,:]=0.0
+            todos = [(k, _s2c(str(k))) for k in results["idx2Contact"].keys()]
+            for k, color in todos:
+                self._dbgImg[outputImg==k]=color
+            self._requestToPublish("DbgImg", "%.02f %.02f ifps | %d%% %d%% obj drop" % (rateMask if rateMask is not None else 0.0, rateDepth if rateDepth is not None else 0.0, droppedMask, droppedDepth), self._dbgImg)
     def _cleanup(self):
         pass

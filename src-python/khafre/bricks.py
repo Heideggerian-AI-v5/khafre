@@ -5,16 +5,17 @@
 import array
 import cv2 as cv
 import copy
+import ctypes
 from functools import reduce
 import os
-from multiprocessing import shared_memory, Process, RLock, Queue, SimpleQueue, Pipe
+from multiprocessing import shared_memory, Condition, Process, Queue, SimpleQueue, Value
 import numpy
 import time
 import signal
 import sys
 import threading
 from threading import Thread
-from typing import Sequence, Union
+from typing import Optional, Sequence, Union
 import weakref
 
 class BadPublisher(Exception):
@@ -166,7 +167,7 @@ last 100. Reported in %.
        self._queue.put((rate,e))
    def _get(self, block=True, timeout=None):
        if self._queue.empty():
-           rate, e = self._queue.get(block=block,timeout=timeout)
+           rate, e = self._queue.get()
            self._markHistory()
        else:
            while not self._queue.empty():
@@ -185,122 +186,132 @@ last 100. Reported in %.
 # on architectures without process forking?)
 # Workaround: send the ReifiedProcess as an argument to a function
 # that then calls its run function 
-def picklePusher(rp):
+def _picklePusher(rp):
     rp._run()
 
-def _closeSHMProducerPort(shm,lock,active):
-    shm.close()
-    shm.unlink()
-    active["active"] = False
-    # We may have released the lock already, in which case just ignore the exception.
-    try:
-        lock.release()
-    except:
-        pass
-    
-class SHMProducerPort:
-    """
-Defines a "producer port" for sharing a numpy array between subprocesses.
-The numpy array size and type must be known at construction and may not
-be changed afterwards. The array element type must be a numeric type.
+def _closeWire(shm):
+    if shm is not None:
+        shm.close()
+        shm.unlink()
 
-The producer is responsible for allocating and freeing up the shared memory.
-
-The consumers may write in the shared memory as well.
-
-Note, consumers are NOT automatically notified about updates to the shared memory.
-Some other mechanism, e.g. a queue or pipe, is needed.
-
-It is possible to either copy a numpy array wholesale via the send function,
-or to access the numpy array inside a with block.
-
-A typical pattern is to create a pair of producer and consumer ports with the
-SHMPort() function. The consumer port object may be used to initialize several
-subprocesses. In this case, the size of the shared buffer will never change.
-
-Producers must be created by a "main" process -- or in any case, if a process
-creates a producer, then it must not give it to a khafre subprocess. Khafre
-subprocesses must use consumer ports instead.
-
-It is possible to implement a producer/consumer relationship that allows
-consumers to be fed variable-sized buffers. It is however more difficult to
-write and its cost/benefit ratio may not be favorable in most cases.
-    """
-    def __init__(self, shape:Union[list,tuple], dtype:numpy.dtype):
-        """
-Initialize the SHMProducerPort object.
-
-    shape: tuple, a numpy array shape
-    dtype: numpy.dtype, a numeric numpy data type for the array elements
-        """
-        buffsize = reduce(lambda x,y: x*y, shape)*dtype(1).nbytes
-        self._shm = shared_memory.SharedMemory(create=True, size=buffsize)
-        self._npArray = numpy.ndarray(shape, dtype=dtype, buffer=self._shm.buf)
-        self._lock = RLock()
-        self._active={"active":True}
-        self._finalizer = weakref.finalize(self,_closeSHMProducerPort,self._shm,self._lock,self._active)
-    def send(self, src):
-        """
-Write the contents of array src to the shared memory buffer.
-
-Note, src must have the shame shape and data type as used to create this port. No checks are
-performed however.
-        """
-        if not self._active["active"]:
-            raise ValueError
-        srcH, srcW = src.shape[0], src.shape[1]
-        if(srcH != self._npArray.shape[0]) or (srcW != self._npArray.shape[1]):
-            src = cv.resize(src, (self._npArray.shape[1], self._npArray.shape[0]), interpolation=cv.INTER_LINEAR)
-        with self._lock:
-            numpy.copyto(self._npArray, src)
-    def __enter__(self):
-        if not self._active["active"]:
-            raise ValueError
-        self._lock.acquire()
-        return self._npArray
-    def __exit__(self, exit_type, value, traceback):
-        self._lock.release()
-        return False
-
-class SHMConsumerPort:
-    """
-Defines a "consumer port" for sharing a numpy array between subprocesses.
-
-A consumer may write to the shared region, or copy a numpy array wholesale via
-the send method. The difference to the producer is that a consumer is not responsible 
-for deallocating the shared memory.
-
-Typically, a consumer port is created paired with a producer port, via the
-SHMPort() function.
-    
-    """
-    def __init__(self, lock, name, shape, dtype):
-        self._lock = lock
-        self._shm = None
+class _Wire:
+    def __init__(self, name, shape:Optional[Union[list,tuple]]=None, dtype:Optional[numpy.dtype]=None):
         self._name = name
-        self._shape = shape
-        self._dtype = dtype
-    def send(self, src):
-        srcH, srcW = src.shape[0], src.shape[1]
-        self._shm = shared_memory.SharedMemory(name=self._name)
-        npArray = numpy.ndarray(self._shape, dtype=self._dtype, buffer=self._shm.buf)
-        if(srcH != self._shape[0]) or (srcW != self._shape[1]):
-            src = cv.resize(src, (self._shape[1], self._shape[0]), interpolation=cv.INTER_LINEAR)
-        with self._lock:
-            numpy.copyto(npArray, src)
-    def __enter__(self):
-        self._lock.acquire()
-        self._shm = shared_memory.SharedMemory(name=self._name)
-        return numpy.ndarray(self._shape, dtype=self._dtype, buffer=self._shm.buf)
-    def __exit__(self, exit_type, value, traceback):
-        self._shm.close()
-        self._lock.release()
-        return False
+        self._readerCount = Value(ctypes.c_int32)
+        self._state = Value(ctypes.c_int32)
+        self._state.value = 0
+        self._shm = None
+        self._npArray = None
+        self._notifications = []
+        self._writerEvent = {"event": None}
+        self._readerEvents = []
+        if (shape is not None) and (dtype is not None):
+            buffsize = reduce(lambda x,y: x*y, shape)*dtype(1).nbytes
+            self._shm = shared_memory.SharedMemory(create=True, size=buffsize)
+            self._npArray = numpy.ndarray(shape, dtype=dtype, buffer=self._shm.buf)
+        self._finalizer = weakref.finalize(self,_closeWire,self._shm)
+    def isReadyForPublishing(self):
+        return 0 == self._state.value
+    def publish(self, notifData, shmData):
+        """
+AVOID using this function. Only included for some debug purposes.
+        """
+        if self._shm is None and (shmData is not None):
+            raise ValueError("Attempting to send an array over a wire with no shared memory.")
+        if not self.isReadyForPublishing():
+            raise AssertionError("Attempting to send before all readers copied previous data.")
+        if shmData is not None:
+            srcH, srcW = shmData.shape[0], shmData.shape[1]
+            if(srcH != self._npArray.shape[0]) or (srcW != self._npArray.shape[1]):
+                shmData = cv.resize(shmData, (self._npArray.shape[1], self._npArray.shape[0]), interpolation=cv.INTER_LINEAR)
+            numpy.copyto(self._npArray, shmData)
+        _=[x.put(notifData) for x in self._notifications]
+        self._state.value = self._readerCount.value
+        for e in self._readerEvents:
+            if e is not None:
+                with e:
+                    e.notify_all()
 
-def SHMPort(shape:Union[list,tuple], dtype:numpy.dtype):
-    producer = SHMProducerPort(shape,dtype)
-    consumer = SHMConsumerPort(producer._lock, producer._shm.name, shape, dtype)
-    return producer, consumer
+class _PublisherPort:
+    def __init__(self, wire, event):
+        self._name = wire._name
+        self._shm = None
+        self._npArray = None
+        self._shmName = None
+        self._shape = None
+        self._dtype = None
+        if wire._npArray is not None:
+            self._shmName = wire._shm.name
+            self._shape = wire._npArray.shape
+            self._dtype = wire._npArray.dtype
+        self._state = wire._state
+        self._readerCount = wire._readerCount
+        self._notifications = wire._notifications
+        self._events = wire._readerEvents
+        wire._writerEvent["event"] = event
+    def hasSHM(self):
+        return self._shm is not None
+    def isReady(self):
+        return 0 == self._state.value
+    def publish(self, notifData, shmData):
+        if self._shmName is None and (shmData is not None):
+            raise ValueError("Attempting to send an array over a wire with no shared memory.")
+        if not self.isReady():
+            raise AssertionError("Attempting to send before all readers copied previous data.")
+        if shmData is not None:
+            if self._shm is None:
+                self._shm = shared_memory.SharedMemory(name=self._shmName)
+                self._npArray = numpy.ndarray(self._shape, dtype=self._dtype, buffer=self._shm.buf)
+            srcH, srcW = shmData.shape[0], shmData.shape[1]
+            if(srcH != self._shape[0]) or (srcW != self._shape[1]):
+                shmData = cv.resize(shmData, (self._shape[1], self._shape[0]), interpolation=cv.INTER_LINEAR)
+            numpy.copyto(self._npArray, shmData)
+        _=[x.put(notifData) for x in self._notifications]
+        self._state.value = self._readerCount.value
+        for e in self._events:
+            if e is not None:
+                with e:
+                    e.notify_all()
+
+class _SubscriberPort:
+    def __init__(self, wire, event):
+        self._name = wire._name
+        self._shm = None
+        self._npArray = None
+        self._shmName = None
+        self._shape = None
+        self._dtype = None
+        if wire._npArray is not None:
+            self._shmName = wire._shm.name
+            self._shape = wire._npArray.shape
+            self._dtype = wire._npArray.dtype
+        self._state = wire._state
+        self._notification = RatedSimpleQueue()
+        self._event = wire._writerEvent
+        with wire._readerCount:
+            wire._readerCount.value += 1
+            wire._notifications.append(self._notification)
+            wire._readerEvents.append(event)
+    def hasSHM(self):
+        return self._shm is not None
+    def isReady(self):
+        return (not self._notification.empty())
+    def receive(self):
+        if not self.isReady():
+            raise AssertionError("Attempting to read before data available.")
+        shmData = None
+        if self._shmName is not None:
+            if self._shm is None:
+                self._shm = shared_memory.SharedMemory(name=self._shmName)
+                self._npArray = numpy.ndarray(self._shape, dtype=self._dtype, buffer= self._shm.buf)
+            shmData = numpy.copy(self._npArray)
+        notifData, fps, dropped = self._notification.getWithRates()
+        with self._state:
+            self._state.value -= 1
+        if self._event.get("event") is not None:
+            with self._event["event"]:
+                self._event["event"].notify_all()
+        return notifData, shmData, fps, dropped
 
 class ReifiedProcess:
     """
@@ -314,8 +325,25 @@ it on request and do custom cleanup code in such cases.
         self._keepOn=False
         self._subscriptions={}
         self._publishers={}
+        self._dataFromSubscriptions={}
+        self._dataToPublish={}
+        self._event = Condition()
+        self._bypassEvent = False
+    def havePublisher(self, name):
+        return name in self._publishers
+    def _setBypassEvent(self):
+        self._bypassEvent = True
+    def _clearBypassEvent(self):
+        self._bypassEvent = False
+    def _requestToPublish(self, name, notification, image):
+        if name in self._dataToPublish:
+            self._dataToPublish[name] = {"ready": True, "notification": notification, "image": image}
+    def _requestSubscribedData(self, name):
+        return self._dataFromSubscriptions[name].get("notification"), self._dataFromSubscriptions[name].get("image"), self._dataFromSubscriptions[name].get("rate"), self._dataFromSubscriptions[name].get("dropped")
     def sendCommand(self, command, block=False, timeout=None):
         self._command.put(command, block=block, timeout=timeout)
+        with self._event:
+            self._event.notify_all()
     def _handleCommand(self, command):
         """
 Subclasses should place command handling code here.
@@ -325,7 +353,7 @@ will be run before doWork. Therefore, keep commands easy to handle
 OR be about rare events (e.g. loading a model).
         """
         pass
-    def _checkPublisherRequest(self, name, queues, consumerSHM):
+    def _checkPublisherRequest(self, name: str, wire: _Wire):
         """
 Subclasses should place here the code that will check whether a request
 for a publisher is appropriate (e.g., that a shared memory is provided
@@ -335,7 +363,7 @@ or that the name was not requested before etc.
 Return True if the publisher is acceptable, False otherwise. 
         """
         pass
-    def _checkSubscriptionRequest(self, name, queue, consumerSHM):
+    def _checkSubscriptionRequest(self, name: str, wire: _Wire):
         """
 Subclasses should place here the code that will check whether a request
 for a subscription is appropriate (e.g., that a shared memory is provided
@@ -345,14 +373,16 @@ or that the name was not requested before etc.
 Return True if the subscription is acceptable, False otherwise. 
         """
         pass
-    def addSubscription(self, name: str, queue: Union[Queue, SimpleQueue, RatedSimpleQueue], consumerSHM: Union[SHMConsumerPort, None]):
-        if self._checkSubscriptionRequest(name, queue, consumerSHM):
-            self._subscriptions[name] = SubscriberConsumerWire(consumerSHM, queue)
+    def addSubscription(self, name: str, wire: _Wire):
+        if self._checkSubscriptionRequest(name, wire):
+            self._subscriptions[name] = _SubscriberPort(wire, self._event)
+            self._dataFromSubscriptions[name] = {}
         else:
             raise BadSubscription
-    def addPublisher(self, name: str, queues, consumerSHM: Union[SHMConsumerPort, None]):
-        if self._checkPublisherRequest(name, queues, consumerSHM):
-            self._publishers[name] = PublisherConsumerWire(consumerSHM, queues)
+    def addPublisher(self, name: str, wire: _Wire):
+        if self._checkPublisherRequest(name, wire):
+            self._publishers[name] = _PublisherPort(wire, self._event)
+            self._dataToPublish[name] = {}
         else:
             raise BadPublisher
     def start(self):
@@ -370,7 +400,7 @@ so that the subprocess is informed of the change as well, but unless this
 is explicitly stated it should never be assumed.
         """
         if (not isinstance(self._process, Process)) or (not self._process.is_active()):
-            self._process=Process(target=picklePusher, daemon=self._daemon, args=(self,))
+            self._process=Process(target=_picklePusher, daemon=self._daemon, args=(self,))
             self._process.start()
     def stop(self):
         """
@@ -457,76 +487,34 @@ Runs the object's process and sets up graceful exit on SIGTERM.
         signal.signal(signal.SIGINT, lambda s,f: None)
         self._keepOn = True
         try:
-            self._onStart()
+            self._onStart() # Run process startup code.
             while self._keepOn:
+                with self._event: # Check if there is anything to do
+                    haveEvent = self._bypassEvent # Maybe process code requests another step immediately
+                    haveEvent = haveEvent or all([x.isReady() for x in self._subscriptions.values()]) # Or maybe a full set of inputs is available
+                    haveEvent = haveEvent or any([x.isReady() for x in self._publishers.values()]) # Or maybe one of the outputs can be updated
+                    haveEvent = haveEvent or (not self._command.empty())
+                    if not haveEvent:
+                        self._event.wait()
+                for name, pub in self._publishers.items():
+                    if pub.isReady() and self._dataToPublish[name].get("ready", False):
+                        pub.publish(self._dataToPublish[name].get("notification", None), self._dataToPublish[name].get("image", None))
+                        self._dataToPublish["ready"] = False
                 while not self._command.empty():
                     self._handleCommand(self._command.get())
-                self._doWork()
+                fullInput = all([x.isReady() for x in self._subscriptions.values()])
+                if self._bypassEvent or fullInput:
+                    if fullInput:
+                        for name, sub in self._subscriptions.items():
+                            notification, shmData, fps, dropped = sub.receive()
+                            self._dataFromSubscriptions[name] = {"notification": notification, "image": shmData, "rate": fps, "dropped": dropped}
+                    self._doWork()
         except _GracefulExit:
             self._cleanup()
             # This will take care of terminating all daemon subprocesses started by this process.
             sys.exit(0)
 
-class ProducerWire():
-    def __init__(self, producer, notifications):
-        self._producer = producer
-        self._notifications = notifications
-    def hasSHM(self):
-        return self._producer is not None
-    def sendNotification(self, data):
-        _=[x.put(data) for x in self._notifications]
-    def publish(self, shmData, notifData):
-        if (self._producer is not None) and (shmData is not None):
-            self._producer.send(shmData)
-        self.sendNotifications(notifData)
-    def sendNotifications(self, data):
-        _=[x.put(data) for x in self._notifications]
-    def send(self, data):
-        self._producer.send(data)
-    def __enter__(self):
-        return self._producer.__enter__()
-    def __exit__(self, exit_type, value, traceback):
-        return self._producer.__exit__(exit_type, value, traceback)
-
-class PublisherConsumerWire():
-    def __init__(self, consumer, notifications):
-        self._consumer = consumer
-        self._notifications = notifications
-    def hasSHM(self):
-        return self._consumer is not None
-    def sendNotification(self, data):
-        _=[x.put(data) for x in self._notifications]
-    def publish(self, shmData, notifData):
-        if (self._consumer is not None) and (shmData is not None):
-            self._consumer.send(shmData)
-        self.sendNotifications(notifData)
-    def sendNotifications(self, data):
-        _=[x.put(data) for x in self._notifications]
-    def send(self, data):
-        self._consumer.send(data)
-    def __enter__(self):
-        return self._consumer.__enter__()
-    def __exit__(self, exit_type, value, traceback):
-        return self._consumer.__exit__(exit_type, value, traceback)
-
-class SubscriberConsumerWire():
-    def __init__(self, consumer, notification):
-        self._consumer = consumer
-        self._notification = notification
-    def hasSHM(self):
-        return self._consumer is not None
-    def empty(self):
-        return self._notification.empty()
-    def get(self):
-        return self._notification.get()
-    def getWithRates(self):
-        return self._notification.getWithRates()
-    def __enter__(self):
-        return self._consumer.__enter__()
-    def __exit__(self, exit_type, value, traceback):
-        return self._consumer.__exit__(exit_type, value, traceback)
-
-def drawWire(wireName, publishers, subscribers, shape, dtype, qtype, wireList=None):
+def drawWire(wireName, publisher, subscribers, shape, dtype, wireList=None):
     '''
 Connect various subprocesses via a "wire" -- a shared memory for a numpy array, and notification
 queues to indicate when the array should be inspected by subscribers.
@@ -536,23 +524,21 @@ this case, the wire only contains notification queues.
 
 Inputs:
     wireName: a string by which the process that created the wire may refer to it.
-    publishers: a list of pairs of the form (name, process). Name is what the wire is called by
+    publisher: a pair of the form (name, process) or an empty tuple. Name is what the wire is called by
                 the publisher process in its internal operation.
     subscribers: a list of pairs of the form (name, process). Name is what the wire is called by
                 the subscriber process in its internal operation.
     shape: a tuple indicating a numpy array shape.
     dtype: a numpy data type for the array elements.
-    qtype: a queue type, often RatedSimpleQueue.
     wireList: none or a dictionary with wire names as keys and producer wire objects as values.
 Outputs:
     wirelist: an updated wirelist.
 
 IMPORTANT: keep the wire list object for as long as the subprocesses using the wire are running!
-The producer object is in the wirelist, and once it is garbage collected, its corresponding shared memory
+The wire object is in the wirelist, and once it is garbage collected, its corresponding shared memory
 will be closed and rendered inaccessible to the subprocesses using the wire.
 
-The same process may appear as both publisher and subscriber, however it will never send notifications
-to itself (i.e., a subprocess should not use a wire to publish for itself).
+The same process may not appear as both publisher and subscriber. An attempt to do so will be ignored.
 
 The name that a publisher uses for a wire need not be the same as the name used by a subscriber. E.g.,
 one may have a publisher sending "Output Image" to the wire while a subscriber calls it "Input Image".
@@ -565,19 +551,19 @@ one may have a publisher sending "Output Image" to the wire while a subscriber c
         wireList={}
     if wireName in wireList:
         raise NameTaken
-    producer, consumer = None, None
-    if (shape is not None) and (dtype is not None):
-        producer, consumer = SHMPort(shape, dtype)
-    subscriberQueues = []
+    wire = _Wire(wireName, shape=shape, dtype=dtype)
+    wireList[wireName] = wire
+    pub = None
+    if 1 < len(publisher):
+        pub = publisher[1]
     for name, s in subscribers:
-        q = qtype()
-        subscriberQueues.append((s,q))
-        s.addSubscription(name, q, _duplicate(consumer))
-    wireList[wireName] = ProducerWire(producer, [x[1] for x in subscriberQueues])
-    for name, pub in publishers:
-        notifs = [x[1] for x in subscriberQueues if x[0] != pub]
-        if 0<len(notifs):
-            pub.addPublisher(name, notifs, _duplicate(consumer))
+        if s != pub:
+            s.addSubscription(name, wire)
+    name, pub = None, None
+    if 0 < len(publisher):
+        name, pub = publisher
+    if 0 < len(publisher):
+        pub.addPublisher(name, wire)
     return wireList
 
 class Peeker:
@@ -587,24 +573,19 @@ class Peeker:
         self._data={}
         self._lock=threading.Lock()
         self._work=False
-    def addSubscriber(self, name, q, consumer):
-        self._subscriptions[name] = (q, consumer)
-        self._subscriptions[name] = None
+        self._event = Condition()
+    def addSubscription(self, name, wire):
+        self._subscriptions[name] = _SubscriberPort(wire, self._event)
     def _run(self):
         while self._work:
-            for name, (q, consumer) in self._subscriptions.items():
-                with self._lock:
-                    while not q.empty():
-                        self._data[name]=q.get()
-            time.sleep(0.01)
-    def getSubscribedNotification(self, subscriptionName):
-        with self._lock:
-            return copy.deepcopy(self._data.get(subscriptionName))
-    def getSubscribedSHM(self, subscriptionName):
-        if (self._subscriptions.get(subscriptionName, [None, None])[1] is not None):
-            with self._subscriptions[subscriptionName][1] as consumerSHM:
-                a = numpy.copy(consumerSHM)
-            return a
+            with self._event:
+                haveEvent = any([x.isReady() for x in self._subscriptions.values()])
+                if not haveEvent:
+                    self._event.wait()
+            for name, port in self._subscriptions.items():
+                if port.isReady():
+                    notification, shmData, fps, dropped = port.receive()
+                    self._data[name]={"notification": notification, "image": shmData, "rate": fps, "dropped": dropped}
     def start(self):
         if (self._thread is not None) and (self._thread.is_alive()):
             return

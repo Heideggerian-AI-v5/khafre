@@ -4,44 +4,20 @@ import cv2 as cv
 import numpy
 import os
 from PIL import Image
-from pynput.keyboard import Key, Listener
-import signal
 import sys
 import time
 
-from khafre.bricks import SHMPort, RatedSimpleQueue, drawWire, setSignalHandlers, startKhafreProcesses, stopKhafreProcesses
+from khafre.bricks import drawWire, setSignalHandlers, startKhafreProcesses, stopKhafreProcesses
 from khafre.dbgvis import DbgVisualizer
 from khafre.segmentation import YOLOObjectSegmentationWrapper
 from khafre.videocapture import RecordedVideoFeed
 from khafre.utils import repeatUntilKey
 
 
-## DbgVis example: shows how to set up a connection to the khafre debug visualizer.
-# In this example, what we will visualize is a resized copy of one of your monitors.
-# The main process -- this one -- will capture the screen, rescale it, and send it
-# to a subprocess: the khafre debug visualizer.
-# The CPU usage of this process will be 100%: it will send images as fast as it can.
-# The debug visualizer meanwhile doesn't need to do much and its CPU usage will be
-# much lower.
-
-# Auxiliary objects to exit on key press (or rather, release)
-goOn={"goOn":True}
-
-def on_press(key):
-    pass
-
-def on_release(key):
-    if key == Key.esc:
-        goOn["goOn"] = False
-        # Stop listener
-        return False
-
-## An auxiliary function to set up a signal handler for SIGTERM and SIGINT
-def doExit(signum, frame, dbgP, vc, objP):
-    dbgP.stop()
-    vc.stop()
-    objP.stop()
-    sys.exit()
+## Stored video example: shows how to set up a connection to the khafre debug visualizer and object segmentation.
+# In this example, what we will visualize is a prerecorded video of your choosing. You select which video by giving
+# a command line argument, then khafre will display object segmentations for as many frames as it can process in
+# real-time.
 
 def main():
     
@@ -68,9 +44,9 @@ def main():
     procs["vc"] = RecordedVideoFeed()
     procs["objP"] = YOLOObjectSegmentationWrapper()
 
-    drawWire("Video Dbg", [("DbgImg", procs["vc"])], [("Video", procs["dbgP"])], (imgHeight, imgWidth, 3), numpy.float32, RatedSimpleQueue, wireList=wireList)
-    drawWire("Video Img", [("OutImg", procs["vc"])], [("InpImg", procs["objP"])], (imgHeight, imgWidth, 3), numpy.uint8, RatedSimpleQueue, wireList=wireList)
-    drawWire("Dbg Obj Seg", [("DbgImg", procs["objP"])], [("Object Detection/Segmentation", procs["dbgP"])], (imgHeight, imgWidth, 3), numpy.float32, RatedSimpleQueue, wireList=wireList)
+    drawWire("Video Dbg", ("DbgImg", procs["vc"]), [("Video", procs["dbgP"])], (imgHeight, imgWidth, 3), numpy.float32, wireList=wireList)
+    drawWire("Video Img", ("OutImg", procs["vc"]), [("InpImg", procs["objP"])], (imgHeight, imgWidth, 3), numpy.uint8, wireList=wireList)
+    drawWire("Dbg Obj Seg", ("DbgImg", procs["objP"]), [("Object Detection/Segmentation", procs["dbgP"])], (imgHeight, imgWidth, 3), numpy.float32, wireList=wireList)
 
     # Optional, but STRONGLY recommended: set up signal handlers. The handlers will trigger the 
     # termination of the various subprocesses. Alternatively, ensure in some other way that
@@ -87,6 +63,11 @@ def main():
         
     procs["vc"].sendCommand(("LOAD", (arguments.input_video,)))
     procs["objP"].sendCommand(("LOAD", ("yolov8x-seg.pt",)))
+    
+    while True:
+        if not procs["vc"].hasEnded():
+            break
+        time.sleep(0.1)
 
     # Define and run some code that actually does something with the set up processes.
 
@@ -103,7 +84,6 @@ def main():
 
         # DbgVis can also print something for us. We could also have sent a notification with an empty string
         # instead.
-        procs["vc"].sendCommand(("FRAME", ()))
         time.sleep(0.1)
         return not procs["vc"].hasEnded()
 

@@ -82,18 +82,3 @@ that could possibly be the answer.
         self._performStep()
     def _performStep(self):
         pass
-
-class QueryOnObjectMasks(TaskableProcess):
-    def __init__(self):
-        super().__init__()
-        self._objectMaskSubscription = None
-        self._maskResults = {}
-        self._rateMask = None
-        self._droppedMask = 0
-    def _checkObjectMaskSubscription(self):
-        if (self._objectMaskSubscription in self._subscriptions) and (not self._subscriptions[self._objectMaskSubscription].empty()):
-            self._maskResults, self._rateMask, self._droppedMask = self._subscriptions[self._objectMaskSubscription].getWithRates()
-            qUniverse = [x["type"] for x in self._maskResults.get("segments", [])]
-            self._fillInGenericQueries(qUniverse)
-            return True
-        return False

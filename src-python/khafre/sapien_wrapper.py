@@ -6,8 +6,9 @@ import sapien
 import time
 
 from khafre.bricks import ReifiedProcess
+from khafre.imagesource import ImageSource
 
-class SapienSim(ReifiedProcess):
+class SapienSim(ImageSource):
     """
     Subprocess that uses a simulator to produce data.
 
@@ -17,7 +18,7 @@ class SapienSim(ReifiedProcess):
     """
     def __init__(self, dt=0.01,near=0.1,far=100,width=640,height=480, viewer=False):
         super().__init__()
-        
+                
         self._rateMask = None
         self._droppedMask = 0
         self._rateDepth = None
@@ -36,8 +37,6 @@ class SapienSim(ReifiedProcess):
         self._assets = {}
         self._actors = {}
         
-    def _checkPublisherRequest(self, name, queues, consumerSHM):
-        return (name in {"OutImg", "DbgImg"}) and ((self._height, self._width)==tuple(consumerSHM._shape[:2]))
     def _onStart(self):
         self._assets = {}
         self._actors = {}
@@ -104,9 +103,7 @@ class SapienSim(ReifiedProcess):
         # rgba is a numpy array
         rgb = self._camera.get_picture("Color")[:, :, [2,1,0]]
         outImg = (rgb * 255).clip(0, 255).astype(np.uint8)
-        if "DbgImg" in self._publishers:
-            self._publishers["DbgImg"].publish(rgb, "")
-        if "OutImg" in self._publishers:
-            self._publishers["OutImg"].publish(outImg, {"imgId": str(time.perf_counter())})
-        if self._haveViewer:
-            self._viewer.render()
+        self._requestToPublish("DbgImg", "", rgb)
+        self._requestToPublish("OutImg", {"imgId": str(time.perf_counter())}, outImg)
+        #if self._haveViewer:
+        #    self._viewer.render()

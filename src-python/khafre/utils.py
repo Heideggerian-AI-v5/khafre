@@ -1,6 +1,12 @@
 from pynput.keyboard import Key, Listener
 import sys
-import termios
+
+cleanupConsole = False
+try:
+    import termios
+    cleanupConsole = True
+except:
+    pass
 
 keyESCAPE = Key.esc
 
@@ -22,5 +28,6 @@ def repeatUntilKey(fn, key=keyESCAPE):
             if not listener.running:
                 break
         listener.join()
-        termios.tcflush(sys.stdin, termios.TCIOFLUSH)
+        if cleanupConsole:
+            termios.tcflush(sys.stdin, termios.TCIOFLUSH)
 

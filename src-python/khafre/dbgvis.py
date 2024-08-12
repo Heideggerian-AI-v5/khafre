@@ -1,7 +1,5 @@
 import cv2 as cv
-from khafre.bricks import ReifiedProcess, RatedSimpleQueue, NameTaken, SHMConsumerPort
-from multiprocessing import Lock, shared_memory
-import numpy
+from khafre.bricks import ReifiedProcess
 
 class DbgVisualizer(ReifiedProcess):
     """
@@ -18,8 +16,9 @@ images, not images used in other perception subprocesses.
     """
     def __init__(self):
         super().__init__()
-    def _checkSubscriptionRequest(self, name, queue, consumerSHM):
-        if (name in self._subscriptions) or (not isinstance(queue, RatedSimpleQueue)) or (not isinstance(consumerSHM, SHMConsumerPort)):
+        self._bypassEvent = True
+    def _checkSubscriptionRequest(self, name, wire):
+        if (name in self._subscriptions):
             return False
         return True
     def _doWork(self):
@@ -28,23 +27,22 @@ Loop through the registered input channels. If something
 is in a channel, display it (together with frame rate and
 dropped frame info).
         """
-        for k,v in self._subscriptions.items():
-            if (not v.empty()):
-                e,rate,dropped = v.getWithRates()
-                with v as segImg:
-                    rateAdj = rate
-                    if rate is None:
-                        rateAdj = 0.0
-                    rateStr = "%.02f fps | %d%% dbg drop" % (rateAdj, dropped)
-                    (text_width, text_height), baseline = cv.getTextSize(rateStr, cv.FONT_HERSHEY_SIMPLEX, 0.5, cv.LINE_AA)
-                    cv.rectangle(segImg,(0,0),(text_width, text_height+baseline),(0.0,0.0,0.0),-1)
-                    cv.putText(segImg,rateStr,(0, text_height), cv.FONT_HERSHEY_SIMPLEX, 0.5, (1.0,1.0,0.0), 1, cv.LINE_AA)
-                    e = str(e)
-                    if "" != e:
-                        (e_width, e_height), e_baseline = cv.getTextSize(e, cv.FONT_HERSHEY_SIMPLEX, 0.5, cv.LINE_AA)
-                        cv.rectangle(segImg,(0,text_height+baseline),(e_width, text_height+baseline+e_height),(0.0,0.0,0.0),-1)
-                        cv.putText(segImg,e,(0,text_height+e_height), cv.FONT_HERSHEY_SIMPLEX, 0.5, (0.0,0.5,1.0), 1, cv.LINE_AA)
-                    cv.imshow(k, segImg)
+        for k in self._subscriptions.keys():
+            e, image, rate, dropped = self._requestSubscribedData(k)
+            if dropped is not None:
+                rateAdj = rate
+                if rate is None:
+                    rateAdj = 0.0
+                rateStr = "%.02f fps | %d%% dbg drop" % (rateAdj, dropped)
+                (text_width, text_height), baseline = cv.getTextSize(rateStr, cv.FONT_HERSHEY_SIMPLEX, 0.5, cv.LINE_AA)
+                cv.rectangle(image,(0,0),(text_width, text_height+baseline),(0.0,0.0,0.0),-1)
+                cv.putText(image,rateStr,(0, text_height), cv.FONT_HERSHEY_SIMPLEX, 0.5, (1.0,1.0,0.0), 1, cv.LINE_AA)
+                e = str(e)
+                if "" != e:
+                    (e_width, e_height), e_baseline = cv.getTextSize(e, cv.FONT_HERSHEY_SIMPLEX, 0.5, cv.LINE_AA)
+                    cv.rectangle(image,(0,text_height+baseline),(e_width, text_height+baseline+e_height),(0.0,0.0,0.0),-1)
+                    cv.putText(image,e,(0,text_height+e_height), cv.FONT_HERSHEY_SIMPLEX, 0.5, (0.0,0.5,1.0), 1, cv.LINE_AA)
+                cv.imshow(k, image)
         cv.waitKey(10)
     def _cleanup(self):
         """
@@ -56,5 +54,4 @@ Also close opened visualization windows.
                 cv.destroyWindow(k)
             except:
                 pass
-        _ = [(_x(k)) for k in self._subscriptions.items()]
-
+        _ = [(_x(k)) for k in self._subscriptions]

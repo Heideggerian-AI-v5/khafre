@@ -2,10 +2,8 @@ import cv2 as cv
 from khafre.nnwrappers import NNImgWrapper
 from PIL import Image
 import numpy
-from ultralytics import YOLO
 
 from transformers import pipeline
-import torch
 
 class TransformerDepthSegmentationWrapper(NNImgWrapper):
     """

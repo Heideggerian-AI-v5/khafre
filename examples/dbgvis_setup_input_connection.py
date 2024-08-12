@@ -4,12 +4,10 @@ import numpy
 import mss
 import os
 from PIL import Image
-from pynput.keyboard import Key, Listener
-import signal
 import sys
 import time
 
-from khafre.bricks import SHMPort, RatedSimpleQueue, drawWire, setSignalHandlers, startKhafreProcesses, stopKhafreProcesses
+from khafre.bricks import drawWire, setSignalHandlers, startKhafreProcesses, stopKhafreProcesses
 from khafre.dbgvis import DbgVisualizer
 from khafre.utils import repeatUntilKey
 
@@ -60,7 +58,7 @@ def main():
         # Step 2: initialize a DebugVisualizer object.
         procs["vp"] = DbgVisualizer()
 
-        drawWire("Screenshot Cam", [], [("Screenshot Cam", procs["vp"])], (imgHeight, imgWidth, 3), numpy.float32, RatedSimpleQueue, wireList=wireList)
+        drawWire("Screenshot Cam", (), [("Screenshot Cam", procs["vp"])], (imgHeight, imgWidth, 3), numpy.float32, wireList=wireList)
 
         # Optional, but STRONGLY recommended: set up signal handlers. The handlers will trigger the 
         # termination of the DbgVisualizer subprocess. Alternatively, ensure in some other way that
@@ -94,10 +92,15 @@ def main():
 
             # DbgVis can also print something for us. We could also have sent a notification with an empty string
             # instead.
-            wireList["Screenshot Cam"].publish(screenshot, "Hello World!")
+            # TODO: introduce a new image source process to avoid this antipattern here.
+            if wireList["Screenshot Cam"].isReadyForPublishing():
+                wireList["Screenshot Cam"].publish("Hello World!", screenshot)
                 
             # Usually, some waiting time between iterations of such a loop would also be needed. However, usually
             # the kind of processes that generate images, such as screenshots and resizes, are "slow", and can
+
+
+
             # function as a delay themselves.
             
             # Returning False will also exit the loop. For this example, we don't need this.

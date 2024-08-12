@@ -1,7 +1,6 @@
 import base64
 import cv2 as cv
 import numpy
-from multiprocessing import Queue
 import os
 from PIL import Image
 from pynput.keyboard import Key, Listener
@@ -9,12 +8,12 @@ import signal
 import sys
 import time
 
-from khafre.bricks import RatedSimpleQueue, SHMPort, drawWire, setSignalHandlers, startKhafreProcesses, stopKhafreProcesses
+from khafre.bricks import drawWire, setSignalHandlers, startKhafreProcesses, stopKhafreProcesses
 from khafre.dbgvis import DbgVisualizer
-from khafre.depth import TransformerDepthSegmentationWrapper
+#from khafre.depth import TransformerDepthSegmentationWrapper
 from khafre.segmentation import YOLOObjectSegmentationWrapper
-from khafre.contact import ContactDetection
-from khafre.optical_flow import OpticalFlow
+#from khafre.contact import ContactDetection
+#from khafre.optical_flow import OpticalFlow
 from khafre.sapien_wrapper import SapienSim
 from khafre.utils import repeatUntilKey
 
@@ -44,9 +43,9 @@ def main():
 
     # Set up the connections to dbg visualizer and object detection.
 
-    drawWire("Simulation Cam", [("DbgImg", procs["sim"])], [("Simulation Cam", procs["dbgP"])], (imgHeight, imgWidth, 3), numpy.float32, RatedSimpleQueue, wireList=wireList)
-    drawWire("Input Image", [("OutImg", procs["sim"])], [("InpImg", procs["objP"])], (imgHeight, imgWidth, 3), numpy.uint8, RatedSimpleQueue, wireList=wireList)
-    drawWire("Dbg Obj Seg", [("DbgImg", procs["objP"])], [("Object Detection/Segmentation", procs["dbgP"])], (imgHeight, imgWidth, 3), numpy.float32, RatedSimpleQueue, wireList=wireList)
+    drawWire("Simulation Cam", ("DbgImg", procs["sim"]), [("Simulation Cam", procs["dbgP"])], (imgHeight, imgWidth, 3), numpy.float32, wireList=wireList)
+    drawWire("Input Image", ("OutImg", procs["sim"]), [("InpImg", procs["objP"])], (imgHeight, imgWidth, 3), numpy.uint8, wireList=wireList)
+    drawWire("Dbg Obj Seg", ("DbgImg", procs["objP"]), [("Object Detection/Segmentation", procs["dbgP"])], (imgHeight, imgWidth, 3), numpy.float32, wireList=wireList)
 
     # Optional, but STRONGLY recommended: set up signal handlers. The handlers will trigger the 
     # termination of the various subprocesses. Alternatively, ensure in some other way that
@@ -76,7 +75,8 @@ def main():
     # In this case, we don't need to do anything here but wait, since the simulator is its own subprocess.
 
     def exampleFn():
-        time.sleep(0.01)
+        time.sleep(0.1)
+        return True
 
     print("Looking at a simulated scene in Sapien.\nPress ESC to exit. (By the way, this is process %s)" % str(os.getpid()))
     

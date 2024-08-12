@@ -1,6 +1,5 @@
 import cv2 as cv
 from khafre.bricks import ReifiedProcess
-from multiprocessing import Queue
 import numpy
 import torch
 from ultralytics import YOLO
@@ -20,9 +19,10 @@ Wires supported by this subprocess:
     def __init__(self):
         super().__init__()
         self._model = None
-    def _checkSubscriptionRequest(self, name, queue, consumerSHM):
+        self._dbgImg = None
+    def _checkSubscriptionRequest(self, name, wire):
         return ("InpImg" == name)
-    def _checkPublisherRequest(self, name, queues, consumerSHM):
+    def _checkPublisherRequest(self, name, wire):
         return name in {"OutImg", "DbgImg"}
     def setModel(self, model):
         self._model = model
@@ -65,27 +65,15 @@ Subclasses should implement command handling code here.
     def _doWork(self):
         # Do we even have a model loaded? Do we even have an output to send to?
         # Note: it is possible for the user of this process to not want an image as a result, and only a list of detections/polygons etc.
-        if (self._model is None):
-            while not self._subscriptions["InpImg"].empty():
-                # Keep input empty
-                self._subscriptions["InpImg"].getWithRates()
-        else:
-            # Do we even have an image to work on?
-            if not self._subscriptions["InpImg"].empty():
-                # We only get the latest image -- need to check how many were dropped along the way.
-                e,rate,dropped = self._subscriptions["InpImg"].getWithRates()
-                # Get a copy of the image so we can free it for others (e.g., the image acquisition process) as soon as possible.
-                with self._subscriptions["InpImg"] as inpImg:
-                    ourImg = numpy.copy(inpImg)
-                results, outputImg = self._useModel(ourImg)
-                results["imgId"] = e["imgId"]
-                if "OutImg" in self._publishers:
-                    self._publishers["OutImg"].publish(outputImg, results)
-                # Do we need to prepare a debug image?
-                if "DbgImg" in self._publishers:
-                    # Here we can hog the shared memory as long as we like -- dbgvis won't use it until we notify it that there's a new frame to show.
-                    with self._publishers["DbgImg"] as dbgImg:
-                        self._prepareDbgImg(results, outputImg, dbgImg)
-                    self._publishers["DbgImg"].sendNotifications("%.02f ifps | %d%% obj drop" % (rate if rate is not None else 0.0, dropped))
+        e, inpImg, rate, dropped = self._requestSubscribedData("InpImg")
+        if (self._model is not None):
+            results, outputImg = self._useModel(inpImg)
+            results["imgId"] = e["imgId"]
+            self._requestToPublish("OutImg", results, outputImg)
+            if self.havePublisher("DbgImg"):
+                if self._dbgImg is None:
+                    self._dbgImg = numpy.zeros(inpImg.shape, numpy.float32)
+                self._prepareDbgImg(results, outputImg, self._dbgImg)
+                self._requestToPublish("DbgImg", "%.02f ifps | %d%% obj drop" % (rate if rate is not None else 0.0, dropped), self._dbgImg)
     def _cleanup(self):
         self._unloadModel()

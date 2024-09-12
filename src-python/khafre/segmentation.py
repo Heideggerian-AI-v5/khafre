@@ -41,29 +41,38 @@ Wire shared memories:
         return {"segments": retq}, outputImg
     def _sortByArea(self, segments):
         def _area(segment):
-            aux = cv.boundingRect(segment["polygon"])
-            return -aux[2]*aux[3]            
+            return -(segment["box"][2]-segment["box"][0])*(segment["box"][3]-segment["box"][1])            
         return [y[1] for y in sorted([(_area(x), x) for x in segments], key=lambda x: x[0])]
-    def _prepareDbgImg(self, results, outputImg, dbgImg):
+    def _prepareDbgImg(self, results, inputImg, outputImg, dbgImg):
+        def _scaleSegment(segment, factors):
+            retq["type"] = segment["type"]
+            retq["box"] = segment["box"]
+            retq["polygon"] = numpy.column_stack([segment["polygon"][:,0]*factors[0], segment["polygon"][:,1]*factors[1]])
+            return retq
+        def _safeDiv(a,b):
+            if 0 == b:
+                return 0
+            return a/b
         def _s2c(s):
             h = hash(s)
             b,g,r = ((h&0xFF)), ((h&0xFF00)>>8), ((h&0xFF0000)>>16)
             return (b/255.0, g/255.0, r/255.0)
-        workImg = dbgImg
-        if (outputImg.shape[0] != dbgImg.shape[0]) or (outputImg.shape[1] != dbgImg.shape[1]):
-           workImg = numpy.zeros((outputImg.shape[0], outputImg.shape[1], 3),dtype=dbgImg.dtype)
+        if (inputImg.shape[0] == dbgImg.shape[0]) and (inputImg.shape[1] == dbgImg.shape[1]):
+            numpy.copyto(dbgImg, inputImg.astype(numpy.float32)/255)
         else:
-            workImg.fill(0)
-        sortedSegments = self._sortByArea(results.get("segments",[]))
-        for e in sortedSegments:
-            aux = cv.boundingRect(e["polygon"])
-            left, top, right, bottom = [aux[0],aux[1], aux[0]+aux[2], aux[1]+aux[3]]
-            cv.polylines(workImg, [e["polygon"]], True, _s2c(e["type"]))
-            (text_width, text_height), baseline = cv.getTextSize(e["type"], cv.FONT_HERSHEY_SIMPLEX, 0.5, cv.LINE_AA)
-            cv.rectangle(workImg,(left,top),(right, bottom),(1.0,1.0,0.0),1)
-            cv.putText(workImg, e["type"], (left, top+text_height), cv.FONT_HERSHEY_SIMPLEX, 0.5, (1.0,1.0,1.0), 1, cv.LINE_AA)
+            numpy.copyto(dbgImg, cv.resize(inputImg.astype(numpy.float32)/255, (dbgImg.shape[1], dbgImg.shape[0]), interpolation=cv.INTER_LINEAR))
+        workSegments = results.get("segments", [])
         if (outputImg.shape[0] != dbgImg.shape[0]) or (outputImg.shape[1] != dbgImg.shape[1]):
-            numpy.copyto(dbgImg, cv.resize(workImg, (dbgImg.shape[1], dbgImg.shape[0]), interpolation=cv.INTER_LINEAR))
+            scaleFactors = _safeDiv(debugImg.shape[1], outputImg.shape[1]), _safeDiv(debugImg.shape[0], outputImg.shape[0])
+            workSegments = [_scaleSegment(x) for x in workSegments]
+        sortedSegments = self._sortByArea(workSegments)
+        for e in sortedSegments:
+            left, top, right, bottom = int(e["box"][0]*dbgImg.shape[1]), int(e["box"][1]*dbgImg.shape[0]), int(e["box"][2]*dbgImg.shape[1]), int(e["box"][3]*dbgImg.shape[0])
+            cv.polylines(dbgImg, [e["polygon"]], True, _s2c(e["type"]), 3)
+            (text_width, text_height), baseline = cv.getTextSize(e["type"], cv.FONT_HERSHEY_SIMPLEX, 0.5, cv.LINE_AA)
+            cv.rectangle(dbgImg,(left,top),(right, bottom),(1.0,1.0,0.0),1)
+            cv.putText(dbgImg, e["type"], (left, top+text_height), cv.FONT_HERSHEY_SIMPLEX, 0.5, (1.0,1.0,1.0), 1, cv.LINE_AA)
+        
     def _customCommand(self, command):
         op, args = command
         if "CONFIDENCE" == op:

@@ -17,16 +17,25 @@ class RecordedVideoFeed(ImageSource):
         self._atRealT = None
         self._ended = Value(ctypes.c_int8)
         self._ended.value = 1
+        self.atFrame = 0
     def hasEnded(self):
         return (0 != self._ended.value)
     def _handleCommand(self, command):
         op, args = command
         if "LOAD" == op:
             self._videoCapture = cv.VideoCapture(args[0])
+            print("Loaded video %s" % args[0])
             self._atVideoT = 0
             self._atRealT = None
             self._ended.value = 0
     def _doWork(self):
+        if (self._videoCapture is None) or (not self._videoCapture.isOpened()) or (0 != self._ended.value):
+            return
+        if 1000 >= self.atFrame:
+            #time.sleep(60)
+            self._atVideoT = 0
+            self._atRealT = None
+        self.atFrame += 1
         c = time.perf_counter()
         frameT = 1.0/self._videoCapture.get(cv.CAP_PROP_FPS)
         if self._atRealT is not None:

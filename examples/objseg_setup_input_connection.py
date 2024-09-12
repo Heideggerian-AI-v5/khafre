@@ -84,7 +84,8 @@ def main():
         procs["objP"].sendCommand(("LOAD", ("yolov8n-seg.pt",)))
         procs["dptP"].sendCommand(("LOAD", ("vinvino02/glpn-nyu",)))
 
-        procs["conP"].getGoalQueue().put([("contact/query", "cup", "table"), ("contact/query", "cup", "dining table")])
+        procs["conP"].getGoalQueue().put([("contact/query", "knife", "apple"), ("contact/query", "spoon", "apple"), ("contact/query", "bowl", "apple")])
+        #procs["conP"].getGoalQueue().put([("contact/query", "cup", "table"), ("contact/query", "cup", "dining table")])
         procs["optP"].getGoalQueue().put([("opticalFlow/query/relativeMovement", "cup", "table"), ("opticalFlow/query/relativeMovement", "cup", "dining table")])
 
         # Define and run some code that actually does something with the set up processes.

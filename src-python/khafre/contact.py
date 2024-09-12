@@ -177,7 +177,11 @@ Additionally, gets goal data (sets of triples) from a queue.
         if self.havePublisher("DbgImg"):
             if self._dbgImg is None:
                 self._dbgImg = numpy.zeros((outputImg.shape[0], outputImg.shape[1], 3), numpy.float32)
-            self._dbgImg[:,:,:]=0.0
+            #self._dbgImg[:,:,:]=0.0
+            if (outputImg.shape[0] != self._dbgImg.shape[0]) or (outputImg.shape[1] != self._dbgImg.shape[1]):
+                numpy.copyto(self._dbgImg, cv.resize(cv.cvtColor(depthImg / numpy.max(depthImg), cv.COLOR_GRAY2BGR), (self._dbgImg.shape[1], self._dbgImg.shape[0]), interpolation=cv.INTER_LINEAR)) 
+            else:
+                numpy.copyto(self._dbgImg, cv.cvtColor(depthImg / numpy.max(depthImg), cv.COLOR_GRAY2BGR)) 
             todos = [(k, _s2c(str(k))) for k in results["idx2Contact"].keys()]
             for k, color in todos:
                 self._dbgImg[outputImg==k]=color

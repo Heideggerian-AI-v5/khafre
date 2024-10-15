@@ -17,7 +17,6 @@
 <http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> rdf:type owl:AnnotationProperty .
 
 
-<<<<<<< HEAD
 ###  http://www.w3.org/2000/01/rdf-schema#comment
 rdfs:comment rdf:type owl:AnnotationProperty .
 
@@ -38,20 +37,15 @@ xsd:boolean rdf:type rdfs:Datatype .
 xsd:string rdf:type rdfs:Datatype .
 
 
-=======
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
 #################################################################
 #    Object Properties
 #################################################################
 
-<<<<<<< HEAD
 ###  http://www.W3C.org/khafre/affordances_situations.owl#above
 affordances_situations:above rdf:type owl:ObjectProperty ;
                              owl:inverseOf affordances_situations:below .
 
 
-=======
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
 ###  http://www.W3C.org/khafre/affordances_situations.owl#affects
 affordances_situations:affects rdf:type owl:ObjectProperty .
 
@@ -60,7 +54,6 @@ affordances_situations:affects rdf:type owl:ObjectProperty .
 affordances_situations:attracts rdf:type owl:ObjectProperty .
 
 
-<<<<<<< HEAD
 ###  http://www.W3C.org/khafre/affordances_situations.owl#back
 affordances_situations:back rdf:type owl:ObjectProperty ;
                             owl:inverseOf affordances_situations:front .
@@ -82,8 +75,6 @@ affordances_situations:blocks rdf:type owl:ObjectProperty ;
                               rdfs:range affordances_situations:Blocked .
 
 
-=======
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
 ###  http://www.W3C.org/khafre/affordances_situations.owl#contains
 affordances_situations:contains rdf:type owl:ObjectProperty ;
                                 owl:inverseOf affordances_situations:inside ;
@@ -91,7 +82,6 @@ affordances_situations:contains rdf:type owl:ObjectProperty ;
                                 rdfs:range affordances_situations:Containee .
 
 
-<<<<<<< HEAD
 ###  http://www.W3C.org/khafre/affordances_situations.owl#cutBy
 affordances_situations:cutBy rdf:type owl:ObjectProperty ;
                              owl:inverseOf affordances_situations:cuts ;
@@ -99,8 +89,6 @@ affordances_situations:cutBy rdf:type owl:ObjectProperty ;
                              rdfs:range affordances_situations:Cutter .
 
 
-=======
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
 ###  http://www.W3C.org/khafre/affordances_situations.owl#cuts
 affordances_situations:cuts rdf:type owl:ObjectProperty ;
                             rdfs:domain affordances_situations:Cutter ;
@@ -111,15 +99,9 @@ affordances_situations:cuts rdf:type owl:ObjectProperty ;
 affordances_situations:defines rdf:type owl:ObjectProperty .
 
 
-<<<<<<< HEAD
 ###  http://www.W3C.org/khafre/affordances_situations.owl#fallingFrom
 affordances_situations:fallingFrom rdf:type owl:ObjectProperty ;
                                    rdfs:range affordances_situations:Source .
-=======
-###  http://www.W3C.org/khafre/affordances_situations.owl#falling
-affordances_situations:falling rdf:type owl:ObjectProperty ;
-                               rdfs:range affordances_situations:FallingObject .
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
 
 
 ###  http://www.W3C.org/khafre/affordances_situations.owl#flowsFrom
@@ -132,7 +114,6 @@ affordances_situations:flowsTo rdf:type owl:ObjectProperty ;
                                rdfs:range affordances_situations:Target .
 
 
-<<<<<<< HEAD
 ###  http://www.W3C.org/khafre/affordances_situations.owl#front
 affordances_situations:front rdf:type owl:ObjectProperty .
 
@@ -142,8 +123,6 @@ affordances_situations:graspedBy rdf:type owl:ObjectProperty ;
                                  owl:inverseOf affordances_situations:grasps .
 
 
-=======
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
 ###  http://www.W3C.org/khafre/affordances_situations.owl#grasps
 affordances_situations:grasps rdf:type owl:ObjectProperty ;
                               rdfs:domain affordances_situations:Grasper ;
@@ -164,14 +143,6 @@ affordances_situations:hasGripOn rdf:type owl:ObjectProperty ;
                                  rdfs:range affordances_situations:StableObject .
 
 
-<<<<<<< HEAD
-=======
-###  http://www.W3C.org/khafre/affordances_situations.owl#hasParticipant
-affordances_situations:hasParticipant rdf:type owl:ObjectProperty ,
-                                               owl:TransitiveProperty .
-
-
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
 ###  http://www.W3C.org/khafre/affordances_situations.owl#inContactWith
 affordances_situations:inContactWith rdf:type owl:ObjectProperty ,
                                               owl:SymmetricProperty .
@@ -181,26 +152,20 @@ affordances_situations:inContactWith rdf:type owl:ObjectProperty ,
 affordances_situations:inside rdf:type owl:ObjectProperty .
 
 
-<<<<<<< HEAD
 ###  http://www.W3C.org/khafre/affordances_situations.owl#left
 affordances_situations:left rdf:type owl:ObjectProperty ;
                             owl:inverseOf affordances_situations:right .
 
 
-=======
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
 ###  http://www.W3C.org/khafre/affordances_situations.owl#partOf
 affordances_situations:partOf rdf:type owl:ObjectProperty .
 
 
-<<<<<<< HEAD
 ###  http://www.W3C.org/khafre/affordances_situations.owl#pouredBy
 affordances_situations:pouredBy rdf:type owl:ObjectProperty ;
                                 owl:inverseOf affordances_situations:pours .
 
 
-=======
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
 ###  http://www.W3C.org/khafre/affordances_situations.owl#pours
 affordances_situations:pours rdf:type owl:ObjectProperty ;
                              rdfs:domain affordances_situations:Pourer ;
@@ -211,32 +176,25 @@ affordances_situations:pours rdf:type owl:ObjectProperty ;
 affordances_situations:resultsIn rdf:type owl:ObjectProperty .
 
 
-<<<<<<< HEAD
 ###  http://www.W3C.org/khafre/affordances_situations.owl#right
 affordances_situations:right rdf:type owl:ObjectProperty .
 
 
-=======
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
 ###  http://www.W3C.org/khafre/affordances_situations.owl#separatedFrom
 affordances_situations:separatedFrom rdf:type owl:ObjectProperty ,
                                               owl:SymmetricProperty .
 
 
-<<<<<<< HEAD
 ###  http://www.W3C.org/khafre/affordances_situations.owl#stabbedBy
 affordances_situations:stabbedBy rdf:type owl:ObjectProperty .
 
 
-=======
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
 ###  http://www.W3C.org/khafre/affordances_situations.owl#stabs
 affordances_situations:stabs rdf:type owl:ObjectProperty ;
                              rdfs:domain affordances_situations:Stabber ;
                              rdfs:range affordances_situations:Stabbed .
 
 
-<<<<<<< HEAD
 ###  http://www.W3C.org/khafre/affordances_situations.owl#supportedBy
 affordances_situations:supportedBy rdf:type owl:ObjectProperty ;
                                    owl:inverseOf affordances_situations:supports ;
@@ -244,15 +202,12 @@ affordances_situations:supportedBy rdf:type owl:ObjectProperty ;
                                    rdfs:range affordances_situations:Supporter .
 
 
-=======
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
 ###  http://www.W3C.org/khafre/affordances_situations.owl#supports
 affordances_situations:supports rdf:type owl:ObjectProperty ;
                                 rdfs:domain affordances_situations:Supporter ;
                                 rdfs:range affordances_situations:Supportee .
 
 
-<<<<<<< HEAD
 ###  http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant
 <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant> rdf:type owl:ObjectProperty ;
                                                                        owl:inverseOf <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#isParticipantIn> ;
@@ -263,13 +218,10 @@ affordances_situations:supports rdf:type owl:ObjectProperty ;
 <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#isParticipantIn> rdf:type owl:ObjectProperty .
 
 
-=======
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
 #################################################################
 #    Classes
 #################################################################
 
-<<<<<<< HEAD
 ###  http://www.W3C.org/khafre/affordances_situations.owl#Blocked
 affordances_situations:Blocked rdf:type owl:Class ;
                                rdfs:subClassOf <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#Role> .
@@ -283,11 +235,6 @@ affordances_situations:Blocker rdf:type owl:Class ;
 ###  http://www.W3C.org/khafre/affordances_situations.owl#Boundary
 affordances_situations:Boundary rdf:type owl:Class ;
                                 rdfs:subClassOf <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#Role> .
-=======
-###  http://www.W3C.org/khafre/affordances_situations.owl#Boundary
-affordances_situations:Boundary rdf:type owl:Class ;
-                                rdfs:subClassOf affordances_situations:Role .
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
 
 
 ###  http://www.W3C.org/khafre/affordances_situations.owl#Contact
@@ -297,20 +244,12 @@ affordances_situations:Contact rdf:type owl:Class ;
 
 ###  http://www.W3C.org/khafre/affordances_situations.owl#Containee
 affordances_situations:Containee rdf:type owl:Class ;
-<<<<<<< HEAD
                                  rdfs:subClassOf <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#Role> .
-=======
-                                 rdfs:subClassOf affordances_situations:Role .
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
 
 
 ###  http://www.W3C.org/khafre/affordances_situations.owl#Container
 affordances_situations:Container rdf:type owl:Class ;
-<<<<<<< HEAD
                                  rdfs:subClassOf <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#Role> .
-=======
-                                 rdfs:subClassOf affordances_situations:Role .
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
 
 
 ###  http://www.W3C.org/khafre/affordances_situations.owl#Containment
@@ -320,20 +259,12 @@ affordances_situations:Containment rdf:type owl:Class ;
 
 ###  http://www.W3C.org/khafre/affordances_situations.owl#Cuttee
 affordances_situations:Cuttee rdf:type owl:Class ;
-<<<<<<< HEAD
                               rdfs:subClassOf <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#Role> .
-=======
-                              rdfs:subClassOf affordances_situations:Role .
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
 
 
 ###  http://www.W3C.org/khafre/affordances_situations.owl#Cutter
 affordances_situations:Cutter rdf:type owl:Class ;
-<<<<<<< HEAD
                               rdfs:subClassOf <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#Role> .
-=======
-                              rdfs:subClassOf affordances_situations:Role .
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
 
 
 ###  http://www.W3C.org/khafre/affordances_situations.owl#Cutting
@@ -343,11 +274,7 @@ affordances_situations:Cutting rdf:type owl:Class ;
 
 ###  http://www.W3C.org/khafre/affordances_situations.owl#CuttingPoint
 affordances_situations:CuttingPoint rdf:type owl:Class ;
-<<<<<<< HEAD
                                     rdfs:subClassOf <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#Role> .
-=======
-                                    rdfs:subClassOf affordances_situations:Role .
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
 
 
 ###  http://www.W3C.org/khafre/affordances_situations.owl#CuttingSequence
@@ -357,11 +284,7 @@ affordances_situations:CuttingSequence rdf:type owl:Class ;
 
 ###  http://www.W3C.org/khafre/affordances_situations.owl#CuttingTool
 affordances_situations:CuttingTool rdf:type owl:Class ;
-<<<<<<< HEAD
                                    rdfs:subClassOf <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#Role> .
-=======
-                                   rdfs:subClassOf affordances_situations:Role .
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
 
 
 ###  http://www.W3C.org/khafre/affordances_situations.owl#Falling
@@ -371,11 +294,7 @@ affordances_situations:Falling rdf:type owl:Class ;
 
 ###  http://www.W3C.org/khafre/affordances_situations.owl#FallingObject
 affordances_situations:FallingObject rdf:type owl:Class ;
-<<<<<<< HEAD
                                      rdfs:subClassOf <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#Role> .
-=======
-                                     rdfs:subClassOf affordances_situations:Role .
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
 
 
 ###  http://www.W3C.org/khafre/affordances_situations.owl#Floor
@@ -385,20 +304,12 @@ affordances_situations:Floor rdf:type owl:Class ;
 
 ###  http://www.W3C.org/khafre/affordances_situations.owl#Grasped
 affordances_situations:Grasped rdf:type owl:Class ;
-<<<<<<< HEAD
                                rdfs:subClassOf <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#Role> .
-=======
-                               rdfs:subClassOf affordances_situations:Role .
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
 
 
 ###  http://www.W3C.org/khafre/affordances_situations.owl#Grasper
 affordances_situations:Grasper rdf:type owl:Class ;
-<<<<<<< HEAD
                                rdfs:subClassOf <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#Role> .
-=======
-                               rdfs:subClassOf affordances_situations:Role .
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
 
 
 ###  http://www.W3C.org/khafre/affordances_situations.owl#Grasping
@@ -408,11 +319,7 @@ affordances_situations:Grasping rdf:type owl:Class ;
 
 ###  http://www.W3C.org/khafre/affordances_situations.owl#GraspingPoint
 affordances_situations:GraspingPoint rdf:type owl:Class ;
-<<<<<<< HEAD
                                      rdfs:subClassOf <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#Role> .
-=======
-                                     rdfs:subClassOf affordances_situations:Role .
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
 
 
 ###  http://www.W3C.org/khafre/affordances_situations.owl#Gravity
@@ -427,11 +334,7 @@ affordances_situations:ImageSchematicSituation rdf:type owl:Class ;
 
 ###  http://www.W3C.org/khafre/affordances_situations.owl#Interior
 affordances_situations:Interior rdf:type owl:Class ;
-<<<<<<< HEAD
                                 rdfs:subClassOf <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#Role> .
-=======
-                                rdfs:subClassOf affordances_situations:Role .
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
 
 
 ###  http://www.W3C.org/khafre/affordances_situations.owl#Liquid
@@ -446,38 +349,22 @@ affordances_situations:Movement rdf:type owl:Class ;
 
 ###  http://www.W3C.org/khafre/affordances_situations.owl#MovingObject
 affordances_situations:MovingObject rdf:type owl:Class ;
-<<<<<<< HEAD
                                     rdfs:subClassOf <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#Role> .
-=======
-                                    rdfs:subClassOf affordances_situations:Role .
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
 
 
 ###  http://www.W3C.org/khafre/affordances_situations.owl#Object
 affordances_situations:Object rdf:type owl:Class ;
-<<<<<<< HEAD
                               rdfs:subClassOf <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#Role> .
-=======
-                              rdfs:subClassOf affordances_situations:Role .
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
 
 
 ###  http://www.W3C.org/khafre/affordances_situations.owl#Poured
 affordances_situations:Poured rdf:type owl:Class ;
-<<<<<<< HEAD
                               rdfs:subClassOf <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#Role> .
-=======
-                              rdfs:subClassOf affordances_situations:Role .
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
 
 
 ###  http://www.W3C.org/khafre/affordances_situations.owl#Pourer
 affordances_situations:Pourer rdf:type owl:Class ;
-<<<<<<< HEAD
                               rdfs:subClassOf <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#Role> .
-=======
-                              rdfs:subClassOf affordances_situations:Role .
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
 
 
 ###  http://www.W3C.org/khafre/affordances_situations.owl#Pouring
@@ -485,13 +372,6 @@ affordances_situations:Pouring rdf:type owl:Class ;
                                rdfs:subClassOf affordances_situations:ImageSchematicSituation .
 
 
-<<<<<<< HEAD
-=======
-###  http://www.W3C.org/khafre/affordances_situations.owl#Role
-affordances_situations:Role rdf:type owl:Class .
-
-
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
 ###  http://www.W3C.org/khafre/affordances_situations.owl#SemanticType
 affordances_situations:SemanticType rdf:type owl:Class .
 
@@ -508,38 +388,22 @@ affordances_situations:Sequence rdf:type owl:Class ;
 
 ###  http://www.W3C.org/khafre/affordances_situations.owl#Source
 affordances_situations:Source rdf:type owl:Class ;
-<<<<<<< HEAD
                               rdfs:subClassOf <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#Role> .
-=======
-                              rdfs:subClassOf affordances_situations:Role .
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
 
 
 ###  http://www.W3C.org/khafre/affordances_situations.owl#SourceContainer
 affordances_situations:SourceContainer rdf:type owl:Class ;
-<<<<<<< HEAD
                                        rdfs:subClassOf <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#Role> .
-=======
-                                       rdfs:subClassOf affordances_situations:Role .
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
 
 
 ###  http://www.W3C.org/khafre/affordances_situations.owl#Stabbed
 affordances_situations:Stabbed rdf:type owl:Class ;
-<<<<<<< HEAD
                                rdfs:subClassOf <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#Role> .
-=======
-                               rdfs:subClassOf affordances_situations:Role .
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
 
 
 ###  http://www.W3C.org/khafre/affordances_situations.owl#Stabber
 affordances_situations:Stabber rdf:type owl:Class ;
-<<<<<<< HEAD
                                rdfs:subClassOf <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#Role> .
-=======
-                               rdfs:subClassOf affordances_situations:Role .
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
 
 
 ###  http://www.W3C.org/khafre/affordances_situations.owl#Stabbing
@@ -549,38 +413,22 @@ affordances_situations:Stabbing rdf:type owl:Class ;
 
 ###  http://www.W3C.org/khafre/affordances_situations.owl#StabbingPart
 affordances_situations:StabbingPart rdf:type owl:Class ;
-<<<<<<< HEAD
                                     rdfs:subClassOf <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#Role> .
-=======
-                                    rdfs:subClassOf affordances_situations:Role .
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
 
 
 ###  http://www.W3C.org/khafre/affordances_situations.owl#StabbingPoint
 affordances_situations:StabbingPoint rdf:type owl:Class ;
-<<<<<<< HEAD
                                      rdfs:subClassOf <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#Role> .
-=======
-                                     rdfs:subClassOf affordances_situations:Role .
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
 
 
 ###  http://www.W3C.org/khafre/affordances_situations.owl#StabbingTool
 affordances_situations:StabbingTool rdf:type owl:Class ;
-<<<<<<< HEAD
                                     rdfs:subClassOf <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#Role> .
-=======
-                                    rdfs:subClassOf affordances_situations:Role .
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
 
 
 ###  http://www.W3C.org/khafre/affordances_situations.owl#StableObject
 affordances_situations:StableObject rdf:type owl:Class ;
-<<<<<<< HEAD
                                     rdfs:subClassOf <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#Role> .
-=======
-                                    rdfs:subClassOf affordances_situations:Role .
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
 
 
 ###  http://www.W3C.org/khafre/affordances_situations.owl#Support
@@ -590,38 +438,22 @@ affordances_situations:Support rdf:type owl:Class ;
 
 ###  http://www.W3C.org/khafre/affordances_situations.owl#Supportee
 affordances_situations:Supportee rdf:type owl:Class ;
-<<<<<<< HEAD
                                  rdfs:subClassOf <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#Role> .
-=======
-                                 rdfs:subClassOf affordances_situations:Role .
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
 
 
 ###  http://www.W3C.org/khafre/affordances_situations.owl#Supporter
 affordances_situations:Supporter rdf:type owl:Class ;
-<<<<<<< HEAD
                                  rdfs:subClassOf <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#Role> .
-=======
-                                 rdfs:subClassOf affordances_situations:Role .
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
 
 
 ###  http://www.W3C.org/khafre/affordances_situations.owl#Target
 affordances_situations:Target rdf:type owl:Class ;
-<<<<<<< HEAD
                               rdfs:subClassOf <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#Role> .
-=======
-                              rdfs:subClassOf affordances_situations:Role .
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
 
 
 ###  http://www.W3C.org/khafre/affordances_situations.owl#TargetContainer
 affordances_situations:TargetContainer rdf:type owl:Class ;
-<<<<<<< HEAD
                                        rdfs:subClassOf <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#Role> .
-=======
-                                       rdfs:subClassOf affordances_situations:Role .
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
 
 
 ###  http://www.ontologydesignpatterns.org/cp/owl/description.owl#Description
@@ -632,13 +464,10 @@ affordances_situations:TargetContainer rdf:type owl:Class ;
 <http://www.ontologydesignpatterns.org/cp/owl/situation.owl#Situation> rdf:type owl:Class .
 
 
-<<<<<<< HEAD
 ###  http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#Role
 <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#Role> rdf:type owl:Class .
 
 
-=======
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
 ###  https://w3id.org/framester/schema/ConceptualFrame
 <https://w3id.org/framester/schema/ConceptualFrame> rdf:type owl:Class ;
                                                     rdfs:subClassOf <http://www.ontologydesignpatterns.org/cp/owl/description.owl#Description> .
@@ -713,20 +542,12 @@ affordances_situations:boundary1 rdf:type owl:NamedIndividual .
 
 ###  http://www.W3C.org/khafre/affordances_situations.owl#c1
 affordances_situations:c1 rdf:type owl:NamedIndividual ;
-<<<<<<< HEAD
                           <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant> affordances_situations:container1 .
-=======
-                          affordances_situations:hasParticipant affordances_situations:container1 .
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
 
 
 ###  http://www.W3C.org/khafre/affordances_situations.owl#c2
 affordances_situations:c2 rdf:type owl:NamedIndividual ;
-<<<<<<< HEAD
                           <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant> affordances_situations:liquid2 .
-=======
-                          affordances_situations:hasParticipant affordances_situations:liquid2 .
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
 
 
 ###  http://www.W3C.org/khafre/affordances_situations.owl#containee1
@@ -765,11 +586,7 @@ affordances_situations:cutter1 rdf:type owl:NamedIndividual ;
 
 ###  http://www.W3C.org/khafre/affordances_situations.owl#cutting1
 affordances_situations:cutting1 rdf:type owl:NamedIndividual ;
-<<<<<<< HEAD
                                 <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant> affordances_situations:cuttee1 .
-=======
-                                affordances_situations:hasParticipant affordances_situations:cuttee1 .
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
 
 
 ###  http://www.W3C.org/khafre/affordances_situations.owl#cuttingPoint1
@@ -778,32 +595,19 @@ affordances_situations:cuttingPoint1 rdf:type owl:NamedIndividual .
 
 ###  http://www.W3C.org/khafre/affordances_situations.owl#cuttingSequence1
 affordances_situations:cuttingSequence1 rdf:type owl:NamedIndividual ;
-<<<<<<< HEAD
                                         <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant> affordances_situations:cutting1 ,
                                                                                                                affordances_situations:separation1 .
-=======
-                                        affordances_situations:hasParticipant affordances_situations:cutting1 ,
-                                                                              affordances_situations:separation1 .
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
 
 
 ###  http://www.W3C.org/khafre/affordances_situations.owl#g1
 affordances_situations:g1 rdf:type owl:NamedIndividual ;
                           affordances_situations:hasGraspingPoint affordances_situations:graspingPoint1 ;
-<<<<<<< HEAD
                           <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant> affordances_situations:grasper1 .
-=======
-                          affordances_situations:hasParticipant affordances_situations:grasper1 .
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
 
 
 ###  http://www.W3C.org/khafre/affordances_situations.owl#g2
 affordances_situations:g2 rdf:type owl:NamedIndividual ;
-<<<<<<< HEAD
                           <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant> affordances_situations:grasped2 .
-=======
-                          affordances_situations:hasParticipant affordances_situations:grasped2 .
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
 
 
 ###  http://www.W3C.org/khafre/affordances_situations.owl#grasped1
@@ -842,11 +646,7 @@ affordances_situations:liquid2 rdf:type owl:NamedIndividual ;
 
 ###  http://www.W3C.org/khafre/affordances_situations.owl#p1
 affordances_situations:p1 rdf:type owl:NamedIndividual ;
-<<<<<<< HEAD
                           <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant> affordances_situations:pourer1 .
-=======
-                          affordances_situations:hasParticipant affordances_situations:pourer1 .
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
 
 
 ###  http://www.W3C.org/khafre/affordances_situations.owl#part1
@@ -874,13 +674,8 @@ affordances_situations:pourer1 rdf:type owl:NamedIndividual ;
 
 ###  http://www.W3C.org/khafre/affordances_situations.owl#separation1
 affordances_situations:separation1 rdf:type owl:NamedIndividual ;
-<<<<<<< HEAD
                                    <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant> affordances_situations:part1 ,
                                                                                                           affordances_situations:part2 .
-=======
-                                   affordances_situations:hasParticipant affordances_situations:part1 ,
-                                                                         affordances_situations:part2 .
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
 
 
 ###  http://www.W3C.org/khafre/affordances_situations.owl#stabbed1
@@ -894,13 +689,8 @@ affordances_situations:stabber1 rdf:type owl:NamedIndividual ;
 
 ###  http://www.W3C.org/khafre/affordances_situations.owl#stabbing1
 affordances_situations:stabbing1 rdf:type owl:NamedIndividual ;
-<<<<<<< HEAD
                                  <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant> affordances_situations:pointyPart1 ,
                                                                                                         affordances_situations:stabbed1 .
-=======
-                                 affordances_situations:hasParticipant affordances_situations:pointyPart1 ,
-                                                                       affordances_situations:stabbed1 .
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
 
 
 ###  http://www.W3C.org/khafre/affordances_situations.owl#stabbingPoint1
@@ -917,37 +707,20 @@ affordances_situations:stabbingPoint1 rdf:type owl:NamedIndividual .
 
 :s rdf:type <http://www.w3.org/2003/11/swrl#Variable> .
 
-<<<<<<< HEAD
 :seq rdf:type <http://www.w3.org/2003/11/swrl#Variable> .
 
 :s1 rdf:type <http://www.w3.org/2003/11/swrl#Variable> .
 
-=======
-:s1 rdf:type <http://www.w3.org/2003/11/swrl#Variable> .
-
-:seq rdf:type <http://www.w3.org/2003/11/swrl#Variable> .
-
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
 :s2 rdf:type <http://www.w3.org/2003/11/swrl#Variable> .
 
 :k rdf:type <http://www.w3.org/2003/11/swrl#Variable> .
 
 :w rdf:type <http://www.w3.org/2003/11/swrl#Variable> .
 
-<<<<<<< HEAD
 [ rdf:type <http://www.w3.org/2003/11/swrl#Imp> ;
    <http://www.w3.org/2003/11/swrl#body> [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
                                            rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
                                                        <http://www.w3.org/2003/11/swrl#propertyPredicate> <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant> ;
-=======
-[ <http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean ;
-   rdfs:comment "" ;
-   rdfs:label "ContainmentSituation 4" ;
-   rdf:type <http://www.w3.org/2003/11/swrl#Imp> ;
-   <http://www.w3.org/2003/11/swrl#body> [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
-                                           rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
-                                                       <http://www.w3.org/2003/11/swrl#propertyPredicate> affordances_situations:hasParticipant ;
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
                                                        <http://www.w3.org/2003/11/swrl#argument1> :x ;
                                                        <http://www.w3.org/2003/11/swrl#argument2> :y
                                                      ] ;
@@ -968,7 +741,6 @@ affordances_situations:stabbingPoint1 rdf:type owl:NamedIndividual .
                                          ]
  ] .
 
-<<<<<<< HEAD
 [ rdf:type <http://www.w3.org/2003/11/swrl#Imp> ;
    <http://www.w3.org/2003/11/swrl#body> [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
                                            rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#ClassAtom> ;
@@ -980,22 +752,6 @@ affordances_situations:stabbingPoint1 rdf:type owl:NamedIndividual .
                                                                   <http://www.w3.org/2003/11/swrl#propertyPredicate> <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant> ;
                                                                   <http://www.w3.org/2003/11/swrl#argument1> :s ;
                                                                   <http://www.w3.org/2003/11/swrl#argument2> :x
-=======
-[ <http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean ;
-   rdfs:comment "" ;
-   rdfs:label "CuttingSituation 6" ;
-   rdf:type <http://www.w3.org/2003/11/swrl#Imp> ;
-   <http://www.w3.org/2003/11/swrl#body> [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
-                                           rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
-                                                       <http://www.w3.org/2003/11/swrl#propertyPredicate> affordances_situations:hasParticipant ;
-                                                       <http://www.w3.org/2003/11/swrl#argument1> :s ;
-                                                       <http://www.w3.org/2003/11/swrl#argument2> :x
-                                                     ] ;
-                                           rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
-                                                      rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#ClassAtom> ;
-                                                                  <http://www.w3.org/2003/11/swrl#classPredicate> affordances_situations:CuttingPoint ;
-                                                                  <http://www.w3.org/2003/11/swrl#argument1> :x
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
                                                                 ] ;
                                                       rdf:rest rdf:nil
                                                     ]
@@ -1009,7 +765,6 @@ affordances_situations:stabbingPoint1 rdf:type owl:NamedIndividual .
                                          ]
  ] .
 
-<<<<<<< HEAD
 [ rdf:type <http://www.w3.org/2003/11/swrl#Imp> ;
    <http://www.w3.org/2003/11/swrl#body> [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
                                            rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#ClassAtom> ;
@@ -1021,22 +776,6 @@ affordances_situations:stabbingPoint1 rdf:type owl:NamedIndividual .
                                                                   <http://www.w3.org/2003/11/swrl#propertyPredicate> <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant> ;
                                                                   <http://www.w3.org/2003/11/swrl#argument1> :s ;
                                                                   <http://www.w3.org/2003/11/swrl#argument2> :x
-=======
-[ <http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean ;
-   rdfs:comment "" ;
-   rdfs:label "CuttingSituation 3" ;
-   rdf:type <http://www.w3.org/2003/11/swrl#Imp> ;
-   <http://www.w3.org/2003/11/swrl#body> [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
-                                           rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
-                                                       <http://www.w3.org/2003/11/swrl#propertyPredicate> affordances_situations:hasParticipant ;
-                                                       <http://www.w3.org/2003/11/swrl#argument1> :s ;
-                                                       <http://www.w3.org/2003/11/swrl#argument2> :x
-                                                     ] ;
-                                           rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
-                                                      rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#ClassAtom> ;
-                                                                  <http://www.w3.org/2003/11/swrl#classPredicate> affordances_situations:CuttingTool ;
-                                                                  <http://www.w3.org/2003/11/swrl#argument1> :x
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
                                                                 ] ;
                                                       rdf:rest rdf:nil
                                                     ]
@@ -1050,14 +789,7 @@ affordances_situations:stabbingPoint1 rdf:type owl:NamedIndividual .
                                          ]
  ] .
 
-<<<<<<< HEAD
 [ rdf:type <http://www.w3.org/2003/11/swrl#Imp> ;
-=======
-[ <http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean ;
-   rdfs:comment "" ;
-   rdfs:label "FallingObject" ;
-   rdf:type <http://www.w3.org/2003/11/swrl#Imp> ;
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
    <http://www.w3.org/2003/11/swrl#body> [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
                                            rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#ClassAtom> ;
                                                        <http://www.w3.org/2003/11/swrl#classPredicate> affordances_situations:Falling ;
@@ -1065,11 +797,7 @@ affordances_situations:stabbingPoint1 rdf:type owl:NamedIndividual .
                                                      ] ;
                                            rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
                                                       rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
-<<<<<<< HEAD
                                                                   <http://www.w3.org/2003/11/swrl#propertyPredicate> <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant> ;
-=======
-                                                                  <http://www.w3.org/2003/11/swrl#propertyPredicate> affordances_situations:hasParticipant ;
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
                                                                   <http://www.w3.org/2003/11/swrl#argument1> :s ;
                                                                   <http://www.w3.org/2003/11/swrl#argument2> :x
                                                                 ] ;
@@ -1085,14 +813,7 @@ affordances_situations:stabbingPoint1 rdf:type owl:NamedIndividual .
                                          ]
  ] .
 
-<<<<<<< HEAD
 [ rdf:type <http://www.w3.org/2003/11/swrl#Imp> ;
-=======
-[ <http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean ;
-   rdfs:comment "" ;
-   rdfs:label "Movement from Falling" ;
-   rdf:type <http://www.w3.org/2003/11/swrl#Imp> ;
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
    <http://www.w3.org/2003/11/swrl#body> [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
                                            rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#ClassAtom> ;
                                                        <http://www.w3.org/2003/11/swrl#classPredicate> affordances_situations:Falling ;
@@ -1100,11 +821,7 @@ affordances_situations:stabbingPoint1 rdf:type owl:NamedIndividual .
                                                      ] ;
                                            rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
                                                       rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
-<<<<<<< HEAD
                                                                   <http://www.w3.org/2003/11/swrl#propertyPredicate> <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant> ;
-=======
-                                                                  <http://www.w3.org/2003/11/swrl#propertyPredicate> affordances_situations:hasParticipant ;
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
                                                                   <http://www.w3.org/2003/11/swrl#argument1> :s ;
                                                                   <http://www.w3.org/2003/11/swrl#argument2> :x
                                                                 ] ;
@@ -1126,20 +843,10 @@ affordances_situations:stabbingPoint1 rdf:type owl:NamedIndividual .
                                          ]
  ] .
 
-<<<<<<< HEAD
 [ rdf:type <http://www.w3.org/2003/11/swrl#Imp> ;
    <http://www.w3.org/2003/11/swrl#body> [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
                                            rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
                                                        <http://www.w3.org/2003/11/swrl#propertyPredicate> <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant> ;
-=======
-[ <http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean ;
-   rdfs:comment "" ;
-   rdfs:label "ContainmentSituation 2" ;
-   rdf:type <http://www.w3.org/2003/11/swrl#Imp> ;
-   <http://www.w3.org/2003/11/swrl#body> [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
-                                           rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
-                                                       <http://www.w3.org/2003/11/swrl#propertyPredicate> affordances_situations:hasParticipant ;
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
                                                        <http://www.w3.org/2003/11/swrl#argument1> :x ;
                                                        <http://www.w3.org/2003/11/swrl#argument2> :y
                                                      ] ;
@@ -1160,14 +867,7 @@ affordances_situations:stabbingPoint1 rdf:type owl:NamedIndividual .
                                          ]
  ] .
 
-<<<<<<< HEAD
 [ rdf:type <http://www.w3.org/2003/11/swrl#Imp> ;
-=======
-[ <http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean ;
-   rdfs:comment "" ;
-   rdfs:label "Falling from Containment" ;
-   rdf:type <http://www.w3.org/2003/11/swrl#Imp> ;
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
    <http://www.w3.org/2003/11/swrl#body> [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
                                            rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#ClassAtom> ;
                                                        <http://www.w3.org/2003/11/swrl#classPredicate> affordances_situations:FallingObject ;
@@ -1191,14 +891,7 @@ affordances_situations:stabbingPoint1 rdf:type owl:NamedIndividual .
                                          ]
  ] .
 
-<<<<<<< HEAD
 [ rdf:type <http://www.w3.org/2003/11/swrl#Imp> ;
-=======
-[ <http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean ;
-   rdfs:comment "" ;
-   rdfs:label "Falling from Grasping" ;
-   rdf:type <http://www.w3.org/2003/11/swrl#Imp> ;
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
    <http://www.w3.org/2003/11/swrl#body> [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
                                            rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
                                                        <http://www.w3.org/2003/11/swrl#propertyPredicate> affordances_situations:grasps ;
@@ -1222,7 +915,6 @@ affordances_situations:stabbingPoint1 rdf:type owl:NamedIndividual .
                                          ]
  ] .
 
-<<<<<<< HEAD
 [ rdf:type <http://www.w3.org/2003/11/swrl#Imp> ;
    <http://www.w3.org/2003/11/swrl#body> [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
                                            rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#ClassAtom> ;
@@ -1234,22 +926,6 @@ affordances_situations:stabbingPoint1 rdf:type owl:NamedIndividual .
                                                                   <http://www.w3.org/2003/11/swrl#propertyPredicate> <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant> ;
                                                                   <http://www.w3.org/2003/11/swrl#argument1> :s ;
                                                                   <http://www.w3.org/2003/11/swrl#argument2> :x
-=======
-[ <http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean ;
-   rdfs:comment "" ;
-   rdfs:label "Falling Roles" ;
-   rdf:type <http://www.w3.org/2003/11/swrl#Imp> ;
-   <http://www.w3.org/2003/11/swrl#body> [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
-                                           rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
-                                                       <http://www.w3.org/2003/11/swrl#propertyPredicate> affordances_situations:hasParticipant ;
-                                                       <http://www.w3.org/2003/11/swrl#argument1> :s ;
-                                                       <http://www.w3.org/2003/11/swrl#argument2> :x
-                                                     ] ;
-                                           rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
-                                                      rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#ClassAtom> ;
-                                                                  <http://www.w3.org/2003/11/swrl#classPredicate> affordances_situations:FallingObject ;
-                                                                  <http://www.w3.org/2003/11/swrl#argument1> :x
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
                                                                 ] ;
                                                       rdf:rest rdf:nil
                                                     ]
@@ -1263,7 +939,6 @@ affordances_situations:stabbingPoint1 rdf:type owl:NamedIndividual .
                                          ]
  ] .
 
-<<<<<<< HEAD
 [ rdf:type <http://www.w3.org/2003/11/swrl#Imp> ;
    <http://www.w3.org/2003/11/swrl#body> [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
                                            rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#ClassAtom> ;
@@ -1275,49 +950,6 @@ affordances_situations:stabbingPoint1 rdf:type owl:NamedIndividual .
                                                                   <http://www.w3.org/2003/11/swrl#propertyPredicate> <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant> ;
                                                                   <http://www.w3.org/2003/11/swrl#argument1> :s ;
                                                                   <http://www.w3.org/2003/11/swrl#argument2> :x
-=======
-[ <http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean ;
-   rdfs:comment "" ;
-   rdfs:label "FallingSituation 1" ;
-   rdf:type <http://www.w3.org/2003/11/swrl#Imp> ;
-   <http://www.w3.org/2003/11/swrl#body> [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
-                                           rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
-                                                       <http://www.w3.org/2003/11/swrl#propertyPredicate> affordances_situations:hasParticipant ;
-                                                       <http://www.w3.org/2003/11/swrl#argument1> :s ;
-                                                       <http://www.w3.org/2003/11/swrl#argument2> :x
-                                                     ] ;
-                                           rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
-                                                      rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#ClassAtom> ;
-                                                                  <http://www.w3.org/2003/11/swrl#classPredicate> affordances_situations:FallingObject ;
-                                                                  <http://www.w3.org/2003/11/swrl#argument1> :x
-                                                                ] ;
-                                                      rdf:rest rdf:nil
-                                                    ]
-                                         ] ;
-   <http://www.w3.org/2003/11/swrl#head> [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
-                                           rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#ClassAtom> ;
-                                                       <http://www.w3.org/2003/11/swrl#classPredicate> affordances_situations:Falling ;
-                                                       <http://www.w3.org/2003/11/swrl#argument1> :s
-                                                     ] ;
-                                           rdf:rest rdf:nil
-                                         ]
- ] .
-
-[ <http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean ;
-   rdfs:comment "" ;
-   rdfs:label "GraspingSituation 2" ;
-   rdf:type <http://www.w3.org/2003/11/swrl#Imp> ;
-   <http://www.w3.org/2003/11/swrl#body> [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
-                                           rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
-                                                       <http://www.w3.org/2003/11/swrl#propertyPredicate> affordances_situations:hasParticipant ;
-                                                       <http://www.w3.org/2003/11/swrl#argument1> :s ;
-                                                       <http://www.w3.org/2003/11/swrl#argument2> :x
-                                                     ] ;
-                                           rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
-                                                      rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#ClassAtom> ;
-                                                                  <http://www.w3.org/2003/11/swrl#classPredicate> affordances_situations:Grasped ;
-                                                                  <http://www.w3.org/2003/11/swrl#argument1> :x
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
                                                                 ] ;
                                                       rdf:rest rdf:nil
                                                     ]
@@ -1331,7 +963,6 @@ affordances_situations:stabbingPoint1 rdf:type owl:NamedIndividual .
                                          ]
  ] .
 
-<<<<<<< HEAD
 [ rdf:type <http://www.w3.org/2003/11/swrl#Imp> ;
    <http://www.w3.org/2003/11/swrl#body> [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
                                            rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#ClassAtom> ;
@@ -1351,45 +982,14 @@ affordances_situations:stabbingPoint1 rdf:type owl:NamedIndividual .
                                                                  rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
                                                                             rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
                                                                                         <http://www.w3.org/2003/11/swrl#propertyPredicate> <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant> ;
-=======
-[ <http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean ;
-   rdfs:comment "" ;
-   rdfs:label "Grasping Roles 2" ;
-   rdf:type <http://www.w3.org/2003/11/swrl#Imp> ;
-   <http://www.w3.org/2003/11/swrl#body> [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
-                                           rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#ClassAtom> ;
-                                                       <http://www.w3.org/2003/11/swrl#classPredicate> affordances_situations:Grasping ;
-                                                       <http://www.w3.org/2003/11/swrl#argument1> :s
-                                                     ] ;
-                                           rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
-                                                      rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
-                                                                  <http://www.w3.org/2003/11/swrl#propertyPredicate> affordances_situations:hasParticipant ;
-                                                                  <http://www.w3.org/2003/11/swrl#argument1> :s ;
-                                                                  <http://www.w3.org/2003/11/swrl#argument2> :x
-                                                                ] ;
-                                                      rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
-                                                                 rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#ClassAtom> ;
-                                                                             <http://www.w3.org/2003/11/swrl#classPredicate> affordances_situations:Grasper ;
-                                                                             <http://www.w3.org/2003/11/swrl#argument1> :x
-                                                                           ] ;
-                                                                 rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
-                                                                            rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
-                                                                                        <http://www.w3.org/2003/11/swrl#propertyPredicate> affordances_situations:hasParticipant ;
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
                                                                                         <http://www.w3.org/2003/11/swrl#argument1> :s ;
                                                                                         <http://www.w3.org/2003/11/swrl#argument2> :y
                                                                                       ] ;
                                                                             rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
-<<<<<<< HEAD
                                                                                        rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
                                                                                                    <http://www.w3.org/2003/11/swrl#propertyPredicate> <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant> ;
                                                                                                    <http://www.w3.org/2003/11/swrl#argument1> :s ;
                                                                                                    <http://www.w3.org/2003/11/swrl#argument2> :x
-=======
-                                                                                       rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#ClassAtom> ;
-                                                                                                   <http://www.w3.org/2003/11/swrl#classPredicate> affordances_situations:Grasped ;
-                                                                                                   <http://www.w3.org/2003/11/swrl#argument1> :y
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
                                                                                                  ] ;
                                                                                        rdf:rest rdf:nil
                                                                                      ]
@@ -1407,14 +1007,7 @@ affordances_situations:stabbingPoint1 rdf:type owl:NamedIndividual .
                                          ]
  ] .
 
-<<<<<<< HEAD
 [ rdf:type <http://www.w3.org/2003/11/swrl#Imp> ;
-=======
-[ <http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean ;
-   rdfs:comment "" ;
-   rdfs:label "Movement from Grasping" ;
-   rdf:type <http://www.w3.org/2003/11/swrl#Imp> ;
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
    <http://www.w3.org/2003/11/swrl#body> [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
                                            rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#ClassAtom> ;
                                                        <http://www.w3.org/2003/11/swrl#classPredicate> affordances_situations:Grasper ;
@@ -1444,7 +1037,6 @@ affordances_situations:stabbingPoint1 rdf:type owl:NamedIndividual .
                                          ]
  ] .
 
-<<<<<<< HEAD
 [ rdf:type <http://www.w3.org/2003/11/swrl#Imp> ;
    <http://www.w3.org/2003/11/swrl#body> [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
                                            rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#ClassAtom> ;
@@ -1456,22 +1048,6 @@ affordances_situations:stabbingPoint1 rdf:type owl:NamedIndividual .
                                                                   <http://www.w3.org/2003/11/swrl#propertyPredicate> <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant> ;
                                                                   <http://www.w3.org/2003/11/swrl#argument1> :s ;
                                                                   <http://www.w3.org/2003/11/swrl#argument2> :x
-=======
-[ <http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean ;
-   rdfs:comment "" ;
-   rdfs:label "Grasping Situation 1" ;
-   rdf:type <http://www.w3.org/2003/11/swrl#Imp> ;
-   <http://www.w3.org/2003/11/swrl#body> [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
-                                           rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
-                                                       <http://www.w3.org/2003/11/swrl#propertyPredicate> affordances_situations:hasParticipant ;
-                                                       <http://www.w3.org/2003/11/swrl#argument1> :s ;
-                                                       <http://www.w3.org/2003/11/swrl#argument2> :x
-                                                     ] ;
-                                           rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
-                                                      rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#ClassAtom> ;
-                                                                  <http://www.w3.org/2003/11/swrl#classPredicate> affordances_situations:Grasper ;
-                                                                  <http://www.w3.org/2003/11/swrl#argument1> :x
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
                                                                 ] ;
                                                       rdf:rest rdf:nil
                                                     ]
@@ -1485,14 +1061,7 @@ affordances_situations:stabbingPoint1 rdf:type owl:NamedIndividual .
                                          ]
  ] .
 
-<<<<<<< HEAD
 [ rdf:type <http://www.w3.org/2003/11/swrl#Imp> ;
-=======
-[ <http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean ;
-   rdfs:comment "" ;
-   rdfs:label "Contact from Grasping" ;
-   rdf:type <http://www.w3.org/2003/11/swrl#Imp> ;
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
    <http://www.w3.org/2003/11/swrl#body> [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
                                            rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#ClassAtom> ;
                                                        <http://www.w3.org/2003/11/swrl#classPredicate> affordances_situations:Grasping ;
@@ -1509,7 +1078,6 @@ affordances_situations:stabbingPoint1 rdf:type owl:NamedIndividual .
                                          ]
  ] .
 
-<<<<<<< HEAD
 [ rdf:type <http://www.w3.org/2003/11/swrl#Imp> ;
    <http://www.w3.org/2003/11/swrl#body> [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
                                            rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#ClassAtom> ;
@@ -1535,12 +1103,6 @@ affordances_situations:stabbingPoint1 rdf:type owl:NamedIndividual .
  ] .
 
 [ rdf:type <http://www.w3.org/2003/11/swrl#Imp> ;
-=======
-[ <http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean ;
-   rdfs:comment "" ;
-   rdfs:label "All Containers are Objects" ;
-   rdf:type <http://www.w3.org/2003/11/swrl#Imp> ;
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
    <http://www.w3.org/2003/11/swrl#body> [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
                                            rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#ClassAtom> ;
                                                        <http://www.w3.org/2003/11/swrl#classPredicate> affordances_situations:Container ;
@@ -1557,7 +1119,6 @@ affordances_situations:stabbingPoint1 rdf:type owl:NamedIndividual .
                                          ]
  ] .
 
-<<<<<<< HEAD
 [ rdf:type <http://www.w3.org/2003/11/swrl#Imp> ;
    <http://www.w3.org/2003/11/swrl#body> [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
                                            rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#ClassAtom> ;
@@ -1569,49 +1130,6 @@ affordances_situations:stabbingPoint1 rdf:type owl:NamedIndividual .
                                                                   <http://www.w3.org/2003/11/swrl#propertyPredicate> <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant> ;
                                                                   <http://www.w3.org/2003/11/swrl#argument1> :x ;
                                                                   <http://www.w3.org/2003/11/swrl#argument2> :y
-=======
-[ <http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean ;
-   rdfs:comment "" ;
-   rdfs:label "Grasping Roles 3" ;
-   rdf:type <http://www.w3.org/2003/11/swrl#Imp> ;
-   <http://www.w3.org/2003/11/swrl#body> [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
-                                           rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
-                                                       <http://www.w3.org/2003/11/swrl#propertyPredicate> affordances_situations:hasParticipant ;
-                                                       <http://www.w3.org/2003/11/swrl#argument1> :s ;
-                                                       <http://www.w3.org/2003/11/swrl#argument2> :k
-                                                     ] ;
-                                           rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
-                                                      rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#ClassAtom> ;
-                                                                  <http://www.w3.org/2003/11/swrl#classPredicate> affordances_situations:GraspingPoint ;
-                                                                  <http://www.w3.org/2003/11/swrl#argument1> :k
-                                                                ] ;
-                                                      rdf:rest rdf:nil
-                                                    ]
-                                         ] ;
-   <http://www.w3.org/2003/11/swrl#head> [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
-                                           rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#ClassAtom> ;
-                                                       <http://www.w3.org/2003/11/swrl#classPredicate> affordances_situations:Grasping ;
-                                                       <http://www.w3.org/2003/11/swrl#argument1> :s
-                                                     ] ;
-                                           rdf:rest rdf:nil
-                                         ]
- ] .
-
-[ <http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean ;
-   rdfs:comment "" ;
-   rdfs:label "ContainmentSituation 3" ;
-   rdf:type <http://www.w3.org/2003/11/swrl#Imp> ;
-   <http://www.w3.org/2003/11/swrl#body> [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
-                                           rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
-                                                       <http://www.w3.org/2003/11/swrl#propertyPredicate> affordances_situations:hasParticipant ;
-                                                       <http://www.w3.org/2003/11/swrl#argument1> :x ;
-                                                       <http://www.w3.org/2003/11/swrl#argument2> :y
-                                                     ] ;
-                                           rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
-                                                      rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#ClassAtom> ;
-                                                                  <http://www.w3.org/2003/11/swrl#classPredicate> affordances_situations:Interior ;
-                                                                  <http://www.w3.org/2003/11/swrl#argument1> :y
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
                                                                 ] ;
                                                       rdf:rest rdf:nil
                                                     ]
@@ -1625,14 +1143,7 @@ affordances_situations:stabbingPoint1 rdf:type owl:NamedIndividual .
                                          ]
  ] .
 
-<<<<<<< HEAD
 [ rdf:type <http://www.w3.org/2003/11/swrl#Imp> ;
-=======
-[ <http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean ;
-   rdfs:comment "" ;
-   rdfs:label "Movement from Containment" ;
-   rdf:type <http://www.w3.org/2003/11/swrl#Imp> ;
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
    <http://www.w3.org/2003/11/swrl#body> [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
                                            rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
                                                        <http://www.w3.org/2003/11/swrl#propertyPredicate> affordances_situations:contains ;
@@ -1656,7 +1167,6 @@ affordances_situations:stabbingPoint1 rdf:type owl:NamedIndividual .
                                          ]
  ] .
 
-<<<<<<< HEAD
 [ rdf:type <http://www.w3.org/2003/11/swrl#Imp> ;
    <http://www.w3.org/2003/11/swrl#body> [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
                                            rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#ClassAtom> ;
@@ -1668,22 +1178,6 @@ affordances_situations:stabbingPoint1 rdf:type owl:NamedIndividual .
                                                                   <http://www.w3.org/2003/11/swrl#propertyPredicate> <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant> ;
                                                                   <http://www.w3.org/2003/11/swrl#argument1> :s ;
                                                                   <http://www.w3.org/2003/11/swrl#argument2> :x
-=======
-[ <http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean ;
-   rdfs:comment "" ;
-   rdfs:label "Movement Roles" ;
-   rdf:type <http://www.w3.org/2003/11/swrl#Imp> ;
-   <http://www.w3.org/2003/11/swrl#body> [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
-                                           rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
-                                                       <http://www.w3.org/2003/11/swrl#propertyPredicate> affordances_situations:hasParticipant ;
-                                                       <http://www.w3.org/2003/11/swrl#argument1> :s ;
-                                                       <http://www.w3.org/2003/11/swrl#argument2> :x
-                                                     ] ;
-                                           rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
-                                                      rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#ClassAtom> ;
-                                                                  <http://www.w3.org/2003/11/swrl#classPredicate> affordances_situations:MovingObject ;
-                                                                  <http://www.w3.org/2003/11/swrl#argument1> :x
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
                                                                 ] ;
                                                       rdf:rest rdf:nil
                                                     ]
@@ -1697,7 +1191,6 @@ affordances_situations:stabbingPoint1 rdf:type owl:NamedIndividual .
                                          ]
  ] .
 
-<<<<<<< HEAD
 [ rdf:type <http://www.w3.org/2003/11/swrl#Imp> ;
    <http://www.w3.org/2003/11/swrl#body> [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
                                            rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#ClassAtom> ;
@@ -1709,22 +1202,6 @@ affordances_situations:stabbingPoint1 rdf:type owl:NamedIndividual .
                                                                   <http://www.w3.org/2003/11/swrl#propertyPredicate> <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant> ;
                                                                   <http://www.w3.org/2003/11/swrl#argument1> :s ;
                                                                   <http://www.w3.org/2003/11/swrl#argument2> :x
-=======
-[ <http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean ;
-   rdfs:comment "" ;
-   rdfs:label "PouringSituation 2" ;
-   rdf:type <http://www.w3.org/2003/11/swrl#Imp> ;
-   <http://www.w3.org/2003/11/swrl#body> [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
-                                           rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
-                                                       <http://www.w3.org/2003/11/swrl#propertyPredicate> affordances_situations:hasParticipant ;
-                                                       <http://www.w3.org/2003/11/swrl#argument1> :s ;
-                                                       <http://www.w3.org/2003/11/swrl#argument2> :x
-                                                     ] ;
-                                           rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
-                                                      rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#ClassAtom> ;
-                                                                  <http://www.w3.org/2003/11/swrl#classPredicate> affordances_situations:Poured ;
-                                                                  <http://www.w3.org/2003/11/swrl#argument1> :x
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
                                                                 ] ;
                                                       rdf:rest rdf:nil
                                                     ]
@@ -1738,23 +1215,11 @@ affordances_situations:stabbingPoint1 rdf:type owl:NamedIndividual .
                                          ]
  ] .
 
-<<<<<<< HEAD
 [ rdf:type <http://www.w3.org/2003/11/swrl#Imp> ;
    <http://www.w3.org/2003/11/swrl#body> [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
                                            rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#ClassAtom> ;
                                                        <http://www.w3.org/2003/11/swrl#classPredicate> affordances_situations:Poured ;
                                                        <http://www.w3.org/2003/11/swrl#argument1> :y
-=======
-[ <http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean ;
-   rdfs:comment "" ;
-   rdfs:label "PouringSituation 3" ;
-   rdf:type <http://www.w3.org/2003/11/swrl#Imp> ;
-   <http://www.w3.org/2003/11/swrl#body> [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
-                                           rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
-                                                       <http://www.w3.org/2003/11/swrl#propertyPredicate> affordances_situations:hasParticipant ;
-                                                       <http://www.w3.org/2003/11/swrl#argument1> :s ;
-                                                       <http://www.w3.org/2003/11/swrl#argument2> :x
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
                                                      ] ;
                                            rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
                                                       rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#ClassAtom> ;
@@ -1762,16 +1227,10 @@ affordances_situations:stabbingPoint1 rdf:type owl:NamedIndividual .
                                                                   <http://www.w3.org/2003/11/swrl#argument1> :x
                                                                 ] ;
                                                       rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
-<<<<<<< HEAD
                                                                  rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
                                                                              <http://www.w3.org/2003/11/swrl#propertyPredicate> <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant> ;
                                                                              <http://www.w3.org/2003/11/swrl#argument1> :s ;
                                                                              <http://www.w3.org/2003/11/swrl#argument2> :x
-=======
-                                                                 rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#ClassAtom> ;
-                                                                             <http://www.w3.org/2003/11/swrl#classPredicate> affordances_situations:Poured ;
-                                                                             <http://www.w3.org/2003/11/swrl#argument1> :y
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
                                                                            ] ;
                                                                  rdf:rest rdf:nil
                                                                ]
@@ -1779,11 +1238,7 @@ affordances_situations:stabbingPoint1 rdf:type owl:NamedIndividual .
                                          ] ;
    <http://www.w3.org/2003/11/swrl#head> [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
                                            rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
-<<<<<<< HEAD
                                                        <http://www.w3.org/2003/11/swrl#propertyPredicate> <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant> ;
-=======
-                                                       <http://www.w3.org/2003/11/swrl#propertyPredicate> affordances_situations:hasParticipant ;
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
                                                        <http://www.w3.org/2003/11/swrl#argument1> :s ;
                                                        <http://www.w3.org/2003/11/swrl#argument2> :y
                                                      ] ;
@@ -1791,23 +1246,11 @@ affordances_situations:stabbingPoint1 rdf:type owl:NamedIndividual .
                                          ]
  ] .
 
-<<<<<<< HEAD
 [ rdf:type <http://www.w3.org/2003/11/swrl#Imp> ;
    <http://www.w3.org/2003/11/swrl#body> [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
                                            rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#ClassAtom> ;
                                                        <http://www.w3.org/2003/11/swrl#classPredicate> affordances_situations:Poured ;
                                                        <http://www.w3.org/2003/11/swrl#argument1> :y
-=======
-[ <http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean ;
-   rdfs:comment "" ;
-   rdfs:label "PouringSituation 4" ;
-   rdf:type <http://www.w3.org/2003/11/swrl#Imp> ;
-   <http://www.w3.org/2003/11/swrl#body> [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
-                                           rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
-                                                       <http://www.w3.org/2003/11/swrl#propertyPredicate> affordances_situations:hasParticipant ;
-                                                       <http://www.w3.org/2003/11/swrl#argument1> :s ;
-                                                       <http://www.w3.org/2003/11/swrl#argument2> :y
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
                                                      ] ;
                                            rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
                                                       rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#ClassAtom> ;
@@ -1815,16 +1258,10 @@ affordances_situations:stabbingPoint1 rdf:type owl:NamedIndividual .
                                                                   <http://www.w3.org/2003/11/swrl#argument1> :x
                                                                 ] ;
                                                       rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
-<<<<<<< HEAD
                                                                  rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
                                                                              <http://www.w3.org/2003/11/swrl#propertyPredicate> <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant> ;
                                                                              <http://www.w3.org/2003/11/swrl#argument1> :s ;
                                                                              <http://www.w3.org/2003/11/swrl#argument2> :y
-=======
-                                                                 rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#ClassAtom> ;
-                                                                             <http://www.w3.org/2003/11/swrl#classPredicate> affordances_situations:Poured ;
-                                                                             <http://www.w3.org/2003/11/swrl#argument1> :y
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
                                                                            ] ;
                                                                  rdf:rest rdf:nil
                                                                ]
@@ -1832,11 +1269,7 @@ affordances_situations:stabbingPoint1 rdf:type owl:NamedIndividual .
                                          ] ;
    <http://www.w3.org/2003/11/swrl#head> [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
                                            rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
-<<<<<<< HEAD
                                                        <http://www.w3.org/2003/11/swrl#propertyPredicate> <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant> ;
-=======
-                                                       <http://www.w3.org/2003/11/swrl#propertyPredicate> affordances_situations:hasParticipant ;
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
                                                        <http://www.w3.org/2003/11/swrl#argument1> :s ;
                                                        <http://www.w3.org/2003/11/swrl#argument2> :x
                                                      ] ;
@@ -1844,7 +1277,6 @@ affordances_situations:stabbingPoint1 rdf:type owl:NamedIndividual .
                                          ]
  ] .
 
-<<<<<<< HEAD
 [ rdf:type <http://www.w3.org/2003/11/swrl#Imp> ;
    <http://www.w3.org/2003/11/swrl#body> [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
                                            rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#ClassAtom> ;
@@ -1870,12 +1302,6 @@ affordances_situations:stabbingPoint1 rdf:type owl:NamedIndividual .
  ] .
 
 [ rdf:type <http://www.w3.org/2003/11/swrl#Imp> ;
-=======
-[ <http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean ;
-   rdfs:comment "" ;
-   rdfs:label "SourceContainer" ;
-   rdf:type <http://www.w3.org/2003/11/swrl#Imp> ;
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
    <http://www.w3.org/2003/11/swrl#body> [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
                                            rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#ClassAtom> ;
                                                        <http://www.w3.org/2003/11/swrl#classPredicate> affordances_situations:Source ;
@@ -1898,41 +1324,7 @@ affordances_situations:stabbingPoint1 rdf:type owl:NamedIndividual .
                                          ]
  ] .
 
-<<<<<<< HEAD
 [ rdf:type <http://www.w3.org/2003/11/swrl#Imp> ;
-=======
-[ <http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean ;
-   rdfs:comment "" ;
-   rdfs:label "PouringSituation 1" ;
-   rdf:type <http://www.w3.org/2003/11/swrl#Imp> ;
-   <http://www.w3.org/2003/11/swrl#body> [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
-                                           rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
-                                                       <http://www.w3.org/2003/11/swrl#propertyPredicate> affordances_situations:hasParticipant ;
-                                                       <http://www.w3.org/2003/11/swrl#argument1> :s ;
-                                                       <http://www.w3.org/2003/11/swrl#argument2> :x
-                                                     ] ;
-                                           rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
-                                                      rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#ClassAtom> ;
-                                                                  <http://www.w3.org/2003/11/swrl#classPredicate> affordances_situations:Pourer ;
-                                                                  <http://www.w3.org/2003/11/swrl#argument1> :x
-                                                                ] ;
-                                                      rdf:rest rdf:nil
-                                                    ]
-                                         ] ;
-   <http://www.w3.org/2003/11/swrl#head> [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
-                                           rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#ClassAtom> ;
-                                                       <http://www.w3.org/2003/11/swrl#classPredicate> affordances_situations:Pouring ;
-                                                       <http://www.w3.org/2003/11/swrl#argument1> :s
-                                                     ] ;
-                                           rdf:rest rdf:nil
-                                         ]
- ] .
-
-[ <http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean ;
-   rdfs:comment "" ;
-   rdfs:label "Movement from Pouring" ;
-   rdf:type <http://www.w3.org/2003/11/swrl#Imp> ;
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
    <http://www.w3.org/2003/11/swrl#body> [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
                                            rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#ClassAtom> ;
                                                        <http://www.w3.org/2003/11/swrl#classPredicate> affordances_situations:Pouring ;
@@ -1949,7 +1341,6 @@ affordances_situations:stabbingPoint1 rdf:type owl:NamedIndividual .
                                          ]
  ] .
 
-<<<<<<< HEAD
 [ rdf:type <http://www.w3.org/2003/11/swrl#Imp> ;
    <http://www.w3.org/2003/11/swrl#body> [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
                                            rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
@@ -1961,22 +1352,6 @@ affordances_situations:stabbingPoint1 rdf:type owl:NamedIndividual .
                                                       rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#ClassAtom> ;
                                                                   <http://www.w3.org/2003/11/swrl#classPredicate> affordances_situations:Pouring ;
                                                                   <http://www.w3.org/2003/11/swrl#argument1> :s
-=======
-[ <http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean ;
-   rdfs:comment "" ;
-   rdfs:label "Contact between Poured and SourceContainer" ;
-   rdf:type <http://www.w3.org/2003/11/swrl#Imp> ;
-   <http://www.w3.org/2003/11/swrl#body> [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
-                                           rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#ClassAtom> ;
-                                                       <http://www.w3.org/2003/11/swrl#classPredicate> affordances_situations:Pouring ;
-                                                       <http://www.w3.org/2003/11/swrl#argument1> :s
-                                                     ] ;
-                                           rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
-                                                      rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
-                                                                  <http://www.w3.org/2003/11/swrl#propertyPredicate> affordances_situations:flowsFrom ;
-                                                                  <http://www.w3.org/2003/11/swrl#argument1> :x ;
-                                                                  <http://www.w3.org/2003/11/swrl#argument2> :y
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
                                                                 ] ;
                                                       rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
                                                                  rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#ClassAtom> ;
@@ -1994,7 +1369,6 @@ affordances_situations:stabbingPoint1 rdf:type owl:NamedIndividual .
                                                      ] ;
                                            rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
                                                       rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
-<<<<<<< HEAD
                                                                   <http://www.w3.org/2003/11/swrl#propertyPredicate> affordances_situations:inContactWith ;
                                                                   <http://www.w3.org/2003/11/swrl#argument1> :x ;
                                                                   <http://www.w3.org/2003/11/swrl#argument2> :y
@@ -2002,29 +1376,14 @@ affordances_situations:stabbingPoint1 rdf:type owl:NamedIndividual .
                                                       rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
                                                                  rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
                                                                              <http://www.w3.org/2003/11/swrl#propertyPredicate> <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant> ;
-=======
-                                                                  <http://www.w3.org/2003/11/swrl#propertyPredicate> affordances_situations:hasParticipant ;
-                                                                  <http://www.w3.org/2003/11/swrl#argument1> :s ;
-                                                                  <http://www.w3.org/2003/11/swrl#argument2> :x
-                                                                ] ;
-                                                      rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
-                                                                 rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
-                                                                             <http://www.w3.org/2003/11/swrl#propertyPredicate> affordances_situations:hasParticipant ;
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
                                                                              <http://www.w3.org/2003/11/swrl#argument1> :s ;
                                                                              <http://www.w3.org/2003/11/swrl#argument2> :y
                                                                            ] ;
                                                                  rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
                                                                             rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
-<<<<<<< HEAD
                                                                                         <http://www.w3.org/2003/11/swrl#propertyPredicate> <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant> ;
                                                                                         <http://www.w3.org/2003/11/swrl#argument1> :s ;
                                                                                         <http://www.w3.org/2003/11/swrl#argument2> :x
-=======
-                                                                                        <http://www.w3.org/2003/11/swrl#propertyPredicate> affordances_situations:inContactWith ;
-                                                                                        <http://www.w3.org/2003/11/swrl#argument1> :x ;
-                                                                                        <http://www.w3.org/2003/11/swrl#argument2> :y
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
                                                                                       ] ;
                                                                             rdf:rest rdf:nil
                                                                           ]
@@ -2033,14 +1392,7 @@ affordances_situations:stabbingPoint1 rdf:type owl:NamedIndividual .
                                          ]
  ] .
 
-<<<<<<< HEAD
 [ rdf:type <http://www.w3.org/2003/11/swrl#Imp> ;
-=======
-[ <http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean ;
-   rdfs:comment "" ;
-   rdfs:label "Contact between Poured and TargetCointainer" ;
-   rdf:type <http://www.w3.org/2003/11/swrl#Imp> ;
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
    <http://www.w3.org/2003/11/swrl#body> [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
                                            rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#ClassAtom> ;
                                                        <http://www.w3.org/2003/11/swrl#classPredicate> affordances_situations:Pouring ;
@@ -2068,7 +1420,6 @@ affordances_situations:stabbingPoint1 rdf:type owl:NamedIndividual .
                                                      ] ;
                                            rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
                                                       rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
-<<<<<<< HEAD
                                                                   <http://www.w3.org/2003/11/swrl#propertyPredicate> affordances_situations:inContactWith ;
                                                                   <http://www.w3.org/2003/11/swrl#argument1> :x ;
                                                                   <http://www.w3.org/2003/11/swrl#argument2> :y
@@ -2076,29 +1427,14 @@ affordances_situations:stabbingPoint1 rdf:type owl:NamedIndividual .
                                                       rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
                                                                  rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
                                                                              <http://www.w3.org/2003/11/swrl#propertyPredicate> <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant> ;
-=======
-                                                                  <http://www.w3.org/2003/11/swrl#propertyPredicate> affordances_situations:hasParticipant ;
-                                                                  <http://www.w3.org/2003/11/swrl#argument1> :s ;
-                                                                  <http://www.w3.org/2003/11/swrl#argument2> :x
-                                                                ] ;
-                                                      rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
-                                                                 rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
-                                                                             <http://www.w3.org/2003/11/swrl#propertyPredicate> affordances_situations:hasParticipant ;
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
                                                                              <http://www.w3.org/2003/11/swrl#argument1> :s ;
                                                                              <http://www.w3.org/2003/11/swrl#argument2> :y
                                                                            ] ;
                                                                  rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
                                                                             rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
-<<<<<<< HEAD
                                                                                         <http://www.w3.org/2003/11/swrl#propertyPredicate> <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant> ;
                                                                                         <http://www.w3.org/2003/11/swrl#argument1> :s ;
                                                                                         <http://www.w3.org/2003/11/swrl#argument2> :x
-=======
-                                                                                        <http://www.w3.org/2003/11/swrl#propertyPredicate> affordances_situations:inContactWith ;
-                                                                                        <http://www.w3.org/2003/11/swrl#argument1> :x ;
-                                                                                        <http://www.w3.org/2003/11/swrl#argument2> :y
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
                                                                                       ] ;
                                                                             rdf:rest rdf:nil
                                                                           ]
@@ -2107,7 +1443,6 @@ affordances_situations:stabbingPoint1 rdf:type owl:NamedIndividual .
                                          ]
  ] .
 
-<<<<<<< HEAD
 [ rdf:type <http://www.w3.org/2003/11/swrl#Imp> ;
    <http://www.w3.org/2003/11/swrl#body> [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
                                            rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#ClassAtom> ;
@@ -2119,22 +1454,6 @@ affordances_situations:stabbingPoint1 rdf:type owl:NamedIndividual .
                                                                   <http://www.w3.org/2003/11/swrl#propertyPredicate> <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant> ;
                                                                   <http://www.w3.org/2003/11/swrl#argument1> :s ;
                                                                   <http://www.w3.org/2003/11/swrl#argument2> :x
-=======
-[ <http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean ;
-   rdfs:comment "" ;
-   rdfs:label "StabbingSituation 2" ;
-   rdf:type <http://www.w3.org/2003/11/swrl#Imp> ;
-   <http://www.w3.org/2003/11/swrl#body> [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
-                                           rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
-                                                       <http://www.w3.org/2003/11/swrl#propertyPredicate> affordances_situations:hasParticipant ;
-                                                       <http://www.w3.org/2003/11/swrl#argument1> :s ;
-                                                       <http://www.w3.org/2003/11/swrl#argument2> :x
-                                                     ] ;
-                                           rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
-                                                      rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#ClassAtom> ;
-                                                                  <http://www.w3.org/2003/11/swrl#classPredicate> affordances_situations:Stabbed ;
-                                                                  <http://www.w3.org/2003/11/swrl#argument1> :x
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
                                                                 ] ;
                                                       rdf:rest rdf:nil
                                                     ]
@@ -2148,7 +1467,6 @@ affordances_situations:stabbingPoint1 rdf:type owl:NamedIndividual .
                                          ]
  ] .
 
-<<<<<<< HEAD
 [ rdf:type <http://www.w3.org/2003/11/swrl#Imp> ;
    <http://www.w3.org/2003/11/swrl#body> [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
                                            rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#ClassAtom> ;
@@ -2160,22 +1478,6 @@ affordances_situations:stabbingPoint1 rdf:type owl:NamedIndividual .
                                                                   <http://www.w3.org/2003/11/swrl#propertyPredicate> <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant> ;
                                                                   <http://www.w3.org/2003/11/swrl#argument1> :s ;
                                                                   <http://www.w3.org/2003/11/swrl#argument2> :x
-=======
-[ <http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean ;
-   rdfs:comment "" ;
-   rdfs:label "StabbingSituation 1" ;
-   rdf:type <http://www.w3.org/2003/11/swrl#Imp> ;
-   <http://www.w3.org/2003/11/swrl#body> [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
-                                           rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
-                                                       <http://www.w3.org/2003/11/swrl#propertyPredicate> affordances_situations:hasParticipant ;
-                                                       <http://www.w3.org/2003/11/swrl#argument1> :s ;
-                                                       <http://www.w3.org/2003/11/swrl#argument2> :x
-                                                     ] ;
-                                           rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
-                                                      rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#ClassAtom> ;
-                                                                  <http://www.w3.org/2003/11/swrl#classPredicate> affordances_situations:Stabber ;
-                                                                  <http://www.w3.org/2003/11/swrl#argument1> :x
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
                                                                 ] ;
                                                       rdf:rest rdf:nil
                                                     ]
@@ -2189,14 +1491,7 @@ affordances_situations:stabbingPoint1 rdf:type owl:NamedIndividual .
                                          ]
  ] .
 
-<<<<<<< HEAD
 [ rdf:type <http://www.w3.org/2003/11/swrl#Imp> ;
-=======
-[ <http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean ;
-   rdfs:comment "" ;
-   rdfs:label "StabbingSituation 4" ;
-   rdf:type <http://www.w3.org/2003/11/swrl#Imp> ;
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
    <http://www.w3.org/2003/11/swrl#body> [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
                                            rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#ClassAtom> ;
                                                        <http://www.w3.org/2003/11/swrl#classPredicate> affordances_situations:Stabbing ;
@@ -2213,7 +1508,6 @@ affordances_situations:stabbingPoint1 rdf:type owl:NamedIndividual .
                                          ]
  ] .
 
-<<<<<<< HEAD
 [ rdf:type <http://www.w3.org/2003/11/swrl#Imp> ;
    <http://www.w3.org/2003/11/swrl#body> [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
                                            rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#ClassAtom> ;
@@ -2225,22 +1519,6 @@ affordances_situations:stabbingPoint1 rdf:type owl:NamedIndividual .
                                                                   <http://www.w3.org/2003/11/swrl#propertyPredicate> <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant> ;
                                                                   <http://www.w3.org/2003/11/swrl#argument1> :s ;
                                                                   <http://www.w3.org/2003/11/swrl#argument2> :x
-=======
-[ <http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean ;
-   rdfs:comment "" ;
-   rdfs:label "StabbingSituation 6" ;
-   rdf:type <http://www.w3.org/2003/11/swrl#Imp> ;
-   <http://www.w3.org/2003/11/swrl#body> [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
-                                           rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
-                                                       <http://www.w3.org/2003/11/swrl#propertyPredicate> affordances_situations:hasParticipant ;
-                                                       <http://www.w3.org/2003/11/swrl#argument1> :s ;
-                                                       <http://www.w3.org/2003/11/swrl#argument2> :x
-                                                     ] ;
-                                           rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
-                                                      rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#ClassAtom> ;
-                                                                  <http://www.w3.org/2003/11/swrl#classPredicate> affordances_situations:StabbingPart ;
-                                                                  <http://www.w3.org/2003/11/swrl#argument1> :x
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
                                                                 ] ;
                                                       rdf:rest rdf:nil
                                                     ]
@@ -2254,7 +1532,6 @@ affordances_situations:stabbingPoint1 rdf:type owl:NamedIndividual .
                                          ]
  ] .
 
-<<<<<<< HEAD
 [ rdf:type <http://www.w3.org/2003/11/swrl#Imp> ;
    <http://www.w3.org/2003/11/swrl#body> [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
                                            rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
@@ -2287,12 +1564,6 @@ affordances_situations:stabbingPoint1 rdf:type owl:NamedIndividual .
  ] .
 
 [ rdf:type <http://www.w3.org/2003/11/swrl#Imp> ;
-=======
-[ <http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean ;
-   rdfs:comment "" ;
-   rdfs:label "TargetContainer" ;
-   rdf:type <http://www.w3.org/2003/11/swrl#Imp> ;
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
    <http://www.w3.org/2003/11/swrl#body> [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
                                            rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#ClassAtom> ;
                                                        <http://www.w3.org/2003/11/swrl#classPredicate> affordances_situations:Target ;
@@ -2315,7 +1586,6 @@ affordances_situations:stabbingPoint1 rdf:type owl:NamedIndividual .
                                          ]
  ] .
 
-<<<<<<< HEAD
 [ rdf:type <http://www.w3.org/2003/11/swrl#Imp> ;
    <http://www.w3.org/2003/11/swrl#body> [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
                                            rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#ClassAtom> ;
@@ -2327,56 +1597,6 @@ affordances_situations:stabbingPoint1 rdf:type owl:NamedIndividual .
                                                                   <http://www.w3.org/2003/11/swrl#propertyPredicate> <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant> ;
                                                                   <http://www.w3.org/2003/11/swrl#argument1> :s ;
                                                                   <http://www.w3.org/2003/11/swrl#argument2> :x
-=======
-[ <http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean ;
-   rdfs:comment "" ;
-   rdfs:label "StabbingSituation 7" ;
-   rdf:type <http://www.w3.org/2003/11/swrl#Imp> ;
-   <http://www.w3.org/2003/11/swrl#body> [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
-                                           rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
-                                                       <http://www.w3.org/2003/11/swrl#propertyPredicate> affordances_situations:hasParticipant ;
-                                                       <http://www.w3.org/2003/11/swrl#argument1> :s ;
-                                                       <http://www.w3.org/2003/11/swrl#argument2> :x
-                                                     ] ;
-                                           rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
-                                                      rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
-                                                                  <http://www.w3.org/2003/11/swrl#propertyPredicate> affordances_situations:inside ;
-                                                                  <http://www.w3.org/2003/11/swrl#argument1> :x ;
-                                                                  <http://www.w3.org/2003/11/swrl#argument2> :y
-                                                                ] ;
-                                                      rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
-                                                                 rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#ClassAtom> ;
-                                                                             <http://www.w3.org/2003/11/swrl#classPredicate> affordances_situations:StabbingPart ;
-                                                                             <http://www.w3.org/2003/11/swrl#argument1> :y
-                                                                           ] ;
-                                                                 rdf:rest rdf:nil
-                                                               ]
-                                                    ]
-                                         ] ;
-   <http://www.w3.org/2003/11/swrl#head> [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
-                                           rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#ClassAtom> ;
-                                                       <http://www.w3.org/2003/11/swrl#classPredicate> affordances_situations:Stabbing ;
-                                                       <http://www.w3.org/2003/11/swrl#argument1> :s
-                                                     ] ;
-                                           rdf:rest rdf:nil
-                                         ]
- ] .
-
-[ <http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean ;
-   rdfs:comment "" ;
-   rdfs:label "StabbingSituation 5" ;
-   rdf:type <http://www.w3.org/2003/11/swrl#Imp> ;
-   <http://www.w3.org/2003/11/swrl#body> [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
-                                           rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
-                                                       <http://www.w3.org/2003/11/swrl#propertyPredicate> affordances_situations:hasParticipant ;
-                                                       <http://www.w3.org/2003/11/swrl#argument1> :s ;
-                                                       <http://www.w3.org/2003/11/swrl#argument2> :x
-                                                     ] ;
-                                           rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
-                                                      rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#ClassAtom> ;
-                                                                  <http://www.w3.org/2003/11/swrl#classPredicate> affordances_situations:StabbingPoint ;
-                                                                  <http://www.w3.org/2003/11/swrl#argument1> :x
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
                                                                 ] ;
                                                       rdf:rest rdf:nil
                                                     ]
@@ -2390,7 +1610,6 @@ affordances_situations:stabbingPoint1 rdf:type owl:NamedIndividual .
                                          ]
  ] .
 
-<<<<<<< HEAD
 [ rdf:type <http://www.w3.org/2003/11/swrl#Imp> ;
    <http://www.w3.org/2003/11/swrl#body> [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
                                            rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#ClassAtom> ;
@@ -2402,22 +1621,6 @@ affordances_situations:stabbingPoint1 rdf:type owl:NamedIndividual .
                                                                   <http://www.w3.org/2003/11/swrl#propertyPredicate> <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant> ;
                                                                   <http://www.w3.org/2003/11/swrl#argument1> :s ;
                                                                   <http://www.w3.org/2003/11/swrl#argument2> :x
-=======
-[ <http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean ;
-   rdfs:comment "" ;
-   rdfs:label "StabbingSituation 3" ;
-   rdf:type <http://www.w3.org/2003/11/swrl#Imp> ;
-   <http://www.w3.org/2003/11/swrl#body> [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
-                                           rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
-                                                       <http://www.w3.org/2003/11/swrl#propertyPredicate> affordances_situations:hasParticipant ;
-                                                       <http://www.w3.org/2003/11/swrl#argument1> :s ;
-                                                       <http://www.w3.org/2003/11/swrl#argument2> :x
-                                                     ] ;
-                                           rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
-                                                      rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#ClassAtom> ;
-                                                                  <http://www.w3.org/2003/11/swrl#classPredicate> affordances_situations:StabbingTool ;
-                                                                  <http://www.w3.org/2003/11/swrl#argument1> :x
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
                                                                 ] ;
                                                       rdf:rest rdf:nil
                                                     ]
@@ -2431,14 +1634,7 @@ affordances_situations:stabbingPoint1 rdf:type owl:NamedIndividual .
                                          ]
  ] .
 
-<<<<<<< HEAD
 [ rdf:type <http://www.w3.org/2003/11/swrl#Imp> ;
-=======
-[ <http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean ;
-   rdfs:comment "" ;
-   rdfs:label "All Supportee are Objects" ;
-   rdf:type <http://www.w3.org/2003/11/swrl#Imp> ;
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
    <http://www.w3.org/2003/11/swrl#body> [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
                                            rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#ClassAtom> ;
                                                        <http://www.w3.org/2003/11/swrl#classPredicate> affordances_situations:Supportee ;
@@ -2455,7 +1651,6 @@ affordances_situations:stabbingPoint1 rdf:type owl:NamedIndividual .
                                          ]
  ] .
 
-<<<<<<< HEAD
 [ rdf:type <http://www.w3.org/2003/11/swrl#Imp> ;
    <http://www.w3.org/2003/11/swrl#body> [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
                                            rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#ClassAtom> ;
@@ -2478,33 +1673,6 @@ affordances_situations:stabbingPoint1 rdf:type owl:NamedIndividual .
                                                                                         <http://www.w3.org/2003/11/swrl#propertyPredicate> <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant> ;
                                                                                         <http://www.w3.org/2003/11/swrl#argument1> :s ;
                                                                                         <http://www.w3.org/2003/11/swrl#argument2> :x
-=======
-[ <http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean ;
-   rdfs:comment "" ;
-   rdfs:label "Support Roles2" ;
-   rdf:type <http://www.w3.org/2003/11/swrl#Imp> ;
-   <http://www.w3.org/2003/11/swrl#body> [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
-                                           rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
-                                                       <http://www.w3.org/2003/11/swrl#propertyPredicate> affordances_situations:hasParticipant ;
-                                                       <http://www.w3.org/2003/11/swrl#argument1> :s ;
-                                                       <http://www.w3.org/2003/11/swrl#argument2> :x
-                                                     ] ;
-                                           rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
-                                                      rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
-                                                                  <http://www.w3.org/2003/11/swrl#propertyPredicate> affordances_situations:hasParticipant ;
-                                                                  <http://www.w3.org/2003/11/swrl#argument1> :s ;
-                                                                  <http://www.w3.org/2003/11/swrl#argument2> :y
-                                                                ] ;
-                                                      rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
-                                                                 rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#ClassAtom> ;
-                                                                             <http://www.w3.org/2003/11/swrl#classPredicate> affordances_situations:Supporter ;
-                                                                             <http://www.w3.org/2003/11/swrl#argument1> :x
-                                                                           ] ;
-                                                                 rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
-                                                                            rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#ClassAtom> ;
-                                                                                        <http://www.w3.org/2003/11/swrl#classPredicate> affordances_situations:Supportee ;
-                                                                                        <http://www.w3.org/2003/11/swrl#argument1> :y
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
                                                                                       ] ;
                                                                             rdf:rest rdf:nil
                                                                           ]
@@ -2521,7 +1689,6 @@ affordances_situations:stabbingPoint1 rdf:type owl:NamedIndividual .
                                          ]
  ] .
 
-<<<<<<< HEAD
 [ rdf:type <http://www.w3.org/2003/11/swrl#Imp> ;
    <http://www.w3.org/2003/11/swrl#body> [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
                                            rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#ClassAtom> ;
@@ -2533,22 +1700,6 @@ affordances_situations:stabbingPoint1 rdf:type owl:NamedIndividual .
                                                                   <http://www.w3.org/2003/11/swrl#propertyPredicate> <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant> ;
                                                                   <http://www.w3.org/2003/11/swrl#argument1> :s ;
                                                                   <http://www.w3.org/2003/11/swrl#argument2> :y
-=======
-[ <http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean ;
-   rdfs:comment "" ;
-   rdfs:label "SupportSituation 2" ;
-   rdf:type <http://www.w3.org/2003/11/swrl#Imp> ;
-   <http://www.w3.org/2003/11/swrl#body> [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
-                                           rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
-                                                       <http://www.w3.org/2003/11/swrl#propertyPredicate> affordances_situations:hasParticipant ;
-                                                       <http://www.w3.org/2003/11/swrl#argument1> :s ;
-                                                       <http://www.w3.org/2003/11/swrl#argument2> :y
-                                                     ] ;
-                                           rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
-                                                      rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#ClassAtom> ;
-                                                                  <http://www.w3.org/2003/11/swrl#classPredicate> affordances_situations:Supportee ;
-                                                                  <http://www.w3.org/2003/11/swrl#argument1> :y
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
                                                                 ] ;
                                                       rdf:rest rdf:nil
                                                     ]
@@ -2562,14 +1713,7 @@ affordances_situations:stabbingPoint1 rdf:type owl:NamedIndividual .
                                          ]
  ] .
 
-<<<<<<< HEAD
 [ rdf:type <http://www.w3.org/2003/11/swrl#Imp> ;
-=======
-[ <http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean ;
-   rdfs:comment "" ;
-   rdfs:label "All Supporters are Objects" ;
-   rdf:type <http://www.w3.org/2003/11/swrl#Imp> ;
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
    <http://www.w3.org/2003/11/swrl#body> [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
                                            rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#ClassAtom> ;
                                                        <http://www.w3.org/2003/11/swrl#classPredicate> affordances_situations:Supporter ;
@@ -2586,7 +1730,6 @@ affordances_situations:stabbingPoint1 rdf:type owl:NamedIndividual .
                                          ]
  ] .
 
-<<<<<<< HEAD
 [ rdf:type <http://www.w3.org/2003/11/swrl#Imp> ;
    <http://www.w3.org/2003/11/swrl#body> [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
                                            rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#ClassAtom> ;
@@ -2598,22 +1741,6 @@ affordances_situations:stabbingPoint1 rdf:type owl:NamedIndividual .
                                                                   <http://www.w3.org/2003/11/swrl#propertyPredicate> <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant> ;
                                                                   <http://www.w3.org/2003/11/swrl#argument1> :s ;
                                                                   <http://www.w3.org/2003/11/swrl#argument2> :x
-=======
-[ <http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean ;
-   rdfs:comment "" ;
-   rdfs:label "SupportSituation 1" ;
-   rdf:type <http://www.w3.org/2003/11/swrl#Imp> ;
-   <http://www.w3.org/2003/11/swrl#body> [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
-                                           rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
-                                                       <http://www.w3.org/2003/11/swrl#propertyPredicate> affordances_situations:hasParticipant ;
-                                                       <http://www.w3.org/2003/11/swrl#argument1> :s ;
-                                                       <http://www.w3.org/2003/11/swrl#argument2> :x
-                                                     ] ;
-                                           rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
-                                                      rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#ClassAtom> ;
-                                                                  <http://www.w3.org/2003/11/swrl#classPredicate> affordances_situations:Supporter ;
-                                                                  <http://www.w3.org/2003/11/swrl#argument1> :x
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
                                                                 ] ;
                                                       rdf:rest rdf:nil
                                                     ]
@@ -2627,14 +1754,7 @@ affordances_situations:stabbingPoint1 rdf:type owl:NamedIndividual .
                                          ]
  ] .
 
-<<<<<<< HEAD
 [ rdf:type <http://www.w3.org/2003/11/swrl#Imp> ;
-=======
-[ <http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean ;
-   rdfs:comment "" ;
-   rdfs:label "Contact from Containment 2" ;
-   rdf:type <http://www.w3.org/2003/11/swrl#Imp> ;
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
    <http://www.w3.org/2003/11/swrl#body> [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
                                            rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
                                                        <http://www.w3.org/2003/11/swrl#propertyPredicate> affordances_situations:contains ;
@@ -2653,14 +1773,7 @@ affordances_situations:stabbingPoint1 rdf:type owl:NamedIndividual .
                                          ]
  ] .
 
-<<<<<<< HEAD
 [ rdf:type <http://www.w3.org/2003/11/swrl#Imp> ;
-=======
-[ <http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean ;
-   rdfs:comment "" ;
-   rdfs:label "Contact from Cutting" ;
-   rdf:type <http://www.w3.org/2003/11/swrl#Imp> ;
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
    <http://www.w3.org/2003/11/swrl#body> [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
                                            rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
                                                        <http://www.w3.org/2003/11/swrl#propertyPredicate> affordances_situations:cuts ;
@@ -2679,7 +1792,6 @@ affordances_situations:stabbingPoint1 rdf:type owl:NamedIndividual .
                                          ]
  ] .
 
-<<<<<<< HEAD
 [ rdf:type <http://www.w3.org/2003/11/swrl#Imp> ;
    <http://www.w3.org/2003/11/swrl#body> [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
                                            rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
@@ -2692,50 +1804,6 @@ affordances_situations:stabbingPoint1 rdf:type owl:NamedIndividual .
                                                                   <http://www.w3.org/2003/11/swrl#propertyPredicate> <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant> ;
                                                                   <http://www.w3.org/2003/11/swrl#argument1> :s ;
                                                                   <http://www.w3.org/2003/11/swrl#argument2> :x
-=======
-[ <http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean ;
-   rdfs:comment "" ;
-   rdfs:label "ContainmentSituation 1" ;
-   rdf:type <http://www.w3.org/2003/11/swrl#Imp> ;
-   <http://www.w3.org/2003/11/swrl#body> [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
-                                           rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
-                                                       <http://www.w3.org/2003/11/swrl#propertyPredicate> affordances_situations:hasParticipant ;
-                                                       <http://www.w3.org/2003/11/swrl#argument1> :x ;
-                                                       <http://www.w3.org/2003/11/swrl#argument2> :y
-                                                     ] ;
-                                           rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
-                                                      rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#ClassAtom> ;
-                                                                  <http://www.w3.org/2003/11/swrl#classPredicate> affordances_situations:Container ;
-                                                                  <http://www.w3.org/2003/11/swrl#argument1> :y
-                                                                ] ;
-                                                      rdf:rest rdf:nil
-                                                    ]
-                                         ] ;
-   <http://www.w3.org/2003/11/swrl#head> [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
-                                           rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#ClassAtom> ;
-                                                       <http://www.w3.org/2003/11/swrl#classPredicate> affordances_situations:Containment ;
-                                                       <http://www.w3.org/2003/11/swrl#argument1> :x
-                                                     ] ;
-                                           rdf:rest rdf:nil
-                                         ]
- ] .
-
-[ <http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean ;
-   rdfs:comment "" ;
-   rdfs:label "CuttingPoint partOf Cuttee" ;
-   rdf:type <http://www.w3.org/2003/11/swrl#Imp> ;
-   <http://www.w3.org/2003/11/swrl#body> [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
-                                           rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
-                                                       <http://www.w3.org/2003/11/swrl#propertyPredicate> affordances_situations:hasParticipant ;
-                                                       <http://www.w3.org/2003/11/swrl#argument1> :s ;
-                                                       <http://www.w3.org/2003/11/swrl#argument2> :x
-                                                     ] ;
-                                           rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
-                                                      rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
-                                                                  <http://www.w3.org/2003/11/swrl#propertyPredicate> affordances_situations:hasCuttingPoint ;
-                                                                  <http://www.w3.org/2003/11/swrl#argument1> :x ;
-                                                                  <http://www.w3.org/2003/11/swrl#argument2> :k
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
                                                                 ] ;
                                                       rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
                                                                  rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
@@ -2759,7 +1827,6 @@ affordances_situations:stabbingPoint1 rdf:type owl:NamedIndividual .
 
 [ <http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean ;
    rdfs:comment "" ;
-<<<<<<< HEAD
    rdfs:label "S17" ;
    rdf:type <http://www.w3.org/2003/11/swrl#Imp> ;
    <http://www.w3.org/2003/11/swrl#body> [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
@@ -2789,13 +1856,6 @@ affordances_situations:stabbingPoint1 rdf:type owl:NamedIndividual .
    <http://www.w3.org/2003/11/swrl#body> [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
                                            rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
                                                        <http://www.w3.org/2003/11/swrl#propertyPredicate> <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant> ;
-=======
-   rdfs:label "CuttingSituation 4" ;
-   rdf:type <http://www.w3.org/2003/11/swrl#Imp> ;
-   <http://www.w3.org/2003/11/swrl#body> [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
-                                           rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
-                                                       <http://www.w3.org/2003/11/swrl#propertyPredicate> affordances_situations:hasParticipant ;
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
                                                        <http://www.w3.org/2003/11/swrl#argument1> :s ;
                                                        <http://www.w3.org/2003/11/swrl#argument2> :x
                                                      ] ;
@@ -2809,7 +1869,6 @@ affordances_situations:stabbingPoint1 rdf:type owl:NamedIndividual .
                                                     ]
                                          ] ;
    <http://www.w3.org/2003/11/swrl#head> [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
-<<<<<<< HEAD
                                            rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
                                                        <http://www.w3.org/2003/11/swrl#propertyPredicate> <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant> ;
                                                        <http://www.w3.org/2003/11/swrl#argument1> :s ;
@@ -2819,37 +1878,16 @@ affordances_situations:stabbingPoint1 rdf:type owl:NamedIndividual .
                                                       rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#ClassAtom> ;
                                                                   <http://www.w3.org/2003/11/swrl#classPredicate> affordances_situations:Cutting ;
                                                                   <http://www.w3.org/2003/11/swrl#argument1> :s
-=======
-                                           rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#ClassAtom> ;
-                                                       <http://www.w3.org/2003/11/swrl#classPredicate> affordances_situations:Cutting ;
-                                                       <http://www.w3.org/2003/11/swrl#argument1> :s
-                                                     ] ;
-                                           rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
-                                                      rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
-                                                                  <http://www.w3.org/2003/11/swrl#propertyPredicate> affordances_situations:hasParticipant ;
-                                                                  <http://www.w3.org/2003/11/swrl#argument1> :s ;
-                                                                  <http://www.w3.org/2003/11/swrl#argument2> :y
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
                                                                 ] ;
                                                       rdf:rest rdf:nil
                                                     ]
                                          ]
  ] .
 
-<<<<<<< HEAD
 [ rdf:type <http://www.w3.org/2003/11/swrl#Imp> ;
    <http://www.w3.org/2003/11/swrl#body> [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
                                            rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
                                                        <http://www.w3.org/2003/11/swrl#propertyPredicate> <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant> ;
-=======
-[ <http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean ;
-   rdfs:comment "" ;
-   rdfs:label "CuttingSituation 5" ;
-   rdf:type <http://www.w3.org/2003/11/swrl#Imp> ;
-   <http://www.w3.org/2003/11/swrl#body> [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
-                                           rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
-                                                       <http://www.w3.org/2003/11/swrl#propertyPredicate> affordances_situations:hasParticipant ;
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
                                                        <http://www.w3.org/2003/11/swrl#argument1> :s ;
                                                        <http://www.w3.org/2003/11/swrl#argument2> :y
                                                      ] ;
@@ -2869,11 +1907,7 @@ affordances_situations:stabbingPoint1 rdf:type owl:NamedIndividual .
                                                      ] ;
                                            rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
                                                       rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
-<<<<<<< HEAD
                                                                   <http://www.w3.org/2003/11/swrl#propertyPredicate> <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant> ;
-=======
-                                                                  <http://www.w3.org/2003/11/swrl#propertyPredicate> affordances_situations:hasParticipant ;
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
                                                                   <http://www.w3.org/2003/11/swrl#argument1> :s ;
                                                                   <http://www.w3.org/2003/11/swrl#argument2> :x
                                                                 ] ;
@@ -2882,7 +1916,6 @@ affordances_situations:stabbingPoint1 rdf:type owl:NamedIndividual .
                                          ]
  ] .
 
-<<<<<<< HEAD
 [ rdf:type <http://www.w3.org/2003/11/swrl#Imp> ;
    <http://www.w3.org/2003/11/swrl#body> [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
                                            rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
@@ -2895,23 +1928,6 @@ affordances_situations:stabbingPoint1 rdf:type owl:NamedIndividual .
                                                                   <http://www.w3.org/2003/11/swrl#propertyPredicate> <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant> ;
                                                                   <http://www.w3.org/2003/11/swrl#argument1> :s ;
                                                                   <http://www.w3.org/2003/11/swrl#argument2> :x
-=======
-[ <http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean ;
-   rdfs:comment "" ;
-   rdfs:label "PouringSituation 5" ;
-   rdf:type <http://www.w3.org/2003/11/swrl#Imp> ;
-   <http://www.w3.org/2003/11/swrl#body> [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
-                                           rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
-                                                       <http://www.w3.org/2003/11/swrl#propertyPredicate> affordances_situations:hasParticipant ;
-                                                       <http://www.w3.org/2003/11/swrl#argument1> :s ;
-                                                       <http://www.w3.org/2003/11/swrl#argument2> :x
-                                                     ] ;
-                                           rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
-                                                      rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
-                                                                  <http://www.w3.org/2003/11/swrl#propertyPredicate> affordances_situations:flowsFrom ;
-                                                                  <http://www.w3.org/2003/11/swrl#argument1> :x ;
-                                                                  <http://www.w3.org/2003/11/swrl#argument2> :w
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
                                                                 ] ;
                                                       rdf:rest rdf:nil
                                                     ]
@@ -2925,7 +1941,6 @@ affordances_situations:stabbingPoint1 rdf:type owl:NamedIndividual .
                                          ]
  ] .
 
-<<<<<<< HEAD
 [ rdf:type <http://www.w3.org/2003/11/swrl#Imp> ;
    <http://www.w3.org/2003/11/swrl#body> [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
                                            rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
@@ -2938,23 +1953,6 @@ affordances_situations:stabbingPoint1 rdf:type owl:NamedIndividual .
                                                                   <http://www.w3.org/2003/11/swrl#propertyPredicate> <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant> ;
                                                                   <http://www.w3.org/2003/11/swrl#argument1> :s ;
                                                                   <http://www.w3.org/2003/11/swrl#argument2> :x
-=======
-[ <http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean ;
-   rdfs:comment "" ;
-   rdfs:label "PouringSituation 6" ;
-   rdf:type <http://www.w3.org/2003/11/swrl#Imp> ;
-   <http://www.w3.org/2003/11/swrl#body> [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
-                                           rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
-                                                       <http://www.w3.org/2003/11/swrl#propertyPredicate> affordances_situations:hasParticipant ;
-                                                       <http://www.w3.org/2003/11/swrl#argument1> :s ;
-                                                       <http://www.w3.org/2003/11/swrl#argument2> :x
-                                                     ] ;
-                                           rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
-                                                      rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
-                                                                  <http://www.w3.org/2003/11/swrl#propertyPredicate> affordances_situations:flowsTo ;
-                                                                  <http://www.w3.org/2003/11/swrl#argument1> :x ;
-                                                                  <http://www.w3.org/2003/11/swrl#argument2> :w
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
                                                                 ] ;
                                                       rdf:rest rdf:nil
                                                     ]
@@ -2968,14 +1966,7 @@ affordances_situations:stabbingPoint1 rdf:type owl:NamedIndividual .
                                          ]
  ] .
 
-<<<<<<< HEAD
 [ rdf:type <http://www.w3.org/2003/11/swrl#Imp> ;
-=======
-[ <http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean ;
-   rdfs:comment "" ;
-   rdfs:label "Grip from Grasping" ;
-   rdf:type <http://www.w3.org/2003/11/swrl#Imp> ;
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
    <http://www.w3.org/2003/11/swrl#body> [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
                                            rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
                                                        <http://www.w3.org/2003/11/swrl#propertyPredicate> affordances_situations:grasps ;
@@ -2994,14 +1985,7 @@ affordances_situations:stabbingPoint1 rdf:type owl:NamedIndividual .
                                          ]
  ] .
 
-<<<<<<< HEAD
 [ rdf:type <http://www.w3.org/2003/11/swrl#Imp> ;
-=======
-[ <http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean ;
-   rdfs:comment "" ;
-   rdfs:label "Contact from Grasping 2" ;
-   rdf:type <http://www.w3.org/2003/11/swrl#Imp> ;
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
    <http://www.w3.org/2003/11/swrl#body> [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
                                            rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
                                                        <http://www.w3.org/2003/11/swrl#propertyPredicate> affordances_situations:grasps ;
@@ -3022,7 +2006,6 @@ affordances_situations:stabbingPoint1 rdf:type owl:NamedIndividual .
 
 [ <http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean ;
    rdfs:comment "" ;
-<<<<<<< HEAD
    rdfs:label "S18" ;
    rdf:type <http://www.w3.org/2003/11/swrl#Imp> ;
    <http://www.w3.org/2003/11/swrl#body> [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
@@ -3042,27 +2025,6 @@ affordances_situations:stabbingPoint1 rdf:type owl:NamedIndividual .
                                                                              <http://www.w3.org/2003/11/swrl#propertyPredicate> <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant> ;
                                                                              <http://www.w3.org/2003/11/swrl#argument1> :s ;
                                                                              <http://www.w3.org/2003/11/swrl#argument2> :x
-=======
-   rdfs:label "GraspingPoint partOf Grasped" ;
-   rdf:type <http://www.w3.org/2003/11/swrl#Imp> ;
-   <http://www.w3.org/2003/11/swrl#body> [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
-                                           rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
-                                                       <http://www.w3.org/2003/11/swrl#propertyPredicate> affordances_situations:hasParticipant ;
-                                                       <http://www.w3.org/2003/11/swrl#argument1> :s ;
-                                                       <http://www.w3.org/2003/11/swrl#argument2> :x
-                                                     ] ;
-                                           rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
-                                                      rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
-                                                                  <http://www.w3.org/2003/11/swrl#propertyPredicate> affordances_situations:hasGraspingPoint ;
-                                                                  <http://www.w3.org/2003/11/swrl#argument1> :x ;
-                                                                  <http://www.w3.org/2003/11/swrl#argument2> :k
-                                                                ] ;
-                                                      rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
-                                                                 rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
-                                                                             <http://www.w3.org/2003/11/swrl#propertyPredicate> affordances_situations:grasps ;
-                                                                             <http://www.w3.org/2003/11/swrl#argument1> :x ;
-                                                                             <http://www.w3.org/2003/11/swrl#argument2> :y
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
                                                                            ] ;
                                                                  rdf:rest rdf:nil
                                                                ]
@@ -3078,7 +2040,6 @@ affordances_situations:stabbingPoint1 rdf:type owl:NamedIndividual .
                                          ]
  ] .
 
-<<<<<<< HEAD
 [ rdf:type <http://www.w3.org/2003/11/swrl#Imp> ;
    <http://www.w3.org/2003/11/swrl#body> [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
                                            rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
@@ -3091,23 +2052,6 @@ affordances_situations:stabbingPoint1 rdf:type owl:NamedIndividual .
                                                                   <http://www.w3.org/2003/11/swrl#propertyPredicate> <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant> ;
                                                                   <http://www.w3.org/2003/11/swrl#argument1> :s ;
                                                                   <http://www.w3.org/2003/11/swrl#argument2> :x
-=======
-[ <http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean ;
-   rdfs:comment "" ;
-   rdfs:label "Grasping Roles" ;
-   rdf:type <http://www.w3.org/2003/11/swrl#Imp> ;
-   <http://www.w3.org/2003/11/swrl#body> [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
-                                           rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
-                                                       <http://www.w3.org/2003/11/swrl#propertyPredicate> affordances_situations:hasParticipant ;
-                                                       <http://www.w3.org/2003/11/swrl#argument1> :s ;
-                                                       <http://www.w3.org/2003/11/swrl#argument2> :x
-                                                     ] ;
-                                           rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
-                                                      rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
-                                                                  <http://www.w3.org/2003/11/swrl#propertyPredicate> affordances_situations:grasps ;
-                                                                  <http://www.w3.org/2003/11/swrl#argument1> :x ;
-                                                                  <http://www.w3.org/2003/11/swrl#argument2> :y
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
                                                                 ] ;
                                                       rdf:rest rdf:nil
                                                     ]
@@ -3119,11 +2063,7 @@ affordances_situations:stabbingPoint1 rdf:type owl:NamedIndividual .
                                                      ] ;
                                            rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
                                                       rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
-<<<<<<< HEAD
                                                                   <http://www.w3.org/2003/11/swrl#propertyPredicate> <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant> ;
-=======
-                                                                  <http://www.w3.org/2003/11/swrl#propertyPredicate> affordances_situations:hasParticipant ;
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
                                                                   <http://www.w3.org/2003/11/swrl#argument1> :s ;
                                                                   <http://www.w3.org/2003/11/swrl#argument2> :y
                                                                 ] ;
@@ -3132,27 +2072,15 @@ affordances_situations:stabbingPoint1 rdf:type owl:NamedIndividual .
                                          ]
  ] .
 
-<<<<<<< HEAD
 [ rdf:type <http://www.w3.org/2003/11/swrl#Imp> ;
    <http://www.w3.org/2003/11/swrl#body> [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
                                            rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
                                                        <http://www.w3.org/2003/11/swrl#propertyPredicate> affordances_situations:separatedFrom ;
                                                        <http://www.w3.org/2003/11/swrl#argument1> :x ;
-=======
-[ <http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean ;
-   rdfs:comment "" ;
-   rdfs:label "SeparationSituaiton 1" ;
-   rdf:type <http://www.w3.org/2003/11/swrl#Imp> ;
-   <http://www.w3.org/2003/11/swrl#body> [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
-                                           rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
-                                                       <http://www.w3.org/2003/11/swrl#propertyPredicate> affordances_situations:hasParticipant ;
-                                                       <http://www.w3.org/2003/11/swrl#argument1> :s ;
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
                                                        <http://www.w3.org/2003/11/swrl#argument2> :y
                                                      ] ;
                                            rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
                                                       rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
-<<<<<<< HEAD
                                                                   <http://www.w3.org/2003/11/swrl#propertyPredicate> <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant> ;
                                                                   <http://www.w3.org/2003/11/swrl#argument1> :s ;
                                                                   <http://www.w3.org/2003/11/swrl#argument2> :y
@@ -3162,17 +2090,6 @@ affordances_situations:stabbingPoint1 rdf:type owl:NamedIndividual .
                                                                              <http://www.w3.org/2003/11/swrl#propertyPredicate> <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant> ;
                                                                              <http://www.w3.org/2003/11/swrl#argument1> :s ;
                                                                              <http://www.w3.org/2003/11/swrl#argument2> :x
-=======
-                                                                  <http://www.w3.org/2003/11/swrl#propertyPredicate> affordances_situations:hasParticipant ;
-                                                                  <http://www.w3.org/2003/11/swrl#argument1> :s ;
-                                                                  <http://www.w3.org/2003/11/swrl#argument2> :x
-                                                                ] ;
-                                                      rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
-                                                                 rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
-                                                                             <http://www.w3.org/2003/11/swrl#propertyPredicate> affordances_situations:separatedFrom ;
-                                                                             <http://www.w3.org/2003/11/swrl#argument1> :x ;
-                                                                             <http://www.w3.org/2003/11/swrl#argument2> :y
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
                                                                            ] ;
                                                                  rdf:rest rdf:nil
                                                                ]
@@ -3187,14 +2104,7 @@ affordances_situations:stabbingPoint1 rdf:type owl:NamedIndividual .
                                          ]
  ] .
 
-<<<<<<< HEAD
 [ rdf:type <http://www.w3.org/2003/11/swrl#Imp> ;
-=======
-[ <http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean ;
-   rdfs:comment "" ;
-   rdfs:label "Contact from Containment" ;
-   rdf:type <http://www.w3.org/2003/11/swrl#Imp> ;
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
    <http://www.w3.org/2003/11/swrl#body> [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
                                            rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#ClassAtom> ;
                                                        <http://www.w3.org/2003/11/swrl#classPredicate> affordances_situations:Containment ;
@@ -3211,7 +2121,6 @@ affordances_situations:stabbingPoint1 rdf:type owl:NamedIndividual .
                                          ]
  ] .
 
-<<<<<<< HEAD
 [ rdf:type <http://www.w3.org/2003/11/swrl#Imp> ;
    <http://www.w3.org/2003/11/swrl#body> [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
                                            rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
@@ -3224,23 +2133,6 @@ affordances_situations:stabbingPoint1 rdf:type owl:NamedIndividual .
                                                                   <http://www.w3.org/2003/11/swrl#propertyPredicate> <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant> ;
                                                                   <http://www.w3.org/2003/11/swrl#argument1> :s ;
                                                                   <http://www.w3.org/2003/11/swrl#argument2> :x
-=======
-[ <http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean ;
-   rdfs:comment "" ;
-   rdfs:label "StabbingSituation 8" ;
-   rdf:type <http://www.w3.org/2003/11/swrl#Imp> ;
-   <http://www.w3.org/2003/11/swrl#body> [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
-                                           rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
-                                                       <http://www.w3.org/2003/11/swrl#propertyPredicate> affordances_situations:hasParticipant ;
-                                                       <http://www.w3.org/2003/11/swrl#argument1> :s ;
-                                                       <http://www.w3.org/2003/11/swrl#argument2> :x
-                                                     ] ;
-                                           rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
-                                                      rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
-                                                                  <http://www.w3.org/2003/11/swrl#propertyPredicate> affordances_situations:stabs ;
-                                                                  <http://www.w3.org/2003/11/swrl#argument1> :x ;
-                                                                  <http://www.w3.org/2003/11/swrl#argument2> :y
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
                                                                 ] ;
                                                       rdf:rest rdf:nil
                                                     ]
@@ -3254,7 +2146,6 @@ affordances_situations:stabbingPoint1 rdf:type owl:NamedIndividual .
                                          ]
  ] .
 
-<<<<<<< HEAD
 [ rdf:type <http://www.w3.org/2003/11/swrl#Imp> ;
    <http://www.w3.org/2003/11/swrl#body> [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
                                            rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
@@ -3272,28 +2163,6 @@ affordances_situations:stabbingPoint1 rdf:type owl:NamedIndividual .
                                                                              <http://www.w3.org/2003/11/swrl#propertyPredicate> <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant> ;
                                                                              <http://www.w3.org/2003/11/swrl#argument1> :s ;
                                                                              <http://www.w3.org/2003/11/swrl#argument2> :x
-=======
-[ <http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean ;
-   rdfs:comment "" ;
-   rdfs:label "Containment Roles" ;
-   rdf:type <http://www.w3.org/2003/11/swrl#Imp> ;
-   <http://www.w3.org/2003/11/swrl#body> [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
-                                           rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#ClassAtom> ;
-                                                       <http://www.w3.org/2003/11/swrl#classPredicate> affordances_situations:Containment ;
-                                                       <http://www.w3.org/2003/11/swrl#argument1> :s
-                                                     ] ;
-                                           rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
-                                                      rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
-                                                                  <http://www.w3.org/2003/11/swrl#propertyPredicate> affordances_situations:hasParticipant ;
-                                                                  <http://www.w3.org/2003/11/swrl#argument1> :s ;
-                                                                  <http://www.w3.org/2003/11/swrl#argument2> :x
-                                                                ] ;
-                                                      rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
-                                                                 rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
-                                                                             <http://www.w3.org/2003/11/swrl#propertyPredicate> affordances_situations:contains ;
-                                                                             <http://www.w3.org/2003/11/swrl#argument1> :x ;
-                                                                             <http://www.w3.org/2003/11/swrl#argument2> :y
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
                                                                            ] ;
                                                                  rdf:rest rdf:nil
                                                                ]
@@ -3301,11 +2170,7 @@ affordances_situations:stabbingPoint1 rdf:type owl:NamedIndividual .
                                          ] ;
    <http://www.w3.org/2003/11/swrl#head> [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
                                            rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
-<<<<<<< HEAD
                                                        <http://www.w3.org/2003/11/swrl#propertyPredicate> <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant> ;
-=======
-                                                       <http://www.w3.org/2003/11/swrl#propertyPredicate> affordances_situations:hasParticipant ;
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
                                                        <http://www.w3.org/2003/11/swrl#argument1> :s ;
                                                        <http://www.w3.org/2003/11/swrl#argument2> :y
                                                      ] ;
@@ -3313,14 +2178,7 @@ affordances_situations:stabbingPoint1 rdf:type owl:NamedIndividual .
                                          ]
  ] .
 
-<<<<<<< HEAD
 [ rdf:type <http://www.w3.org/2003/11/swrl#Imp> ;
-=======
-[ <http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean ;
-   rdfs:comment "" ;
-   rdfs:label "Cuttee Object" ;
-   rdf:type <http://www.w3.org/2003/11/swrl#Imp> ;
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
    <http://www.w3.org/2003/11/swrl#body> [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
                                            rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#ClassAtom> ;
                                                        <http://www.w3.org/2003/11/swrl#classPredicate> affordances_situations:Cuttee ;
@@ -3337,7 +2195,6 @@ affordances_situations:stabbingPoint1 rdf:type owl:NamedIndividual .
                                          ]
  ] .
 
-<<<<<<< HEAD
 [ rdf:type <http://www.w3.org/2003/11/swrl#Imp> ;
    <http://www.w3.org/2003/11/swrl#body> [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
                                            rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#ClassAtom> ;
@@ -3349,22 +2206,6 @@ affordances_situations:stabbingPoint1 rdf:type owl:NamedIndividual .
                                                                   <http://www.w3.org/2003/11/swrl#propertyPredicate> <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant> ;
                                                                   <http://www.w3.org/2003/11/swrl#argument1> :s ;
                                                                   <http://www.w3.org/2003/11/swrl#argument2> :x
-=======
-[ <http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean ;
-   rdfs:comment "" ;
-   rdfs:label "CuttingSituation 2" ;
-   rdf:type <http://www.w3.org/2003/11/swrl#Imp> ;
-   <http://www.w3.org/2003/11/swrl#body> [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
-                                           rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
-                                                       <http://www.w3.org/2003/11/swrl#propertyPredicate> affordances_situations:hasParticipant ;
-                                                       <http://www.w3.org/2003/11/swrl#argument1> :s ;
-                                                       <http://www.w3.org/2003/11/swrl#argument2> :x
-                                                     ] ;
-                                           rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
-                                                      rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#ClassAtom> ;
-                                                                  <http://www.w3.org/2003/11/swrl#classPredicate> affordances_situations:Cuttee ;
-                                                                  <http://www.w3.org/2003/11/swrl#argument1> :x
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
                                                                 ] ;
                                                       rdf:rest rdf:nil
                                                     ]
@@ -3378,14 +2219,7 @@ affordances_situations:stabbingPoint1 rdf:type owl:NamedIndividual .
                                          ]
  ] .
 
-<<<<<<< HEAD
 [ rdf:type <http://www.w3.org/2003/11/swrl#Imp> ;
-=======
-[ <http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean ;
-   rdfs:comment "" ;
-   rdfs:label "Cutter Object" ;
-   rdf:type <http://www.w3.org/2003/11/swrl#Imp> ;
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
    <http://www.w3.org/2003/11/swrl#body> [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
                                            rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#ClassAtom> ;
                                                        <http://www.w3.org/2003/11/swrl#classPredicate> affordances_situations:Cutter ;
@@ -3402,7 +2236,6 @@ affordances_situations:stabbingPoint1 rdf:type owl:NamedIndividual .
                                          ]
  ] .
 
-<<<<<<< HEAD
 [ rdf:type <http://www.w3.org/2003/11/swrl#Imp> ;
    <http://www.w3.org/2003/11/swrl#body> [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
                                            rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#ClassAtom> ;
@@ -3414,22 +2247,6 @@ affordances_situations:stabbingPoint1 rdf:type owl:NamedIndividual .
                                                                   <http://www.w3.org/2003/11/swrl#propertyPredicate> <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant> ;
                                                                   <http://www.w3.org/2003/11/swrl#argument1> :s ;
                                                                   <http://www.w3.org/2003/11/swrl#argument2> :x
-=======
-[ <http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean ;
-   rdfs:comment "" ;
-   rdfs:label "CuttingSituation 1" ;
-   rdf:type <http://www.w3.org/2003/11/swrl#Imp> ;
-   <http://www.w3.org/2003/11/swrl#body> [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
-                                           rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
-                                                       <http://www.w3.org/2003/11/swrl#propertyPredicate> affordances_situations:hasParticipant ;
-                                                       <http://www.w3.org/2003/11/swrl#argument1> :s ;
-                                                       <http://www.w3.org/2003/11/swrl#argument2> :x
-                                                     ] ;
-                                           rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
-                                                      rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#ClassAtom> ;
-                                                                  <http://www.w3.org/2003/11/swrl#classPredicate> affordances_situations:Cutter ;
-                                                                  <http://www.w3.org/2003/11/swrl#argument1> :x
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
                                                                 ] ;
                                                       rdf:rest rdf:nil
                                                     ]
@@ -3443,14 +2260,7 @@ affordances_situations:stabbingPoint1 rdf:type owl:NamedIndividual .
                                          ]
  ] .
 
-<<<<<<< HEAD
 [ rdf:type <http://www.w3.org/2003/11/swrl#Imp> ;
-=======
-[ <http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean ;
-   rdfs:comment "" ;
-   rdfs:label "All Containee are Objects" ;
-   rdf:type <http://www.w3.org/2003/11/swrl#Imp> ;
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
    <http://www.w3.org/2003/11/swrl#body> [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
                                            rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#ClassAtom> ;
                                                        <http://www.w3.org/2003/11/swrl#classPredicate> affordances_situations:Containee ;
@@ -3467,14 +2277,7 @@ affordances_situations:stabbingPoint1 rdf:type owl:NamedIndividual .
                                          ]
  ] .
 
-<<<<<<< HEAD
 [ rdf:type <http://www.w3.org/2003/11/swrl#Imp> ;
-=======
-[ <http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean ;
-   rdfs:comment "" ;
-   rdfs:label "Contact from Cutting 2" ;
-   rdf:type <http://www.w3.org/2003/11/swrl#Imp> ;
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
    <http://www.w3.org/2003/11/swrl#body> [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
                                            rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#ClassAtom> ;
                                                        <http://www.w3.org/2003/11/swrl#classPredicate> affordances_situations:Cutting ;
@@ -3491,7 +2294,6 @@ affordances_situations:stabbingPoint1 rdf:type owl:NamedIndividual .
                                          ]
  ] .
 
-<<<<<<< HEAD
 [ rdf:type <http://www.w3.org/2003/11/swrl#Imp> ;
    <http://www.w3.org/2003/11/swrl#body> [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
                                            rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
@@ -3514,33 +2316,6 @@ affordances_situations:stabbingPoint1 rdf:type owl:NamedIndividual .
                                                                             rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#ClassAtom> ;
                                                                                         <http://www.w3.org/2003/11/swrl#classPredicate> affordances_situations:Separation ;
                                                                                         <http://www.w3.org/2003/11/swrl#argument1> :s2
-=======
-[ <http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean ;
-   rdfs:comment "" ;
-   rdfs:label "CuttingSequence 1" ;
-   rdf:type <http://www.w3.org/2003/11/swrl#Imp> ;
-   <http://www.w3.org/2003/11/swrl#body> [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
-                                           rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#ClassAtom> ;
-                                                       <http://www.w3.org/2003/11/swrl#classPredicate> affordances_situations:Cutting ;
-                                                       <http://www.w3.org/2003/11/swrl#argument1> :s1
-                                                     ] ;
-                                           rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
-                                                      rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
-                                                                  <http://www.w3.org/2003/11/swrl#propertyPredicate> affordances_situations:hasParticipant ;
-                                                                  <http://www.w3.org/2003/11/swrl#argument1> :seq ;
-                                                                  <http://www.w3.org/2003/11/swrl#argument2> :s1
-                                                                ] ;
-                                                      rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
-                                                                 rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#ClassAtom> ;
-                                                                             <http://www.w3.org/2003/11/swrl#classPredicate> affordances_situations:Separation ;
-                                                                             <http://www.w3.org/2003/11/swrl#argument1> :s2
-                                                                           ] ;
-                                                                 rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
-                                                                            rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
-                                                                                        <http://www.w3.org/2003/11/swrl#propertyPredicate> affordances_situations:hasParticipant ;
-                                                                                        <http://www.w3.org/2003/11/swrl#argument1> :seq ;
-                                                                                        <http://www.w3.org/2003/11/swrl#argument2> :s2
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
                                                                                       ] ;
                                                                             rdf:rest rdf:nil
                                                                           ]

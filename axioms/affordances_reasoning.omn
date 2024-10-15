@@ -26,7 +26,6 @@ Datatype: xsd:boolean
 Datatype: xsd:string
 
     
-<<<<<<< HEAD
 ObjectProperty: <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant>
 
     Characteristics: 
@@ -48,15 +47,12 @@ ObjectProperty: affordances_situations:above
         affordances_situations:below
     
     
-=======
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
 ObjectProperty: affordances_situations:affects
 
     
 ObjectProperty: affordances_situations:attracts
 
     
-<<<<<<< HEAD
 ObjectProperty: affordances_situations:back
 
     InverseOf: 
@@ -87,8 +83,6 @@ ObjectProperty: affordances_situations:blocks
         affordances_situations:Blocked
     
     
-=======
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
 ObjectProperty: affordances_situations:contains
 
     Domain: 
@@ -101,7 +95,6 @@ ObjectProperty: affordances_situations:contains
         affordances_situations:inside
     
     
-<<<<<<< HEAD
 ObjectProperty: affordances_situations:cutBy
 
     Domain: 
@@ -114,8 +107,6 @@ ObjectProperty: affordances_situations:cutBy
         affordances_situations:cuts
     
     
-=======
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
 ObjectProperty: affordances_situations:cuts
 
     Domain: 
@@ -124,27 +115,17 @@ ObjectProperty: affordances_situations:cuts
     Range: 
         affordances_situations:Cuttee
     
-<<<<<<< HEAD
     InverseOf: 
         affordances_situations:cutBy
     
-=======
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
     
 ObjectProperty: affordances_situations:defines
 
     
-<<<<<<< HEAD
 ObjectProperty: affordances_situations:fallingFrom
 
     Range: 
         affordances_situations:Source
-=======
-ObjectProperty: affordances_situations:falling
-
-    Range: 
-        affordances_situations:FallingObject
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
     
     
 ObjectProperty: affordances_situations:flowsFrom
@@ -159,7 +140,6 @@ ObjectProperty: affordances_situations:flowsTo
         affordances_situations:Target
     
     
-<<<<<<< HEAD
 ObjectProperty: affordances_situations:front
 
     InverseOf: 
@@ -172,8 +152,6 @@ ObjectProperty: affordances_situations:graspedBy
         affordances_situations:grasps
     
     
-=======
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
 ObjectProperty: affordances_situations:grasps
 
     Domain: 
@@ -182,12 +160,9 @@ ObjectProperty: affordances_situations:grasps
     Range: 
         affordances_situations:Grasped
     
-<<<<<<< HEAD
     InverseOf: 
         affordances_situations:graspedBy
     
-=======
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
     
 ObjectProperty: affordances_situations:hasCuttingPoint
 
@@ -204,15 +179,6 @@ ObjectProperty: affordances_situations:hasGripOn
         affordances_situations:StableObject
     
     
-<<<<<<< HEAD
-=======
-ObjectProperty: affordances_situations:hasParticipant
-
-    Characteristics: 
-        Transitive
-    
-    
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
 ObjectProperty: affordances_situations:inContactWith
 
     Characteristics: 
@@ -225,7 +191,6 @@ ObjectProperty: affordances_situations:inside
         affordances_situations:contains
     
     
-<<<<<<< HEAD
 ObjectProperty: affordances_situations:left
 
     InverseOf: 
@@ -241,11 +206,6 @@ ObjectProperty: affordances_situations:pouredBy
         affordances_situations:pours
     
     
-=======
-ObjectProperty: affordances_situations:partOf
-
-    
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
 ObjectProperty: affordances_situations:pours
 
     Domain: 
@@ -254,37 +214,28 @@ ObjectProperty: affordances_situations:pours
     Range: 
         affordances_situations:Poured
     
-<<<<<<< HEAD
     InverseOf: 
         affordances_situations:pouredBy
     
-=======
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
     
 ObjectProperty: affordances_situations:resultsIn
 
     
-<<<<<<< HEAD
 ObjectProperty: affordances_situations:right
 
     InverseOf: 
         affordances_situations:left
     
     
-=======
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
 ObjectProperty: affordances_situations:separatedFrom
 
     Characteristics: 
         Symmetric
     
     
-<<<<<<< HEAD
 ObjectProperty: affordances_situations:stabbedBy
 
     
-=======
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
 ObjectProperty: affordances_situations:stabs
 
     Domain: 
@@ -294,7 +245,6 @@ ObjectProperty: affordances_situations:stabs
         affordances_situations:Stabbed
     
     
-<<<<<<< HEAD
 ObjectProperty: affordances_situations:supportedBy
 
     Domain: 
@@ -307,8 +257,6 @@ ObjectProperty: affordances_situations:supportedBy
         affordances_situations:supports
     
     
-=======
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
 ObjectProperty: affordances_situations:supports
 
     Domain: 
@@ -317,12 +265,9 @@ ObjectProperty: affordances_situations:supports
     Range: 
         affordances_situations:Supportee
     
-<<<<<<< HEAD
     InverseOf: 
         affordances_situations:supportedBy
     
-=======
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
     
 Class: <http://www.ontologydesignpatterns.org/cp/owl/description.owl#Description>
 
@@ -330,12 +275,9 @@ Class: <http://www.ontologydesignpatterns.org/cp/owl/description.owl#Description
 Class: <http://www.ontologydesignpatterns.org/cp/owl/situation.owl#Situation>
 
     
-<<<<<<< HEAD
 Class: <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#Role>
 
     
-=======
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
 Class: <https://w3id.org/framester/schema/ConceptualFrame>
 
     SubClassOf: 
@@ -348,7 +290,6 @@ Class: <https://w3id.org/framester/schema/FrameOccurrence>
         <http://www.ontologydesignpatterns.org/cp/owl/situation.owl#Situation>
     
     
-<<<<<<< HEAD
 Class: affordances_situations:Blocked
 
     SubClassOf: 
@@ -365,12 +306,6 @@ Class: affordances_situations:Boundary
 
     SubClassOf: 
         <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#Role>
-=======
-Class: affordances_situations:Boundary
-
-    SubClassOf: 
-        affordances_situations:Role
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
     
     
 Class: affordances_situations:Contact
@@ -382,21 +317,13 @@ Class: affordances_situations:Contact
 Class: affordances_situations:Containee
 
     SubClassOf: 
-<<<<<<< HEAD
         <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#Role>
-=======
-        affordances_situations:Role
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
     
     
 Class: affordances_situations:Container
 
     SubClassOf: 
-<<<<<<< HEAD
         <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#Role>
-=======
-        affordances_situations:Role
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
     
     
 Class: affordances_situations:Containment
@@ -408,21 +335,13 @@ Class: affordances_situations:Containment
 Class: affordances_situations:Cuttee
 
     SubClassOf: 
-<<<<<<< HEAD
         <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#Role>
-=======
-        affordances_situations:Role
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
     
     
 Class: affordances_situations:Cutter
 
     SubClassOf: 
-<<<<<<< HEAD
         <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#Role>
-=======
-        affordances_situations:Role
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
     
     
 Class: affordances_situations:Cutting
@@ -434,11 +353,7 @@ Class: affordances_situations:Cutting
 Class: affordances_situations:CuttingPoint
 
     SubClassOf: 
-<<<<<<< HEAD
         <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#Role>
-=======
-        affordances_situations:Role
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
     
     
 Class: affordances_situations:CuttingSequence
@@ -450,11 +365,7 @@ Class: affordances_situations:CuttingSequence
 Class: affordances_situations:CuttingTool
 
     SubClassOf: 
-<<<<<<< HEAD
         <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#Role>
-=======
-        affordances_situations:Role
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
     
     
 Class: affordances_situations:Falling
@@ -466,11 +377,7 @@ Class: affordances_situations:Falling
 Class: affordances_situations:FallingObject
 
     SubClassOf: 
-<<<<<<< HEAD
         <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#Role>
-=======
-        affordances_situations:Role
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
     
     
 Class: affordances_situations:Floor
@@ -482,21 +389,13 @@ Class: affordances_situations:Floor
 Class: affordances_situations:Grasped
 
     SubClassOf: 
-<<<<<<< HEAD
         <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#Role>
-=======
-        affordances_situations:Role
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
     
     
 Class: affordances_situations:Grasper
 
     SubClassOf: 
-<<<<<<< HEAD
         <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#Role>
-=======
-        affordances_situations:Role
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
     
     
 Class: affordances_situations:Grasping
@@ -508,11 +407,7 @@ Class: affordances_situations:Grasping
 Class: affordances_situations:GraspingPoint
 
     SubClassOf: 
-<<<<<<< HEAD
         <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#Role>
-=======
-        affordances_situations:Role
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
     
     
 Class: affordances_situations:Gravity
@@ -530,11 +425,7 @@ Class: affordances_situations:ImageSchematicSituation
 Class: affordances_situations:Interior
 
     SubClassOf: 
-<<<<<<< HEAD
         <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#Role>
-=======
-        affordances_situations:Role
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
     
     
 Class: affordances_situations:Liquid
@@ -552,41 +443,25 @@ Class: affordances_situations:Movement
 Class: affordances_situations:MovingObject
 
     SubClassOf: 
-<<<<<<< HEAD
         <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#Role>
-=======
-        affordances_situations:Role
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
     
     
 Class: affordances_situations:Object
 
     SubClassOf: 
-<<<<<<< HEAD
         <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#Role>
-=======
-        affordances_situations:Role
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
     
     
 Class: affordances_situations:Poured
 
     SubClassOf: 
-<<<<<<< HEAD
         <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#Role>
-=======
-        affordances_situations:Role
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
     
     
 Class: affordances_situations:Pourer
 
     SubClassOf: 
-<<<<<<< HEAD
         <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#Role>
-=======
-        affordances_situations:Role
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
     
     
 Class: affordances_situations:Pouring
@@ -595,12 +470,6 @@ Class: affordances_situations:Pouring
         affordances_situations:ImageSchematicSituation
     
     
-<<<<<<< HEAD
-=======
-Class: affordances_situations:Role
-
-    
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
 Class: affordances_situations:SemanticType
 
     
@@ -619,41 +488,25 @@ Class: affordances_situations:Sequence
 Class: affordances_situations:Source
 
     SubClassOf: 
-<<<<<<< HEAD
         <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#Role>
-=======
-        affordances_situations:Role
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
     
     
 Class: affordances_situations:SourceContainer
 
     SubClassOf: 
-<<<<<<< HEAD
         <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#Role>
-=======
-        affordances_situations:Role
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
     
     
 Class: affordances_situations:Stabbed
 
     SubClassOf: 
-<<<<<<< HEAD
         <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#Role>
-=======
-        affordances_situations:Role
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
     
     
 Class: affordances_situations:Stabber
 
     SubClassOf: 
-<<<<<<< HEAD
         <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#Role>
-=======
-        affordances_situations:Role
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
     
     
 Class: affordances_situations:Stabbing
@@ -665,41 +518,25 @@ Class: affordances_situations:Stabbing
 Class: affordances_situations:StabbingPart
 
     SubClassOf: 
-<<<<<<< HEAD
         <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#Role>
-=======
-        affordances_situations:Role
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
     
     
 Class: affordances_situations:StabbingPoint
 
     SubClassOf: 
-<<<<<<< HEAD
         <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#Role>
-=======
-        affordances_situations:Role
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
     
     
 Class: affordances_situations:StabbingTool
 
     SubClassOf: 
-<<<<<<< HEAD
         <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#Role>
-=======
-        affordances_situations:Role
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
     
     
 Class: affordances_situations:StableObject
 
     SubClassOf: 
-<<<<<<< HEAD
         <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#Role>
-=======
-        affordances_situations:Role
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
     
     
 Class: affordances_situations:Support
@@ -711,41 +548,25 @@ Class: affordances_situations:Support
 Class: affordances_situations:Supportee
 
     SubClassOf: 
-<<<<<<< HEAD
         <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#Role>
-=======
-        affordances_situations:Role
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
     
     
 Class: affordances_situations:Supporter
 
     SubClassOf: 
-<<<<<<< HEAD
         <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#Role>
-=======
-        affordances_situations:Role
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
     
     
 Class: affordances_situations:Target
 
     SubClassOf: 
-<<<<<<< HEAD
         <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#Role>
-=======
-        affordances_situations:Role
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
     
     
 Class: affordances_situations:TargetContainer
 
     SubClassOf: 
-<<<<<<< HEAD
         <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#Role>
-=======
-        affordances_situations:Role
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
     
     
 Individual: affordances_situations:Contact
@@ -817,21 +638,13 @@ Individual: affordances_situations:boundary1
 Individual: affordances_situations:c1
 
     Facts:  
-<<<<<<< HEAD
      <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant>  affordances_situations:container1
-=======
-     affordances_situations:hasParticipant  affordances_situations:container1
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
     
     
 Individual: affordances_situations:c2
 
     Facts:  
-<<<<<<< HEAD
      <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant>  affordances_situations:liquid2
-=======
-     affordances_situations:hasParticipant  affordances_situations:liquid2
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
     
     
 Individual: affordances_situations:containee1
@@ -874,11 +687,7 @@ Individual: affordances_situations:cutter1
 Individual: affordances_situations:cutting1
 
     Facts:  
-<<<<<<< HEAD
      <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant>  affordances_situations:cuttee1
-=======
-     affordances_situations:hasParticipant  affordances_situations:cuttee1
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
     
     
 Individual: affordances_situations:cuttingPoint1
@@ -887,34 +696,21 @@ Individual: affordances_situations:cuttingPoint1
 Individual: affordances_situations:cuttingSequence1
 
     Facts:  
-<<<<<<< HEAD
      <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant>  affordances_situations:cutting1,
      <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant>  affordances_situations:separation1
-=======
-     affordances_situations:hasParticipant  affordances_situations:cutting1,
-     affordances_situations:hasParticipant  affordances_situations:separation1
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
     
     
 Individual: affordances_situations:g1
 
     Facts:  
      affordances_situations:hasGraspingPoint  affordances_situations:graspingPoint1,
-<<<<<<< HEAD
      <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant>  affordances_situations:grasper1
-=======
-     affordances_situations:hasParticipant  affordances_situations:grasper1
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
     
     
 Individual: affordances_situations:g2
 
     Facts:  
-<<<<<<< HEAD
      <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant>  affordances_situations:grasped2
-=======
-     affordances_situations:hasParticipant  affordances_situations:grasped2
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
     
     
 Individual: affordances_situations:grasped1
@@ -957,11 +753,7 @@ Individual: affordances_situations:liquid2
 Individual: affordances_situations:p1
 
     Facts:  
-<<<<<<< HEAD
      <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant>  affordances_situations:pourer1
-=======
-     affordances_situations:hasParticipant  affordances_situations:pourer1
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
     
     
 Individual: affordances_situations:part1
@@ -991,13 +783,8 @@ Individual: affordances_situations:pourer1
 Individual: affordances_situations:separation1
 
     Facts:  
-<<<<<<< HEAD
      <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant>  affordances_situations:part1,
      <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant>  affordances_situations:part2
-=======
-     affordances_situations:hasParticipant  affordances_situations:part1,
-     affordances_situations:hasParticipant  affordances_situations:part2
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
     
     
 Individual: affordances_situations:stabbed1
@@ -1012,34 +799,21 @@ Individual: affordances_situations:stabber1
 Individual: affordances_situations:stabbing1
 
     Facts:  
-<<<<<<< HEAD
      <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant>  affordances_situations:pointyPart1,
      <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant>  affordances_situations:stabbed1
-=======
-     affordances_situations:hasParticipant  affordances_situations:pointyPart1,
-     affordances_situations:hasParticipant  affordances_situations:stabbed1
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
     
     
 Individual: affordances_situations:stabbingPoint1
 
     
 Rule: 
-<<<<<<< HEAD
     <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant>(?<http://www.W3C.org/khafre/affordances_situations.owl/x>, ?<http://www.W3C.org/khafre/affordances_situations.owl/y>), affordances_situations:Boundary(?<http://www.W3C.org/khafre/affordances_situations.owl/y>) -> affordances_situations:Containment(?<http://www.W3C.org/khafre/affordances_situations.owl/x>)
-=======
-    affordances_situations:hasParticipant(?<http://www.W3C.org/khafre/affordances_situations.owl/x>, ?<http://www.W3C.org/khafre/affordances_situations.owl/y>), affordances_situations:Boundary(?<http://www.W3C.org/khafre/affordances_situations.owl/y>) -> affordances_situations:Containment(?<http://www.W3C.org/khafre/affordances_situations.owl/x>)
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
 
 Rule: 
     affordances_situations:Containee(?<http://www.W3C.org/khafre/affordances_situations.owl/x>) -> affordances_situations:Object(?<http://www.W3C.org/khafre/affordances_situations.owl/x>)
 
 Rule: 
-<<<<<<< HEAD
     <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant>(?<http://www.W3C.org/khafre/affordances_situations.owl/x>, ?<http://www.W3C.org/khafre/affordances_situations.owl/y>), affordances_situations:Containee(?<http://www.W3C.org/khafre/affordances_situations.owl/y>) -> affordances_situations:Containment(?<http://www.W3C.org/khafre/affordances_situations.owl/x>)
-=======
-    affordances_situations:hasParticipant(?<http://www.W3C.org/khafre/affordances_situations.owl/x>, ?<http://www.W3C.org/khafre/affordances_situations.owl/y>), affordances_situations:Containee(?<http://www.W3C.org/khafre/affordances_situations.owl/y>) -> affordances_situations:Containment(?<http://www.W3C.org/khafre/affordances_situations.owl/x>)
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
 
 Rule: 
     affordances_situations:Container(?<http://www.W3C.org/khafre/affordances_situations.owl/x>) -> affordances_situations:Object(?<http://www.W3C.org/khafre/affordances_situations.owl/x>)
@@ -1051,47 +825,30 @@ Rule:
     affordances_situations:Target(?<http://www.W3C.org/khafre/affordances_situations.owl/x>), affordances_situations:Container(?<http://www.W3C.org/khafre/affordances_situations.owl/x>) -> affordances_situations:TargetContainer(?<http://www.W3C.org/khafre/affordances_situations.owl/x>)
 
 Rule: 
-<<<<<<< HEAD
     <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant>(?<http://www.W3C.org/khafre/affordances_situations.owl/x>, ?<http://www.W3C.org/khafre/affordances_situations.owl/y>), affordances_situations:Container(?<http://www.W3C.org/khafre/affordances_situations.owl/y>) -> affordances_situations:Containment(?<http://www.W3C.org/khafre/affordances_situations.owl/x>)
-=======
-    affordances_situations:hasParticipant(?<http://www.W3C.org/khafre/affordances_situations.owl/x>, ?<http://www.W3C.org/khafre/affordances_situations.owl/y>), affordances_situations:Container(?<http://www.W3C.org/khafre/affordances_situations.owl/y>) -> affordances_situations:Containment(?<http://www.W3C.org/khafre/affordances_situations.owl/x>)
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
 
 Rule: 
     affordances_situations:Containment(?<http://www.W3C.org/khafre/affordances_situations.owl/s>) -> affordances_situations:Contact(?<http://www.W3C.org/khafre/affordances_situations.owl/s>)
 
 Rule: 
-<<<<<<< HEAD
     affordances_situations:contains(?<http://www.W3C.org/khafre/affordances_situations.owl/x>, ?<http://www.W3C.org/khafre/affordances_situations.owl/y>), affordances_situations:Containment(?<http://www.W3C.org/khafre/affordances_situations.owl/s>), <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant>(?<http://www.W3C.org/khafre/affordances_situations.owl/s>, ?<http://www.W3C.org/khafre/affordances_situations.owl/x>) -> <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant>(?<http://www.W3C.org/khafre/affordances_situations.owl/s>, ?<http://www.W3C.org/khafre/affordances_situations.owl/y>)
-=======
-    affordances_situations:Containment(?<http://www.W3C.org/khafre/affordances_situations.owl/s>), affordances_situations:hasParticipant(?<http://www.W3C.org/khafre/affordances_situations.owl/s>, ?<http://www.W3C.org/khafre/affordances_situations.owl/x>), affordances_situations:contains(?<http://www.W3C.org/khafre/affordances_situations.owl/x>, ?<http://www.W3C.org/khafre/affordances_situations.owl/y>) -> affordances_situations:hasParticipant(?<http://www.W3C.org/khafre/affordances_situations.owl/s>, ?<http://www.W3C.org/khafre/affordances_situations.owl/y>)
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
 
 Rule: 
     affordances_situations:Cuttee(?<http://www.W3C.org/khafre/affordances_situations.owl/s>) -> affordances_situations:Object(?<http://www.W3C.org/khafre/affordances_situations.owl/s>)
 
 Rule: 
-<<<<<<< HEAD
     affordances_situations:Cuttee(?<http://www.W3C.org/khafre/affordances_situations.owl/x>), <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant>(?<http://www.W3C.org/khafre/affordances_situations.owl/s>, ?<http://www.W3C.org/khafre/affordances_situations.owl/x>) -> affordances_situations:Cutting(?<http://www.W3C.org/khafre/affordances_situations.owl/s>)
-=======
-    affordances_situations:hasParticipant(?<http://www.W3C.org/khafre/affordances_situations.owl/s>, ?<http://www.W3C.org/khafre/affordances_situations.owl/x>), affordances_situations:Cuttee(?<http://www.W3C.org/khafre/affordances_situations.owl/x>) -> affordances_situations:Cutting(?<http://www.W3C.org/khafre/affordances_situations.owl/s>)
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
 
 Rule: 
     affordances_situations:Cutter(?<http://www.W3C.org/khafre/affordances_situations.owl/s>) -> affordances_situations:Object(?<http://www.W3C.org/khafre/affordances_situations.owl/s>)
 
 Rule: 
-<<<<<<< HEAD
     affordances_situations:Cutter(?<http://www.W3C.org/khafre/affordances_situations.owl/x>), <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant>(?<http://www.W3C.org/khafre/affordances_situations.owl/s>, ?<http://www.W3C.org/khafre/affordances_situations.owl/x>) -> affordances_situations:Cutting(?<http://www.W3C.org/khafre/affordances_situations.owl/s>)
-=======
-    affordances_situations:hasParticipant(?<http://www.W3C.org/khafre/affordances_situations.owl/s>, ?<http://www.W3C.org/khafre/affordances_situations.owl/x>), affordances_situations:Cutter(?<http://www.W3C.org/khafre/affordances_situations.owl/x>) -> affordances_situations:Cutting(?<http://www.W3C.org/khafre/affordances_situations.owl/s>)
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
 
 Rule: 
     affordances_situations:Cutting(?<http://www.W3C.org/khafre/affordances_situations.owl/s>) -> affordances_situations:Contact(?<http://www.W3C.org/khafre/affordances_situations.owl/s>)
 
 Rule: 
-<<<<<<< HEAD
     <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant>(?<http://www.W3C.org/khafre/affordances_situations.owl/seq>, ?<http://www.W3C.org/khafre/affordances_situations.owl/s1>), affordances_situations:Cutting(?<http://www.W3C.org/khafre/affordances_situations.owl/s1>), <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant>(?<http://www.W3C.org/khafre/affordances_situations.owl/seq>, ?<http://www.W3C.org/khafre/affordances_situations.owl/s2>), affordances_situations:Separation(?<http://www.W3C.org/khafre/affordances_situations.owl/s2>) -> affordances_situations:resultsIn(?<http://www.W3C.org/khafre/affordances_situations.owl/seq>, ?<http://www.W3C.org/khafre/affordances_situations.owl/s2>), affordances_situations:CuttingSequence(?<http://www.W3C.org/khafre/affordances_situations.owl/seq>)
 
 Rule: 
@@ -1105,21 +862,6 @@ Rule:
 
 Rule: 
     affordances_situations:Falling(?<http://www.W3C.org/khafre/affordances_situations.owl/s>), <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant>(?<http://www.W3C.org/khafre/affordances_situations.owl/s>, ?<http://www.W3C.org/khafre/affordances_situations.owl/x>) -> affordances_situations:Movement(?<http://www.W3C.org/khafre/affordances_situations.owl/s>), affordances_situations:MovingObject(?<http://www.W3C.org/khafre/affordances_situations.owl/x>)
-=======
-    affordances_situations:Cutting(?<http://www.W3C.org/khafre/affordances_situations.owl/s1>), affordances_situations:hasParticipant(?<http://www.W3C.org/khafre/affordances_situations.owl/seq>, ?<http://www.W3C.org/khafre/affordances_situations.owl/s1>), affordances_situations:Separation(?<http://www.W3C.org/khafre/affordances_situations.owl/s2>), affordances_situations:hasParticipant(?<http://www.W3C.org/khafre/affordances_situations.owl/seq>, ?<http://www.W3C.org/khafre/affordances_situations.owl/s2>) -> affordances_situations:resultsIn(?<http://www.W3C.org/khafre/affordances_situations.owl/seq>, ?<http://www.W3C.org/khafre/affordances_situations.owl/s2>), affordances_situations:CuttingSequence(?<http://www.W3C.org/khafre/affordances_situations.owl/seq>)
-
-Rule: 
-    affordances_situations:hasParticipant(?<http://www.W3C.org/khafre/affordances_situations.owl/s>, ?<http://www.W3C.org/khafre/affordances_situations.owl/x>), affordances_situations:CuttingPoint(?<http://www.W3C.org/khafre/affordances_situations.owl/x>) -> affordances_situations:Cutting(?<http://www.W3C.org/khafre/affordances_situations.owl/s>)
-
-Rule: 
-    affordances_situations:hasParticipant(?<http://www.W3C.org/khafre/affordances_situations.owl/s>, ?<http://www.W3C.org/khafre/affordances_situations.owl/x>), affordances_situations:CuttingTool(?<http://www.W3C.org/khafre/affordances_situations.owl/x>) -> affordances_situations:Cutting(?<http://www.W3C.org/khafre/affordances_situations.owl/s>)
-
-Rule: 
-    affordances_situations:Falling(?<http://www.W3C.org/khafre/affordances_situations.owl/s>), affordances_situations:hasParticipant(?<http://www.W3C.org/khafre/affordances_situations.owl/s>, ?<http://www.W3C.org/khafre/affordances_situations.owl/x>) -> affordances_situations:FallingObject(?<http://www.W3C.org/khafre/affordances_situations.owl/x>)
-
-Rule: 
-    affordances_situations:Falling(?<http://www.W3C.org/khafre/affordances_situations.owl/s>), affordances_situations:hasParticipant(?<http://www.W3C.org/khafre/affordances_situations.owl/s>, ?<http://www.W3C.org/khafre/affordances_situations.owl/x>) -> affordances_situations:Movement(?<http://www.W3C.org/khafre/affordances_situations.owl/s>), affordances_situations:MovingObject(?<http://www.W3C.org/khafre/affordances_situations.owl/x>)
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
 
 Rule: 
     affordances_situations:FallingObject(?<http://www.W3C.org/khafre/affordances_situations.owl/x>), affordances_situations:contains(?<http://www.W3C.org/khafre/affordances_situations.owl/x>, ?<http://www.W3C.org/khafre/affordances_situations.owl/y>) -> affordances_situations:FallingObject(?<http://www.W3C.org/khafre/affordances_situations.owl/y>)
@@ -1128,7 +870,6 @@ Rule:
     affordances_situations:grasps(?<http://www.W3C.org/khafre/affordances_situations.owl/x>, ?<http://www.W3C.org/khafre/affordances_situations.owl/y>), affordances_situations:FallingObject(?<http://www.W3C.org/khafre/affordances_situations.owl/x>) -> affordances_situations:FallingObject(?<http://www.W3C.org/khafre/affordances_situations.owl/y>)
 
 Rule: 
-<<<<<<< HEAD
     affordances_situations:FallingObject(?<http://www.W3C.org/khafre/affordances_situations.owl/x>), <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant>(?<http://www.W3C.org/khafre/affordances_situations.owl/s>, ?<http://www.W3C.org/khafre/affordances_situations.owl/x>) -> affordances_situations:Falling(?<http://www.W3C.org/khafre/affordances_situations.owl/s>)
 
 Rule: 
@@ -1136,50 +877,26 @@ Rule:
 
 Rule: 
     affordances_situations:Grasped(?<http://www.W3C.org/khafre/affordances_situations.owl/y>), affordances_situations:Grasper(?<http://www.W3C.org/khafre/affordances_situations.owl/x>), affordances_situations:Grasping(?<http://www.W3C.org/khafre/affordances_situations.owl/s>), <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant>(?<http://www.W3C.org/khafre/affordances_situations.owl/s>, ?<http://www.W3C.org/khafre/affordances_situations.owl/y>), <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant>(?<http://www.W3C.org/khafre/affordances_situations.owl/s>, ?<http://www.W3C.org/khafre/affordances_situations.owl/x>) -> affordances_situations:grasps(?<http://www.W3C.org/khafre/affordances_situations.owl/x>, ?<http://www.W3C.org/khafre/affordances_situations.owl/y>)
-=======
-    affordances_situations:hasParticipant(?<http://www.W3C.org/khafre/affordances_situations.owl/s>, ?<http://www.W3C.org/khafre/affordances_situations.owl/x>), affordances_situations:FallingObject(?<http://www.W3C.org/khafre/affordances_situations.owl/x>) -> affordances_situations:Falling(?<http://www.W3C.org/khafre/affordances_situations.owl/s>)
-
-Rule: 
-    affordances_situations:hasParticipant(?<http://www.W3C.org/khafre/affordances_situations.owl/s>, ?<http://www.W3C.org/khafre/affordances_situations.owl/x>), affordances_situations:FallingObject(?<http://www.W3C.org/khafre/affordances_situations.owl/x>) -> affordances_situations:Falling(?<http://www.W3C.org/khafre/affordances_situations.owl/s>)
-
-Rule: 
-    affordances_situations:hasParticipant(?<http://www.W3C.org/khafre/affordances_situations.owl/s>, ?<http://www.W3C.org/khafre/affordances_situations.owl/x>), affordances_situations:Grasped(?<http://www.W3C.org/khafre/affordances_situations.owl/x>) -> affordances_situations:Grasping(?<http://www.W3C.org/khafre/affordances_situations.owl/s>)
-
-Rule: 
-    affordances_situations:Grasping(?<http://www.W3C.org/khafre/affordances_situations.owl/s>), affordances_situations:hasParticipant(?<http://www.W3C.org/khafre/affordances_situations.owl/s>, ?<http://www.W3C.org/khafre/affordances_situations.owl/x>), affordances_situations:Grasper(?<http://www.W3C.org/khafre/affordances_situations.owl/x>), affordances_situations:hasParticipant(?<http://www.W3C.org/khafre/affordances_situations.owl/s>, ?<http://www.W3C.org/khafre/affordances_situations.owl/y>), affordances_situations:Grasped(?<http://www.W3C.org/khafre/affordances_situations.owl/y>) -> affordances_situations:grasps(?<http://www.W3C.org/khafre/affordances_situations.owl/x>, ?<http://www.W3C.org/khafre/affordances_situations.owl/y>)
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
 
 Rule: 
     affordances_situations:Grasper(?<http://www.W3C.org/khafre/affordances_situations.owl/x>), affordances_situations:MovingObject(?<http://www.W3C.org/khafre/affordances_situations.owl/x>), affordances_situations:grasps(?<http://www.W3C.org/khafre/affordances_situations.owl/x>, ?<http://www.W3C.org/khafre/affordances_situations.owl/y>) -> affordances_situations:MovingObject(?<http://www.W3C.org/khafre/affordances_situations.owl/y>)
 
 Rule: 
-<<<<<<< HEAD
     affordances_situations:Grasper(?<http://www.W3C.org/khafre/affordances_situations.owl/x>), <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant>(?<http://www.W3C.org/khafre/affordances_situations.owl/s>, ?<http://www.W3C.org/khafre/affordances_situations.owl/x>) -> affordances_situations:Grasping(?<http://www.W3C.org/khafre/affordances_situations.owl/s>)
-=======
-    affordances_situations:hasParticipant(?<http://www.W3C.org/khafre/affordances_situations.owl/s>, ?<http://www.W3C.org/khafre/affordances_situations.owl/x>), affordances_situations:Grasper(?<http://www.W3C.org/khafre/affordances_situations.owl/x>) -> affordances_situations:Grasping(?<http://www.W3C.org/khafre/affordances_situations.owl/s>)
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
 
 Rule: 
     affordances_situations:Grasping(?<http://www.W3C.org/khafre/affordances_situations.owl/s>) -> affordances_situations:Contact(?<http://www.W3C.org/khafre/affordances_situations.owl/s>)
 
 Rule: 
-<<<<<<< HEAD
     affordances_situations:GraspingPoint(?<http://www.W3C.org/khafre/affordances_situations.owl/k>), <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant>(?<http://www.W3C.org/khafre/affordances_situations.owl/s>, ?<http://www.W3C.org/khafre/affordances_situations.owl/k>) -> affordances_situations:Grasping(?<http://www.W3C.org/khafre/affordances_situations.owl/s>)
 
 Rule: 
     affordances_situations:Interior(?<http://www.W3C.org/khafre/affordances_situations.owl/y>), <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant>(?<http://www.W3C.org/khafre/affordances_situations.owl/x>, ?<http://www.W3C.org/khafre/affordances_situations.owl/y>) -> affordances_situations:Containment(?<http://www.W3C.org/khafre/affordances_situations.owl/x>)
-=======
-    affordances_situations:hasParticipant(?<http://www.W3C.org/khafre/affordances_situations.owl/s>, ?<http://www.W3C.org/khafre/affordances_situations.owl/k>), affordances_situations:GraspingPoint(?<http://www.W3C.org/khafre/affordances_situations.owl/k>) -> affordances_situations:Grasping(?<http://www.W3C.org/khafre/affordances_situations.owl/s>)
-
-Rule: 
-    affordances_situations:hasParticipant(?<http://www.W3C.org/khafre/affordances_situations.owl/x>, ?<http://www.W3C.org/khafre/affordances_situations.owl/y>), affordances_situations:Interior(?<http://www.W3C.org/khafre/affordances_situations.owl/y>) -> affordances_situations:Containment(?<http://www.W3C.org/khafre/affordances_situations.owl/x>)
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
 
 Rule: 
     affordances_situations:contains(?<http://www.W3C.org/khafre/affordances_situations.owl/x>, ?<http://www.W3C.org/khafre/affordances_situations.owl/y>), affordances_situations:MovingObject(?<http://www.W3C.org/khafre/affordances_situations.owl/x>) -> affordances_situations:MovingObject(?<http://www.W3C.org/khafre/affordances_situations.owl/y>)
 
 Rule: 
-<<<<<<< HEAD
     affordances_situations:MovingObject(?<http://www.W3C.org/khafre/affordances_situations.owl/x>), <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant>(?<http://www.W3C.org/khafre/affordances_situations.owl/s>, ?<http://www.W3C.org/khafre/affordances_situations.owl/x>) -> affordances_situations:Movement(?<http://www.W3C.org/khafre/affordances_situations.owl/s>)
 
 Rule: 
@@ -1193,27 +910,11 @@ Rule:
 
 Rule: 
     affordances_situations:Pourer(?<http://www.W3C.org/khafre/affordances_situations.owl/x>), <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant>(?<http://www.W3C.org/khafre/affordances_situations.owl/s>, ?<http://www.W3C.org/khafre/affordances_situations.owl/x>) -> affordances_situations:Pouring(?<http://www.W3C.org/khafre/affordances_situations.owl/s>)
-=======
-    affordances_situations:hasParticipant(?<http://www.W3C.org/khafre/affordances_situations.owl/s>, ?<http://www.W3C.org/khafre/affordances_situations.owl/x>), affordances_situations:MovingObject(?<http://www.W3C.org/khafre/affordances_situations.owl/x>) -> affordances_situations:Movement(?<http://www.W3C.org/khafre/affordances_situations.owl/s>)
-
-Rule: 
-    affordances_situations:hasParticipant(?<http://www.W3C.org/khafre/affordances_situations.owl/s>, ?<http://www.W3C.org/khafre/affordances_situations.owl/x>), affordances_situations:Poured(?<http://www.W3C.org/khafre/affordances_situations.owl/x>) -> affordances_situations:Pouring(?<http://www.W3C.org/khafre/affordances_situations.owl/s>)
-
-Rule: 
-    affordances_situations:hasParticipant(?<http://www.W3C.org/khafre/affordances_situations.owl/s>, ?<http://www.W3C.org/khafre/affordances_situations.owl/x>), affordances_situations:Pourer(?<http://www.W3C.org/khafre/affordances_situations.owl/x>), affordances_situations:Poured(?<http://www.W3C.org/khafre/affordances_situations.owl/y>) -> affordances_situations:hasParticipant(?<http://www.W3C.org/khafre/affordances_situations.owl/s>, ?<http://www.W3C.org/khafre/affordances_situations.owl/y>)
-
-Rule: 
-    affordances_situations:hasParticipant(?<http://www.W3C.org/khafre/affordances_situations.owl/s>, ?<http://www.W3C.org/khafre/affordances_situations.owl/y>), affordances_situations:Pourer(?<http://www.W3C.org/khafre/affordances_situations.owl/x>), affordances_situations:Poured(?<http://www.W3C.org/khafre/affordances_situations.owl/y>) -> affordances_situations:hasParticipant(?<http://www.W3C.org/khafre/affordances_situations.owl/s>, ?<http://www.W3C.org/khafre/affordances_situations.owl/x>)
-
-Rule: 
-    affordances_situations:hasParticipant(?<http://www.W3C.org/khafre/affordances_situations.owl/s>, ?<http://www.W3C.org/khafre/affordances_situations.owl/x>), affordances_situations:Pourer(?<http://www.W3C.org/khafre/affordances_situations.owl/x>) -> affordances_situations:Pouring(?<http://www.W3C.org/khafre/affordances_situations.owl/s>)
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
 
 Rule: 
     affordances_situations:Pouring(?<http://www.W3C.org/khafre/affordances_situations.owl/s>) -> affordances_situations:Movement(?<http://www.W3C.org/khafre/affordances_situations.owl/s>)
 
 Rule: 
-<<<<<<< HEAD
     affordances_situations:flowsFrom(?<http://www.W3C.org/khafre/affordances_situations.owl/x>, ?<http://www.W3C.org/khafre/affordances_situations.owl/y>), affordances_situations:Pouring(?<http://www.W3C.org/khafre/affordances_situations.owl/s>), affordances_situations:SourceContainer(?<http://www.W3C.org/khafre/affordances_situations.owl/y>) -> affordances_situations:Contact(?<http://www.W3C.org/khafre/affordances_situations.owl/s>), affordances_situations:inContactWith(?<http://www.W3C.org/khafre/affordances_situations.owl/x>, ?<http://www.W3C.org/khafre/affordances_situations.owl/y>), <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant>(?<http://www.W3C.org/khafre/affordances_situations.owl/s>, ?<http://www.W3C.org/khafre/affordances_situations.owl/y>), <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant>(?<http://www.W3C.org/khafre/affordances_situations.owl/s>, ?<http://www.W3C.org/khafre/affordances_situations.owl/x>)
 
 Rule: 
@@ -1224,24 +925,11 @@ Rule:
 
 Rule: 
     affordances_situations:Stabber(?<http://www.W3C.org/khafre/affordances_situations.owl/x>), <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant>(?<http://www.W3C.org/khafre/affordances_situations.owl/s>, ?<http://www.W3C.org/khafre/affordances_situations.owl/x>) -> affordances_situations:Stabbing(?<http://www.W3C.org/khafre/affordances_situations.owl/s>)
-=======
-    affordances_situations:Pouring(?<http://www.W3C.org/khafre/affordances_situations.owl/s>), affordances_situations:flowsFrom(?<http://www.W3C.org/khafre/affordances_situations.owl/x>, ?<http://www.W3C.org/khafre/affordances_situations.owl/y>), affordances_situations:SourceContainer(?<http://www.W3C.org/khafre/affordances_situations.owl/y>) -> affordances_situations:Contact(?<http://www.W3C.org/khafre/affordances_situations.owl/s>), affordances_situations:hasParticipant(?<http://www.W3C.org/khafre/affordances_situations.owl/s>, ?<http://www.W3C.org/khafre/affordances_situations.owl/x>), affordances_situations:hasParticipant(?<http://www.W3C.org/khafre/affordances_situations.owl/s>, ?<http://www.W3C.org/khafre/affordances_situations.owl/y>), affordances_situations:inContactWith(?<http://www.W3C.org/khafre/affordances_situations.owl/x>, ?<http://www.W3C.org/khafre/affordances_situations.owl/y>)
-
-Rule: 
-    affordances_situations:Pouring(?<http://www.W3C.org/khafre/affordances_situations.owl/s>), affordances_situations:flowsTo(?<http://www.W3C.org/khafre/affordances_situations.owl/x>, ?<http://www.W3C.org/khafre/affordances_situations.owl/y>), affordances_situations:TargetContainer(?<http://www.W3C.org/khafre/affordances_situations.owl/y>) -> affordances_situations:Contact(?<http://www.W3C.org/khafre/affordances_situations.owl/s>), affordances_situations:hasParticipant(?<http://www.W3C.org/khafre/affordances_situations.owl/s>, ?<http://www.W3C.org/khafre/affordances_situations.owl/x>), affordances_situations:hasParticipant(?<http://www.W3C.org/khafre/affordances_situations.owl/s>, ?<http://www.W3C.org/khafre/affordances_situations.owl/y>), affordances_situations:inContactWith(?<http://www.W3C.org/khafre/affordances_situations.owl/x>, ?<http://www.W3C.org/khafre/affordances_situations.owl/y>)
-
-Rule: 
-    affordances_situations:hasParticipant(?<http://www.W3C.org/khafre/affordances_situations.owl/s>, ?<http://www.W3C.org/khafre/affordances_situations.owl/x>), affordances_situations:Stabbed(?<http://www.W3C.org/khafre/affordances_situations.owl/x>) -> affordances_situations:Stabbing(?<http://www.W3C.org/khafre/affordances_situations.owl/s>)
-
-Rule: 
-    affordances_situations:hasParticipant(?<http://www.W3C.org/khafre/affordances_situations.owl/s>, ?<http://www.W3C.org/khafre/affordances_situations.owl/x>), affordances_situations:Stabber(?<http://www.W3C.org/khafre/affordances_situations.owl/x>) -> affordances_situations:Stabbing(?<http://www.W3C.org/khafre/affordances_situations.owl/s>)
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
 
 Rule: 
     affordances_situations:Stabbing(?<http://www.W3C.org/khafre/affordances_situations.owl/s>) -> affordances_situations:Contact(?<http://www.W3C.org/khafre/affordances_situations.owl/s>)
 
 Rule: 
-<<<<<<< HEAD
     affordances_situations:StabbingPart(?<http://www.W3C.org/khafre/affordances_situations.owl/x>), <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant>(?<http://www.W3C.org/khafre/affordances_situations.owl/s>, ?<http://www.W3C.org/khafre/affordances_situations.owl/x>) -> affordances_situations:Stabbing(?<http://www.W3C.org/khafre/affordances_situations.owl/s>)
 
 Rule: 
@@ -1252,44 +940,21 @@ Rule:
 
 Rule: 
     affordances_situations:StabbingTool(?<http://www.W3C.org/khafre/affordances_situations.owl/x>), <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant>(?<http://www.W3C.org/khafre/affordances_situations.owl/s>, ?<http://www.W3C.org/khafre/affordances_situations.owl/x>) -> affordances_situations:Stabbing(?<http://www.W3C.org/khafre/affordances_situations.owl/s>)
-=======
-    affordances_situations:hasParticipant(?<http://www.W3C.org/khafre/affordances_situations.owl/s>, ?<http://www.W3C.org/khafre/affordances_situations.owl/x>), affordances_situations:StabbingPart(?<http://www.W3C.org/khafre/affordances_situations.owl/x>) -> affordances_situations:Stabbing(?<http://www.W3C.org/khafre/affordances_situations.owl/s>)
-
-Rule: 
-    affordances_situations:hasParticipant(?<http://www.W3C.org/khafre/affordances_situations.owl/s>, ?<http://www.W3C.org/khafre/affordances_situations.owl/x>), affordances_situations:inside(?<http://www.W3C.org/khafre/affordances_situations.owl/x>, ?<http://www.W3C.org/khafre/affordances_situations.owl/y>), affordances_situations:StabbingPart(?<http://www.W3C.org/khafre/affordances_situations.owl/y>) -> affordances_situations:Stabbing(?<http://www.W3C.org/khafre/affordances_situations.owl/s>)
-
-Rule: 
-    affordances_situations:hasParticipant(?<http://www.W3C.org/khafre/affordances_situations.owl/s>, ?<http://www.W3C.org/khafre/affordances_situations.owl/x>), affordances_situations:StabbingPoint(?<http://www.W3C.org/khafre/affordances_situations.owl/x>) -> affordances_situations:Stabbing(?<http://www.W3C.org/khafre/affordances_situations.owl/s>)
-
-Rule: 
-    affordances_situations:hasParticipant(?<http://www.W3C.org/khafre/affordances_situations.owl/s>, ?<http://www.W3C.org/khafre/affordances_situations.owl/x>), affordances_situations:StabbingTool(?<http://www.W3C.org/khafre/affordances_situations.owl/x>) -> affordances_situations:Stabbing(?<http://www.W3C.org/khafre/affordances_situations.owl/s>)
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
 
 Rule: 
     affordances_situations:Supportee(?<http://www.W3C.org/khafre/affordances_situations.owl/x>) -> affordances_situations:Object(?<http://www.W3C.org/khafre/affordances_situations.owl/x>)
 
 Rule: 
-<<<<<<< HEAD
     affordances_situations:Supportee(?<http://www.W3C.org/khafre/affordances_situations.owl/y>), affordances_situations:Supporter(?<http://www.W3C.org/khafre/affordances_situations.owl/x>), <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant>(?<http://www.W3C.org/khafre/affordances_situations.owl/s>, ?<http://www.W3C.org/khafre/affordances_situations.owl/y>), <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant>(?<http://www.W3C.org/khafre/affordances_situations.owl/s>, ?<http://www.W3C.org/khafre/affordances_situations.owl/x>) -> affordances_situations:supports(?<http://www.W3C.org/khafre/affordances_situations.owl/x>, ?<http://www.W3C.org/khafre/affordances_situations.owl/y>)
 
 Rule: 
     affordances_situations:Supportee(?<http://www.W3C.org/khafre/affordances_situations.owl/y>), <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant>(?<http://www.W3C.org/khafre/affordances_situations.owl/s>, ?<http://www.W3C.org/khafre/affordances_situations.owl/y>) -> affordances_situations:Support(?<http://www.W3C.org/khafre/affordances_situations.owl/s>)
-=======
-    affordances_situations:hasParticipant(?<http://www.W3C.org/khafre/affordances_situations.owl/s>, ?<http://www.W3C.org/khafre/affordances_situations.owl/x>), affordances_situations:hasParticipant(?<http://www.W3C.org/khafre/affordances_situations.owl/s>, ?<http://www.W3C.org/khafre/affordances_situations.owl/y>), affordances_situations:Supporter(?<http://www.W3C.org/khafre/affordances_situations.owl/x>), affordances_situations:Supportee(?<http://www.W3C.org/khafre/affordances_situations.owl/y>) -> affordances_situations:supports(?<http://www.W3C.org/khafre/affordances_situations.owl/x>, ?<http://www.W3C.org/khafre/affordances_situations.owl/y>)
-
-Rule: 
-    affordances_situations:hasParticipant(?<http://www.W3C.org/khafre/affordances_situations.owl/s>, ?<http://www.W3C.org/khafre/affordances_situations.owl/y>), affordances_situations:Supportee(?<http://www.W3C.org/khafre/affordances_situations.owl/y>) -> affordances_situations:Support(?<http://www.W3C.org/khafre/affordances_situations.owl/s>)
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
 
 Rule: 
     affordances_situations:Supporter(?<http://www.W3C.org/khafre/affordances_situations.owl/x>) -> affordances_situations:Object(?<http://www.W3C.org/khafre/affordances_situations.owl/x>)
 
 Rule: 
-<<<<<<< HEAD
     affordances_situations:Supporter(?<http://www.W3C.org/khafre/affordances_situations.owl/x>), <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant>(?<http://www.W3C.org/khafre/affordances_situations.owl/s>, ?<http://www.W3C.org/khafre/affordances_situations.owl/x>) -> affordances_situations:Support(?<http://www.W3C.org/khafre/affordances_situations.owl/s>)
-=======
-    affordances_situations:hasParticipant(?<http://www.W3C.org/khafre/affordances_situations.owl/s>, ?<http://www.W3C.org/khafre/affordances_situations.owl/x>), affordances_situations:Supporter(?<http://www.W3C.org/khafre/affordances_situations.owl/x>) -> affordances_situations:Support(?<http://www.W3C.org/khafre/affordances_situations.owl/s>)
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
 
 Rule: 
     affordances_situations:contains(?<http://www.W3C.org/khafre/affordances_situations.owl/x>, ?<http://www.W3C.org/khafre/affordances_situations.owl/y>) -> affordances_situations:inContactWith(?<http://www.W3C.org/khafre/affordances_situations.owl/x>, ?<http://www.W3C.org/khafre/affordances_situations.owl/y>)
@@ -1298,7 +963,6 @@ Rule:
     affordances_situations:cuts(?<http://www.W3C.org/khafre/affordances_situations.owl/x>, ?<http://www.W3C.org/khafre/affordances_situations.owl/y>) -> affordances_situations:inContactWith(?<http://www.W3C.org/khafre/affordances_situations.owl/x>, ?<http://www.W3C.org/khafre/affordances_situations.owl/y>)
 
 Rule: 
-<<<<<<< HEAD
     affordances_situations:hasCuttingPoint(?<http://www.W3C.org/khafre/affordances_situations.owl/x>, ?<http://www.W3C.org/khafre/affordances_situations.owl/k>), <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant>(?<http://www.W3C.org/khafre/affordances_situations.owl/s>, ?<http://www.W3C.org/khafre/affordances_situations.owl/x>), affordances_situations:cuts(?<http://www.W3C.org/khafre/affordances_situations.owl/x>, ?<http://www.W3C.org/khafre/affordances_situations.owl/y>) -> affordances_situations:partOf(?<http://www.W3C.org/khafre/affordances_situations.owl/k>, ?<http://www.W3C.org/khafre/affordances_situations.owl/y>)
 
 Rule: 
@@ -1312,21 +976,6 @@ Rule:
 
 Rule: 
     affordances_situations:flowsTo(?<http://www.W3C.org/khafre/affordances_situations.owl/x>, ?<http://www.W3C.org/khafre/affordances_situations.owl/w>), <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant>(?<http://www.W3C.org/khafre/affordances_situations.owl/s>, ?<http://www.W3C.org/khafre/affordances_situations.owl/x>) -> affordances_situations:Pouring(?<http://www.W3C.org/khafre/affordances_situations.owl/s>)
-=======
-    affordances_situations:hasParticipant(?<http://www.W3C.org/khafre/affordances_situations.owl/s>, ?<http://www.W3C.org/khafre/affordances_situations.owl/x>), affordances_situations:hasCuttingPoint(?<http://www.W3C.org/khafre/affordances_situations.owl/x>, ?<http://www.W3C.org/khafre/affordances_situations.owl/k>), affordances_situations:cuts(?<http://www.W3C.org/khafre/affordances_situations.owl/x>, ?<http://www.W3C.org/khafre/affordances_situations.owl/y>) -> affordances_situations:partOf(?<http://www.W3C.org/khafre/affordances_situations.owl/k>, ?<http://www.W3C.org/khafre/affordances_situations.owl/y>)
-
-Rule: 
-    affordances_situations:hasParticipant(?<http://www.W3C.org/khafre/affordances_situations.owl/s>, ?<http://www.W3C.org/khafre/affordances_situations.owl/x>), affordances_situations:cuts(?<http://www.W3C.org/khafre/affordances_situations.owl/x>, ?<http://www.W3C.org/khafre/affordances_situations.owl/y>) -> affordances_situations:Cutting(?<http://www.W3C.org/khafre/affordances_situations.owl/s>), affordances_situations:hasParticipant(?<http://www.W3C.org/khafre/affordances_situations.owl/s>, ?<http://www.W3C.org/khafre/affordances_situations.owl/y>)
-
-Rule: 
-    affordances_situations:hasParticipant(?<http://www.W3C.org/khafre/affordances_situations.owl/s>, ?<http://www.W3C.org/khafre/affordances_situations.owl/y>), affordances_situations:cuts(?<http://www.W3C.org/khafre/affordances_situations.owl/x>, ?<http://www.W3C.org/khafre/affordances_situations.owl/y>) -> affordances_situations:Cutting(?<http://www.W3C.org/khafre/affordances_situations.owl/s>), affordances_situations:hasParticipant(?<http://www.W3C.org/khafre/affordances_situations.owl/s>, ?<http://www.W3C.org/khafre/affordances_situations.owl/x>)
-
-Rule: 
-    affordances_situations:hasParticipant(?<http://www.W3C.org/khafre/affordances_situations.owl/s>, ?<http://www.W3C.org/khafre/affordances_situations.owl/x>), affordances_situations:flowsFrom(?<http://www.W3C.org/khafre/affordances_situations.owl/x>, ?<http://www.W3C.org/khafre/affordances_situations.owl/w>) -> affordances_situations:Pouring(?<http://www.W3C.org/khafre/affordances_situations.owl/s>)
-
-Rule: 
-    affordances_situations:hasParticipant(?<http://www.W3C.org/khafre/affordances_situations.owl/s>, ?<http://www.W3C.org/khafre/affordances_situations.owl/x>), affordances_situations:flowsTo(?<http://www.W3C.org/khafre/affordances_situations.owl/x>, ?<http://www.W3C.org/khafre/affordances_situations.owl/w>) -> affordances_situations:Pouring(?<http://www.W3C.org/khafre/affordances_situations.owl/s>)
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
 
 Rule: 
     affordances_situations:grasps(?<http://www.W3C.org/khafre/affordances_situations.owl/x>, ?<http://www.W3C.org/khafre/affordances_situations.owl/y>) -> affordances_situations:hasGripOn(?<http://www.W3C.org/khafre/affordances_situations.owl/x>, ?<http://www.W3C.org/khafre/affordances_situations.owl/y>)
@@ -1335,7 +984,6 @@ Rule:
     affordances_situations:grasps(?<http://www.W3C.org/khafre/affordances_situations.owl/x>, ?<http://www.W3C.org/khafre/affordances_situations.owl/y>) -> affordances_situations:inContactWith(?<http://www.W3C.org/khafre/affordances_situations.owl/x>, ?<http://www.W3C.org/khafre/affordances_situations.owl/y>)
 
 Rule: 
-<<<<<<< HEAD
     affordances_situations:hasGraspingPoint(?<http://www.W3C.org/khafre/affordances_situations.owl/x>, ?<http://www.W3C.org/khafre/affordances_situations.owl/k>), affordances_situations:grasps(?<http://www.W3C.org/khafre/affordances_situations.owl/x>, ?<http://www.W3C.org/khafre/affordances_situations.owl/y>), <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant>(?<http://www.W3C.org/khafre/affordances_situations.owl/s>, ?<http://www.W3C.org/khafre/affordances_situations.owl/x>) -> affordances_situations:partOf(?<http://www.W3C.org/khafre/affordances_situations.owl/k>, ?<http://www.W3C.org/khafre/affordances_situations.owl/y>)
 
 Rule: 
@@ -1346,16 +994,3 @@ Rule:
 
 Rule: 
     affordances_situations:stabs(?<http://www.W3C.org/khafre/affordances_situations.owl/x>, ?<http://www.W3C.org/khafre/affordances_situations.owl/y>), <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasParticipant>(?<http://www.W3C.org/khafre/affordances_situations.owl/s>, ?<http://www.W3C.org/khafre/affordances_situations.owl/x>) -> affordances_situations:Stabbing(?<http://www.W3C.org/khafre/affordances_situations.owl/s>)
-=======
-    affordances_situations:hasParticipant(?<http://www.W3C.org/khafre/affordances_situations.owl/s>, ?<http://www.W3C.org/khafre/affordances_situations.owl/x>), affordances_situations:hasGraspingPoint(?<http://www.W3C.org/khafre/affordances_situations.owl/x>, ?<http://www.W3C.org/khafre/affordances_situations.owl/k>), affordances_situations:grasps(?<http://www.W3C.org/khafre/affordances_situations.owl/x>, ?<http://www.W3C.org/khafre/affordances_situations.owl/y>) -> affordances_situations:partOf(?<http://www.W3C.org/khafre/affordances_situations.owl/k>, ?<http://www.W3C.org/khafre/affordances_situations.owl/y>)
-
-Rule: 
-    affordances_situations:hasParticipant(?<http://www.W3C.org/khafre/affordances_situations.owl/s>, ?<http://www.W3C.org/khafre/affordances_situations.owl/x>), affordances_situations:grasps(?<http://www.W3C.org/khafre/affordances_situations.owl/x>, ?<http://www.W3C.org/khafre/affordances_situations.owl/y>) -> affordances_situations:Grasping(?<http://www.W3C.org/khafre/affordances_situations.owl/s>), affordances_situations:hasParticipant(?<http://www.W3C.org/khafre/affordances_situations.owl/s>, ?<http://www.W3C.org/khafre/affordances_situations.owl/y>)
-
-Rule: 
-    affordances_situations:hasParticipant(?<http://www.W3C.org/khafre/affordances_situations.owl/s>, ?<http://www.W3C.org/khafre/affordances_situations.owl/y>), affordances_situations:hasParticipant(?<http://www.W3C.org/khafre/affordances_situations.owl/s>, ?<http://www.W3C.org/khafre/affordances_situations.owl/x>), affordances_situations:separatedFrom(?<http://www.W3C.org/khafre/affordances_situations.owl/x>, ?<http://www.W3C.org/khafre/affordances_situations.owl/y>) -> affordances_situations:Separation(?<http://www.W3C.org/khafre/affordances_situations.owl/s>)
-
-Rule: 
-    affordances_situations:hasParticipant(?<http://www.W3C.org/khafre/affordances_situations.owl/s>, ?<http://www.W3C.org/khafre/affordances_situations.owl/x>), affordances_situations:stabs(?<http://www.W3C.org/khafre/affordances_situations.owl/x>, ?<http://www.W3C.org/khafre/affordances_situations.owl/y>) -> affordances_situations:Stabbing(?<http://www.W3C.org/khafre/affordances_situations.owl/s>)
->>>>>>> 84c9ad6d3c79c8d4edb8fba1832c067af98a9fde
-

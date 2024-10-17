@@ -1,0 +1,1 @@
+connectivity/query(?o1, ?o2) => movement/query(?o1, ?o2)

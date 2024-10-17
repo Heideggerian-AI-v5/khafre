@@ -1,0 +1,2 @@
+=> isA(g, Goal)
+=> hasFocus(g, cup)

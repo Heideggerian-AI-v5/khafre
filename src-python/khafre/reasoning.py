@@ -171,6 +171,8 @@ class Reasoner(ReifiedProcess):
         self.persistentSchemas = {}
         self.perceptionQueries = []
         self._workers = {}
+        self._armed = False
+        self._defaultFacts = {}
     def _checkPublisherRequest(self, name, wire):
         return False#name in self._outputNames
     def _checkSubscriptionRequest(self, name, wire):
@@ -183,7 +185,10 @@ class Reasoner(ReifiedProcess):
         #    reification/stets brick
         #    connectivity query brick
         #    memory block for persistent schemas? embed state memory in reasoner block?
-        if "REGISTER_WORKER" == op:
+        if "TRIGGER" == op:
+            self._armed = True
+            self._defaultFacts = silkie.loadDFLFacts(args[0])
+        elif "REGISTER_WORKER" == op:
             name, proc = args
             self._workers[name] = proc
         elif "UNREGISTER_WORKER" == op:
@@ -226,8 +231,12 @@ class Reasoner(ReifiedProcess):
             # Collect all inputs into an initial theory
             # TODO: use images too for grounding mask entities
             triples = set.union([v["notification"].get("triples", []) for v in self._dataFromSubscriptions.values()])
-            ## observations (tuples) + prev persistent schemas (dfl facts) + theory -> reifiable/stet relations (triples)
             facts = mergeFacts(self.persistentSchemas, triples2Facts(triples))
+        elif self._armed:
+            facts = mergeFacts(self.persistentSchemas, self._defaultFacts)
+        if fullInput or self._armed:
+            self._armed = False
+            ## observations (tuples) + prev persistent schemas (dfl facts) + theory -> reifiable/stet relations (triples)
             conclusions = _silkie(self.perceptionInterpretationTheory, facts, self.backgroundFacts)
             ## reifiable/stet relations (triples) + theory -> new persistent schemas (dfl facts)
             facts = reifyConclusions(conclusions)
@@ -235,45 +244,43 @@ class Reasoner(ReifiedProcess):
             self.persistentSchemas = conclusions2Facts(conclusions)
             for k in self._dataFromSubscriptions.keys():
                 self._dataFromSubscriptions[k] = None
-        #else:
-        #    # Keep persistent schemas, send commands/outputs based on those.
-        ## add connquery results to persistent schemas
-        connectivityResults = {}
-        connectivityQueries = {}
-        for t in self.perceptionQueries:
-            p, s, o = t
-            if ("isA" == p) and (o.startswith("connectivity/")):
-                connectivityQueries[s] = {}
-        for t in self.perceptionQueries:
-            p, s, o = t
-            if s in connectivityQueries:
-                if p not in connectivityQueries[s]:
-                    connectivityQueries[s][p] = set()
-                connectivityQueries[s][p].add(o)
-        for name, query in connectivityQueries.items():
-            for qtype, fn in [("connectivity/closeness", closenessQuery), ("connectivity/dependency", necessaryVertexQuery)]:
-                if qtype not in query["isA"]:
-                    continue
-                srcTrgPairs = itertools.product(query["hasSource"], query["hasTarget"])
-                psPairs = itertools.product(query["hasP"], query["hasQS"])
-                for source, target in srcTrgPairs:
-                    qTriples = [("hasSource", name, source), ("hasTarget", name, target)]
-                    _ = [qTriples.append(("isA", name, x) for x in query["isA"])]
-                    facts = mergeFacts(copyFacts(persistentSchemas), triples2Facts(qTriples))
-                    conclusions = _silkie(self.connQueryTheory, facts, self.backgroundFacts)
-                    graph = conclusions2Graph(conclusions)
-                    fnResults = fn(graph, source, target)
-                    for p, s in psPairs:
-                        triples = [(p, s, e) for e in fnResults]
-                        connectivityResults = mergeFacts(connectivityResults, triples2Facts(triples))
-        self.persistentSchemas = mergeFacts(self.persistentSchemas, connectivityResults)
-        conclusions = _silkie(self.closureTheory, self.persistentSchemas, self.backgroundFacts)
-        self.persistentSchemas = conclusions2Facts(conclusions)
-        ## new persistent schemas (dfl facts) + theory -> reifiable questions, stet relations (triples)
-        conclusions = _silkie(self.schemaInterpretationTheory, self.persistentSchemas, self.backgroundFacts)
-        ## reifiable questions/stet relations + theory -> new questions (tuples)
-        facts = reifyConclusions(conclusions)
-        conclusions = _silkie(self.updateQuestionsTheory, self.facts, self.backgroundFacts)
-        self.perceptionQueries = [_ensureTriple(t) for t in conclusions.defeasiblyProvable]
-        ## send perception queries
-        _ = [x.sendCommand("PUSH_GOALS", self.perceptionQueries) for x in self._workers.values()]
+            ## add connquery results to persistent schemas
+            connectivityResults = {}
+            connectivityQueries = {}
+            for t in self.perceptionQueries:
+                p, s, o = t
+                if ("isA" == p) and (o.startswith("connectivity/")):
+                    connectivityQueries[s] = {}
+            for t in self.perceptionQueries:
+                p, s, o = t
+                if s in connectivityQueries:
+                    if p not in connectivityQueries[s]:
+                        connectivityQueries[s][p] = set()
+                    connectivityQueries[s][p].add(o)
+            for name, query in connectivityQueries.items():
+                for qtype, fn in [("connectivity/closeness", closenessQuery), ("connectivity/dependency", necessaryVertexQuery)]:
+                    if qtype not in query["isA"]:
+                        continue
+                    srcTrgPairs = itertools.product(query["hasSource"], query["hasTarget"])
+                    psPairs = itertools.product(query["hasP"], query["hasQS"])
+                    for source, target in srcTrgPairs:
+                        qTriples = [("hasSource", name, source), ("hasTarget", name, target)]
+                        _ = [qTriples.append(("isA", name, x) for x in query["isA"])]
+                        facts = mergeFacts(copyFacts(persistentSchemas), triples2Facts(qTriples))
+                        conclusions = _silkie(self.connQueryTheory, facts, self.backgroundFacts)
+                        graph = conclusions2Graph(conclusions)
+                        fnResults = fn(graph, source, target)
+                        for p, s in psPairs:
+                            triples = [(p, s, e) for e in fnResults]
+                            connectivityResults = mergeFacts(connectivityResults, triples2Facts(triples))
+            self.persistentSchemas = mergeFacts(self.persistentSchemas, connectivityResults)
+            conclusions = _silkie(self.closureTheory, self.persistentSchemas, self.backgroundFacts)
+            self.persistentSchemas = conclusions2Facts(conclusions)
+            ## new persistent schemas (dfl facts) + theory -> reifiable questions, stet relations (triples)
+            conclusions = _silkie(self.schemaInterpretationTheory, self.persistentSchemas, self.backgroundFacts)
+            ## reifiable questions/stet relations + theory -> new questions (tuples)
+            facts = reifyConclusions(conclusions)
+            conclusions = _silkie(self.updateQuestionsTheory, self.facts, self.backgroundFacts)
+            self.perceptionQueries = [_ensureTriple(t) for t in conclusions.defeasiblyProvable]
+            ## send perception queries
+            _ = [x.sendCommand("PUSH_GOALS", self.perceptionQueries) for x in self._workers.values()]

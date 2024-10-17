@@ -218,19 +218,19 @@ class Reasoner(ReifiedProcess):
                 return tuple(t)
             return (t[0], t[1], None)
         def _silkie(theoryTemplate, facts, backgroundFacts):
-            theory, _i2s, _ = silkie.buildTheory(theoryTemplate, facts, backgroundFacts)
+            theory, _, i2s, _ = silkie.buildTheory(theoryTemplate, facts, backgroundFacts)
             return silkie.idx2strConclusions(silkie.dflInference(theory), i2s)
         # Because of bypass event, the reasoner will reach here without waiting in the reified process main loop.
         # By this point, any received commands have been handled and any ready to send outputs were sent.
         # A full set of inputs might not be available however.
-        fullInput = all([v is not None for v in self._dataFromSubscriptions.values()])
+        fullInput = all([v.get("notification") is not None for v in self._dataFromSubscriptions.values()])
         if fullInput:
             # TODOs for TASKABLES:
             #    - let optical flow report movement masks
             #    - contact/movement masks associated to triples
             # Collect all inputs into an initial theory
             # TODO: use images too for grounding mask entities
-            triples = set.union([v["notification"].get("triples", []) for v in self._dataFromSubscriptions.values()])
+            triples = set.union(*[set(v["notification"].get("triples", [])) for v in self._dataFromSubscriptions.values()])
             facts = mergeFacts(self.persistentSchemas, triples2Facts(triples))
         elif self._armed:
             facts = mergeFacts(self.persistentSchemas, self._defaultFacts)
@@ -243,7 +243,7 @@ class Reasoner(ReifiedProcess):
             conclusions = _silkie(self.updateSchemasTheory, facts, self.backgroundFacts)
             self.persistentSchemas = conclusions2Facts(conclusions)
             for k in self._dataFromSubscriptions.keys():
-                self._dataFromSubscriptions[k] = None
+                self._dataFromSubscriptions[k] = {}
             ## add connquery results to persistent schemas
             connectivityResults = {}
             connectivityQueries = {}
@@ -280,7 +280,7 @@ class Reasoner(ReifiedProcess):
             conclusions = _silkie(self.schemaInterpretationTheory, self.persistentSchemas, self.backgroundFacts)
             ## reifiable questions/stet relations + theory -> new questions (tuples)
             facts = reifyConclusions(conclusions)
-            conclusions = _silkie(self.updateQuestionsTheory, self.facts, self.backgroundFacts)
+            conclusions = _silkie(self.updateQuestionsTheory, facts, self.backgroundFacts)
             self.perceptionQueries = [_ensureTriple(t) for t in conclusions.defeasiblyProvable]
             ## send perception queries
-            _ = [x.sendCommand("PUSH_GOALS", self.perceptionQueries) for x in self._workers.values()]
+            _ = [x.sendCommand(("PUSH_GOALS", self.perceptionQueries)) for x in self._workers.values()]

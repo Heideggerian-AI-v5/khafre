@@ -16,7 +16,7 @@ class Peeker:
 
 def main():
 
-    triples = [(contact, cup, table)]
+    triples = [("contact", "cup", "table")]
     percIntTheory = "theories/simple_perceptionInterpretation.dfl"
     updSchTheory = "theories/simple_updateSchemas.dfl"
     connQTheory = "theories/simple_connectivityQueries.dfl"
@@ -37,6 +37,7 @@ def main():
     
     procs["reasoner"] = Reasoner()
     outputPeeker = Peeker()
+    procs["reasoner"]._workers["outputPeeker"] = outputPeeker
     
     drawWire("TriplesIn", (), [("TriplesIn", procs["reasoner"])], None, None, wireList=wireList)
 
@@ -50,7 +51,7 @@ def main():
     procs["reasoner"].sendCommand(("LOAD_THEORY", ("schema interpretation", schIntTheory)))
     procs["reasoner"].sendCommand(("LOAD_THEORY", ("update questions", updQTheory)))
     procs["reasoner"].sendCommand(("LOAD_FACTS", (backgroundFacts,)))
-    procs["reasoner"].sendCommand(("REGISTER_WORKER", (outputPeeker,)))
+    #procs["reasoner"].sendCommand(("REGISTER_WORKER", (outputPeeker,)))
     procs["reasoner"].sendCommand(("TRIGGER", (defaultFacts,)))
 
     while outputPeeker.queue.empty():
@@ -59,7 +60,7 @@ def main():
     print("Initial results", outputPeeker.queue.get())
     
     if wireList["TriplesIn"].isReadyForPublishing():
-        wireList["TriplesIn"].publish(triples, None)
+        wireList["TriplesIn"].publish({"notification": {"triples": triples}}, None)
 
     while outputPeeker.queue.empty():
         time.sleep(0.1)

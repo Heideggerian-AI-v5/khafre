@@ -1,5 +1,6 @@
 import ast
 from khafre.bricks import RatedSimpleQueue, ReifiedProcess
+from multiprocessing import Lock
 
 class TaskableProcess(ReifiedProcess):
     def __init__(self):
@@ -16,6 +17,10 @@ class TaskableProcess(ReifiedProcess):
         self._goalQueue.put(goal)    
     def getGoalQueue(self):
         return self._goalQueue
+    def _handleCommand(self, command):
+        op, args = command
+        if "PUSH_GOALS" == op:
+            self.sendGoal(args)
     def _isForMe(self, p):
         return p.startswith(self._prefix+"/")
     def _update(self, address, s):
@@ -27,7 +32,7 @@ class TaskableProcess(ReifiedProcess):
         s = ast.literal_eval(s)
         cr[e] = s
         if address in self._onSettingsUpdate:
-            self._onSettingsUpdate(s)
+            self._onSettingsUpdate[address](s)
     def _orderQuery(self,p,s,o):
         if (p in self._symmetricPredicates) and (s>o):
             return (p, o, s)

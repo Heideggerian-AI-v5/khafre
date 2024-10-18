@@ -472,7 +472,12 @@ class PFact:
         if (s in self._ps) and (o in self._ps[s]):
             return self._po[o][s]
         return False
-    def match(self, s, o, bdgs, newMask=None):
+    def match(self, s, o, bdgs, usedFacts, newMask=None):
+        def _updateUsedFacts(usedFacts, p, s, o):
+            if usedFacts is not None:
+                if p not in usedFacts:
+                    usedFacts[p] = PFact(p)
+                usedFacts[p].addFact(s, o, self._po[o][s])
         retq = []
         for bdg in bdgs:
             vs = s
@@ -499,22 +504,26 @@ class PFact:
                                 aux = bdg.copy()
                                 aux.update({vs.getName(): fs, vo.getName(): fo})
                                 retq.append(aux)
+                                _updateUsedFacts(usedFacts, self._p, fs, fo)
                 else:
                     for xso in self.getOFacts(vo):
                         if (None==newMask) or ((self._p, xso[0], vo) in newMask):
                             aux = bdg.copy()
                             aux[vs.getName()] = xso[0]
                             retq.append(aux)
+                            _updateUsedFacts(usedFacts, self._p, xso[0], vo)
             elif isinstance(vo, Variable):
                 for xso in self.getSFacts(vs):
                     if (None==newMask) or ((self._p, vs, xso[1]) in newMask):
                         aux = bdg.copy()
                         aux[vo.getName()] = xso[1]
                         retq.append(aux)
+                        _updateUsedFacts(usedFacts, self._p, vs, xso[1])
             elif (False != self.hasFact(vs, vo)):
                 if (None==newMask) or ((self._p, vs, vo) in newMask):
                     retq.append(bdg)
-        return retq
+                    _updateUsedFacts(usedFacts, self._p, vs, vo)
+        return retq, usedFacts
 class RuleTemplate:
     def __init__(self,label,antecedent,operator,consequent):
         self._id = label
@@ -585,22 +594,22 @@ class RuleTemplate:
                 if k not in visited:
                     retq.append(self._antecedent[k])
         return retq[1:]
-    def getInstantiations(self, relevantFacts, knowledgeFacts, newMask=None):
+    def getInstantiations(self, relevantFacts, knowledgeFacts, usedBackgroundFacts, newMask=None):
         relevantFacts = {x.getP():x for k,x in relevantFacts.items() if x.getP() in self._pset.keys()}
         #knowledgeFacts = {x.getP():x for k,x in knowledgeFacts.items() if x.getP() in self._pset.keys()}
         retq = set()
         for rp,rf in relevantFacts.items():
             for pm in self._pset[rf.getP()]:
-                bdgs = rf.match(self._antecedent[pm][1], self._antecedent[pm][2], [{}], newMask=newMask)
+                bdgs, _ = rf.match(self._antecedent[pm][1], self._antecedent[pm][2], [{}], None, newMask=newMask)
                 if bdgs:
                     resorder = self._toposortAntecedents(pm)
                     for rk in resorder:
                         bdgsR = []
                         bdgsK = []
                         if rk[0] in relevantFacts:
-                            bdgsR = relevantFacts[rk[0]].match(rk[1], rk[2], bdgs)
+                            bdgsR, _ = relevantFacts[rk[0]].match(rk[1], rk[2], bdgs, None)
                         if rk[0] in knowledgeFacts:
-                            bdgsK = knowledgeFacts[rk[0]].match(rk[1], rk[2], bdgs)
+                            bdgsK, usedBackgroundFacts = knowledgeFacts[rk[0]].match(rk[1], rk[2], bdgs, usedBackgroundFacts)
                         bdgs = bdgsR + bdgsK
                         if not bdgs:
                             break
@@ -608,7 +617,7 @@ class RuleTemplate:
                         newInstantiation = self.instantiate(bdg)
                         if newInstantiation:
                             retq.add(newInstantiation)
-        return retq
+        return retq, usedBackgroundFacts
 class TheoryTemplate:
     def __init__(self):
         self._rules = {}
@@ -846,6 +855,7 @@ def buildTheory(rules, relevantFacts, knowledgeBase, debugTheory=False):
     theoryStr = ''
     groundRules = set()
     relevantFacts = relevantFacts.copy()
+    usedBackgroundFacts = {}
     newPredicates = set()
     for rp, rf in relevantFacts.items():
         newPredicates.add(rp)
@@ -862,7 +872,7 @@ def buildTheory(rules, relevantFacts, knowledgeBase, debugTheory=False):
         crPredicates = newPredicates
         newPredicates = set()
         for r in rules.potentiallyTriggered(crPredicates):
-            instantiations = r.getInstantiations(relevantFacts, knowledgeBase, newMask=newMask)
+            instantiations, usedBackgroundFacts = r.getInstantiations(relevantFacts, knowledgeBase, usedBackgroundFacts, newMask=newMask)
             if instantiations:
                 newAdditions = True
             for i in instantiations:
@@ -881,6 +891,10 @@ def buildTheory(rules, relevantFacts, knowledgeBase, debugTheory=False):
         newMask = auxMaskNew
         visitedMask = visitedMask.union(auxMask)
         #visitedMask = visitedMask.union(auxMask)
+    for rp, rf in usedBackgroundFacts.items():
+        for triple in rf.getTriples():
+            operator = rf.hasFact(triple[1], triple[2])
+            groundRules.add(((), operator, triple, None))
     s2i, i2s, theory = str2idxTheory(groundRules)
     if debugTheory:
         theoryStr = getStrTheory(groundRules)

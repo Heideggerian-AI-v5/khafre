@@ -60,7 +60,8 @@ def main():
     print("Initial results", outputPeeker.queue.get())
     
     if wireList["TriplesIn"].isReadyForPublishing():
-        wireList["TriplesIn"].publish({"notification": {"triples": triples}}, None)
+        print("Push triples", triples)
+        wireList["TriplesIn"].publish({"triples": triples}, None)
 
     while outputPeeker.queue.empty():
         time.sleep(0.1)

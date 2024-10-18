@@ -205,7 +205,7 @@ class Reasoner(ReifiedProcess):
                 self.connQueryTheory = silkie.loadDFLRules(path)
             elif "schema closure" == fn:
                 self.closureTheory = silkie.loadDFLRules(path)
-            elif "schema interpretation":
+            elif "schema interpretation" == fn:
                 self.schemaInterpretationTheory = silkie.loadDFLRules(path)
             elif "update questions" == fn:
                 self.updateQuestionsTheory = silkie.loadDFLRules(path)
@@ -214,7 +214,7 @@ class Reasoner(ReifiedProcess):
             self.backgroundFacts = silkie.loadDFLFacts(path)
     def _doWork(self):
         def _ensureTriple(t):
-            if 3 == len(t):
+            if (3 == len(t)) and ("" != t[2]):
                 return tuple(t)
             return (t[0], t[1], None)
         def _silkie(theoryTemplate, facts, backgroundFacts):
@@ -236,14 +236,14 @@ class Reasoner(ReifiedProcess):
             facts = mergeFacts(self.persistentSchemas, self._defaultFacts)
         if fullInput or self._armed:
             self._armed = False
+            for k in self._dataFromSubscriptions.keys():
+                self._dataFromSubscriptions[k] = {}
             ## observations (tuples) + prev persistent schemas (dfl facts) + theory -> reifiable/stet relations (triples)
             conclusions = _silkie(self.perceptionInterpretationTheory, facts, self.backgroundFacts)
             ## reifiable/stet relations (triples) + theory -> new persistent schemas (dfl facts)
             facts = reifyConclusions(conclusions)
             conclusions = _silkie(self.updateSchemasTheory, facts, self.backgroundFacts)
             self.persistentSchemas = conclusions2Facts(conclusions)
-            for k in self._dataFromSubscriptions.keys():
-                self._dataFromSubscriptions[k] = {}
             ## add connquery results to persistent schemas
             connectivityResults = {}
             connectivityQueries = {}

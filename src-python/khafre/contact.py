@@ -148,7 +148,7 @@ Additionally, gets goal data (sets of triples) from a queue.
         depthResults, depthImg, rateDepth, droppedDepth = self._requestSubscribedData("DepthImg")
         imgHeight, imgWidth = depthImg.shape
         outputImg = numpy.zeros((imgHeight, imgWidth), dtype=numpy.uint32)
-        results = {"imgId": maskResults.get("imgId"), "idx2Contact": {}, "contact2Idx": {}, "triples": set()}
+        results = {"imgId": maskResults.get("imgId"), "idx2Contact": {}, "contact2Idx": {}, "triples": set(), "masks": []}
         qUniverse = [x["type"] for x in maskResults.get("segments", [])]
         self._fillInGenericQueries(qUniverse)
         qobjs = set([x[1] for x in self._queries]).union([x[2] for x in self._queries])
@@ -159,6 +159,8 @@ Additionally, gets goal data (sets of triples) from a queue.
             k = (k+1)*2
             idSO = k
             idOS = k-1
+            results["masks"].append({"hasId": idSO, "hasP": "contact", "hasS": s, "hasO": o})
+            results["masks"].append({"hasId": idOS, "hasP": "contact", "hasS": o, "hasO": s})
             results["idx2Contact"][idSO] = (s,o)
             results["idx2Contact"][idOS] = (o,s)
             results["contact2Idx"][(s,o)] = idSO

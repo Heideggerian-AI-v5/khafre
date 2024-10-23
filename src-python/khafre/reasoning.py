@@ -173,6 +173,7 @@ class Reasoner(ReifiedProcess):
         self._workers = {}
         self._armed = False
         self._defaultFacts = {}
+        self._storageMap = {}
     def _checkPublisherRequest(self, name, wire):
         return False#name in self._outputNames
     def _checkSubscriptionRequest(self, name, wire):
@@ -195,6 +196,9 @@ class Reasoner(ReifiedProcess):
             name = args[0]
             if name in self._workers:
                 self._workers.pop(name)
+        elif "REGISTER_STORAGE_DESTINATION":
+            inputName, outputName = args
+            self._storageMap[inputName] = outputName
         elif "LOAD_THEORY" == op:
             fn, path = args
             if "perception interpretation" == fn:
@@ -209,6 +213,10 @@ class Reasoner(ReifiedProcess):
                 self.schemaInterpretationTheory = silkie.loadDFLRules(path)
             elif "update questions" == fn:
                 self.updateQuestionsTheory = silkie.loadDFLRules(path)
+            elif "interpret masks" == fn:
+                self.interpretMasksTheory = silkie.loadDFLRules(path)
+            elif "store masks" == fn:
+                self.storeMasksTheory = silkie.loadDFLRules(path)
         elif "LOAD_FACTS" == op:
             path = args[0]
             self.backgroundFacts = silkie.loadDFLFacts(path)
@@ -220,6 +228,55 @@ class Reasoner(ReifiedProcess):
         def _silkie(theoryTemplate, facts, backgroundFacts):
             theory, _, i2s, _ = silkie.buildTheory(theoryTemplate, facts, backgroundFacts)
             return silkie.idx2strConclusions(silkie.dflInference(theory), i2s)
+        def _prepareMaskResults(masksToStore, triples, images, previous):
+            retq = previous
+            if retq is None:
+                retq = {}
+            idxMap = {}
+            aboutMap = {}
+            fromMap = {}
+            ignoreMasks = set()
+            maskNames = set()
+            for t in triples:
+                for p, d in [("about", aboutMap), ("hasId", idxMap), ("from", fromMap)]:
+                    if p == t[0]:
+                        if t[1] in d:
+                            ignoreMasks.add(t[1])
+                        d[t[1]] = t[2]
+                if "hasConjunct" == t[0]:
+                    maskNames.add(t[1]), maskNames.add(t[2])
+            maskNames = maskNames.union(masksToStore)
+            for m in maskNames:
+                if (m not in fromMap) or (m not in idxMap) or (m not in aboutMap) or (aboutMap[m] not in images) or (fromMap[m] not in images):
+                    ignoreMasks.add(m)
+            for m in masksToStore:
+                if m in ignoreMasks:
+                    continue
+                maskTriples = [t for t in triples if m == t[1]]
+                maskKnowledge = {}
+                for t in maskTriples:
+                    if t[0] not in maskKnowledge:
+                        maskKnowledge[t[0]] = set()
+                    maskKnowledge[t[0]].add(t[2])
+                sourceImg = list(maskKnowledge["from"])[0]
+                aboutImg = list(maskKnowledge["about"])[0]
+                if "hasConjunct" in maskKnowledge:
+                    maskImg = numpy.ones(images[sourceImg].shape, dtype=numpy.uint8)
+                    for conjunct in maskKnowledge["hasConjunct"]:
+                        if (conjunct not in ignoreMasks) and (aboutMap[conjunct] == aboutMap[m]):
+                            maskImg[images[fromMap[conjunct]] != idxMap[conjunct]] = 0
+                elif ("hasId" in maskKnowledge) and (1 == len(maskKnowledge["hasId"])):
+                    idx = int(list(maskKnowledge["hasId"])[0])
+                    maskImg = numpy.zeros(images[sourceImg].shape, dtype=numpy.uint8)
+                    maskImg[sourceImg == idx] = 1
+                else:
+                    continue
+                aux = {"semantics": {k: maskKnowledge.get(k, set()) for k in ["partOfObjectType", "usedForTaskType", "playsRoleType"]}}
+                aux["contours"], aux["hierarchy"] = cv.findContours(image=maskImg, mode=cv.RETR_TREE, method=cv.CHAIN_APPROX_SIMPLE)
+                if aboutImg not in retq:
+                    retq[aboutImg] = []
+                retq[aboutImg].append(aux)
+            return retq
         # Because of bypass event, the reasoner will reach here without waiting in the reified process main loop.
         # By this point, any received commands have been handled and any ready to send outputs were sent.
         # A full set of inputs might not be available however.
@@ -232,8 +289,23 @@ class Reasoner(ReifiedProcess):
             # TODO: use images too for grounding mask entities
             triples = set.union(*[set(v["notification"].get("triples", [])) for v in self._dataFromSubscriptions.values()])
             facts = mergeFacts(self.persistentSchemas, triples2Facts(triples))
+            imageResources = {k: v.get("image") for k, v in self._dataFromSubscriptions.items()}
+            maskFacts = []
+            cr = 0
+            for k in self._dataFromSubscriptions.keys():
+                for m in self._dataFromSubscriptions[k].get("masks", []):
+                    name = "mask_%d" % cr
+                    cr += 1
+                    maskFacts.append(("isA", name, "ImageMask"))
+                    maskFacts.append(("from", name, k))
+                    maskFacts.append(("hasId", name, m["idx"]))
+                    maskFacts.append(("hasP", name, m["triple"][0]))
+                    maskFacts.append(("hasS", name, m["triple"][1]))
+                    maskFacts.append(("hasO", name, m["triple"][2]))
         elif self._armed:
             facts = mergeFacts(self.persistentSchemas, self._defaultFacts)
+            maskFacts = []
+            imageResources = {}
         if fullInput or self._armed:
             self._armed = False
             for k in self._dataFromSubscriptions.keys():
@@ -282,5 +354,19 @@ class Reasoner(ReifiedProcess):
             facts = reifyConclusions(conclusions)
             conclusions = _silkie(self.updateQuestionsTheory, facts, self.backgroundFacts)
             self.perceptionQueries = [_ensureTriple(t) for t in conclusions.defeasiblyProvable]
+            ## masks to store / reified conjunctions of masks
+            facts = mergeFacts(facts, triples2Facts(maskFacts))
+            conclusions = _silkie(self.interpretMasksTheory, facts, self.backgroundFacts)
+            masksToStore = [t[1] for t in conclusions.defeasiblyProvable if "storeMask" == t]
+            maskResults = _prepareMaskResults(masksToStore, conclusions.defeasiblyProvable, imageResources, None)
+            ## constructed masks to store
+            facts = reifyConclusions(conclusions)
+            conclusions = _silkie(self.storeMasksTheory, facts, self.backgroundFacts)
+            masksToStore = [t[1] for t in conclusions.defeasiblyProvable if "storeMask" == t]
+            maskResults = _prepareMaskResults(masksToStore, conclusions.defeasiblyProvable, imageResources, maskResults)
+            ## send masks to store
+            for inputName, results in maskResults.items():
+                if (inputName in self._storageMap) and (inputName in self._dataFromSubscriptions):
+                    self._requestToPublish(self._storageMap[inputName], results, self._dataFromSubscriptions[inputName]["image"])
             ## send perception queries
             _ = [x.sendCommand(("PUSH_GOALS", self.perceptionQueries)) for x in self._workers.values()]

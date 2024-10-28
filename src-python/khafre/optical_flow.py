@@ -73,7 +73,7 @@ def getRelativeMovements(previous3D, now3D, queries, approachV, departV):
             return None
         dVVec = [a-b for a,b in zip(vo, vs)]
         dPVec = [a-b for a,b in zip(po, ps)]
-        dPNorm = math.sqrt(sum(x*x for x in dPVec))
+        dPNorm = max(0.0001, math.sqrt(sum(x*x for x in dPVec)))
         dPDir = [x/dPNorm for x in dPVec]
         return sum(a*b for a,b in zip(dPDir, dVVec))
     kinematicData = {k: getRobotRelativeKinematics(previous3D[k], now3D[k]) for k in now3D.keys() if (previous3D.get(k) is not None) and (now3D[k] is not None)}
@@ -180,5 +180,7 @@ Additionally, gets goal data (sets of triples) from a queue.
                         self._dbgImg = cv.rectangle(self._dbgImg,(c-2,d-2),(c+2,d+2),(1.0,0.5,1.0),-1)
                 self._requestToPublish("DbgImg","%.02f %.02f ifps | %d%% %d%% obj drop" % (rateMask if rateMask is not None else 0.0, rateDepth if rateDepth is not None else 0.0, droppedMask, droppedDepth), self._dbgImg)
             self._previousFeatures = nowFeatures
+        elif not ((self._currentImage is None) or (self._currentMask is None) or (self._currentDepth is None)):
+            self._requestToPublish("OutImg", {"imgId": 0, "triples": []}, None)
     def _cleanup(self):
         pass

@@ -508,7 +508,11 @@ Runs the object's process and sets up graceful exit on SIGTERM.
                         for name, sub in self._subscriptions.items():
                             notification, shmData, fps, dropped = sub.receive()
                             self._dataFromSubscriptions[name] = {"notification": notification, "image": shmData, "rate": fps, "dropped": dropped}
+                    #if not self._bypassEvent:
+                    #    print("Does work", type(self).__name__)
                     self._doWork()
+                    #if not self._bypassEvent:
+                    #    print("Finished work", type(self).__name__)
         except _GracefulExit:
             self._cleanup()
             # This will take care of terminating all daemon subprocesses started by this process.

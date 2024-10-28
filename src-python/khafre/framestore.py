@@ -30,14 +30,14 @@ class YOLOFrameSaver(ReifiedProcess):
             return '_'.join(sorted([str(x) for x in s]))
         annotation = self._dataFromSubscriptions["InpImg"]["notification"]
         image = self._dataFromSubscriptions["InpImg"]["image"]
-        height, width = image.shape
-        if (self._oldImage is None) or (differentEnough(image, self._oldImage, self._dt)):
+        height, width, channels = image.shape
+        if (0 < len(annotation)) and ((self._oldImage is None) or (differentEnough(image, self._oldImage, self._dt))):
             fnamePrefix = os.path.join(self._basePath, "seg_%s" % time.asctime().replace(" ", "_").replace(":","_"))
             Image.fromarray(image).save(fnamePrefix + ".jpg")
             with open(fnamePrefix + ".txt", "w") as outfile:
                 for desc in annotation:
                     contours, hierarchy, semantics = desc["contours"], desc["hierarchy"], desc["semantics"]
-                    label = "partOf_%s_usedFor_%s_asRole_%s" % (_set2str(semantics.get("partOfObjectType", [])), _set2str(semantics.get("usedForTaskType", [])), _set2str(semantics.get("playsRoleType", [])))
+                    label = "partOf_%s_usedFor_%s_asRole_%s" % (_set2str(semantics.get("masksPartOfObjectType", [])), _set2str(semantics.get("usedForTaskType", [])), _set2str(semantics.get("playsRoleType", [])))
                     for polygon, h in zip(contours, hierarchy[0]):
                         if (0 > h[3]) and (2 < len(polygon)):
                             pstr = ""

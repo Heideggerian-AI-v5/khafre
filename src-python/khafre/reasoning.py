@@ -13,8 +13,10 @@
 annotated image saver
 '''
 
+import cv2 as cv
 import itertools
 import networkx
+import numpy
 import os
 import time
 
@@ -263,11 +265,14 @@ class Reasoner(ReifiedProcess):
                 elif ("hasId" in maskKnowledge) and (1 == len(maskKnowledge["hasId"])):
                     idx = int(list(maskKnowledge["hasId"])[0])
                     maskImg = numpy.zeros(images[sourceImg].shape, dtype=numpy.uint8)
-                    maskImg[sourceImg == idx] = 1
+                    maskImg[images[sourceImg] == idx] = 255
                 else:
                     continue
-                aux = {"semantics": {k: maskKnowledge.get(k, set()) for k in ["partOfObjectType", "usedForTaskType", "playsRoleType"]}}
+                if 2 != len(numpy.unique(maskImg)):
+                    continue
+                aux = {"semantics": {k: maskKnowledge.get(k, set()) for k in ["masksPartOfObjectType", "usedForTaskType", "playsRoleType"]}}
                 aux["contours"], aux["hierarchy"] = cv.findContours(image=maskImg, mode=cv.RETR_TREE, method=cv.CHAIN_APPROX_SIMPLE)
+                aux["contours"] = [x.reshape((len(x), 2)) for x in aux["contours"]]
                 if aboutImg not in retq:
                     retq[aboutImg] = []
                 retq[aboutImg].append(aux)
@@ -292,15 +297,15 @@ class Reasoner(ReifiedProcess):
             maskFacts = []
             cr = 0
             for k in self._dataFromSubscriptions.keys():
-                for m in self._dataFromSubscriptions[k].get("masks", []):
+                for m in self._dataFromSubscriptions[k]["notification"].get("masks", []):
                     name = "mask_%d" % cr
                     cr += 1
                     maskFacts.append(("isA", name, "ImageMask"))
                     maskFacts.append(("from", name, k))
-                    maskFacts.append(("hasId", name, m["idx"]))
-                    maskFacts.append(("hasP", name, m["triple"][0]))
-                    maskFacts.append(("hasS", name, m["triple"][1]))
-                    maskFacts.append(("hasO", name, m["triple"][2]))
+                    maskFacts.append(("hasId", name, m["hasId"]))
+                    maskFacts.append(("hasP", name, m["hasP"]))
+                    maskFacts.append(("hasS", name, m["hasS"]))
+                    maskFacts.append(("hasO", name, m["hasO"]))
         if fullInput or self._armed:
             self._armed = False
             for k in self._dataFromSubscriptions.keys():
@@ -353,6 +358,7 @@ class Reasoner(ReifiedProcess):
             facts = mergeFacts(self.persistentSchemas, triples2Facts(maskFacts))
             conclusions = _silkie(self.interpretMasksTheory, facts, self.backgroundFacts)
             masksToStore = [t[1] for t in conclusions.defeasiblyProvable if "storeMask" == t[0]]
+            #print("Masks to store", masksToStore, conclusions.defeasiblyProvable)
             maskResults = _prepareMaskResults(masksToStore, conclusions.defeasiblyProvable, imageResources, None)
             ## constructed masks to store
             facts = reifyConclusions(conclusions)
@@ -362,9 +368,10 @@ class Reasoner(ReifiedProcess):
             ## send masks to store
             for inputName, results in maskResults.items():
                 if (inputName in self._storageMap) and (inputName in self._dataFromSubscriptions):
-                    self._requestToPublish(self._storageMap[inputName], results, self._dataFromSubscriptions[inputName]["image"])
+                    self._requestToPublish(self._storageMap[inputName], results, imageResources[inputName])
             ## send perception queries
             #_ = [x.sendCommand(("PUSH_GOALS", self.perceptionQueries)) for x in self._workers.values()]
+            #print("Reasoning", self.perceptionQueries)
             _ = [self._callWorker(x, ("PUSH_GOALS", self.perceptionQueries)) for x in self._workers.values()]
     def registerWorker(self, name, proc):
         self._workers[name] = (proc._command, proc._event)

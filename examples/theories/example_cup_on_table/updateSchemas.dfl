@@ -1,0 +1,5 @@
+isA(?s, Support), hasS(?s, ?o1), hasO(?s, ?o2) => hasSupportee(?s, ?o1)
+isA(?s, Support), hasS(?s, ?o1), hasO(?s, ?o2) => hasSupporter(?s, ?o2)
+
+isA(?s, Contact), hasS(?s, ?o1) => hasParticipant(?s, ?o1)
+isA(?s, Contact), hasO(?s, ?o1) => hasParticipant(?s, ?o1)

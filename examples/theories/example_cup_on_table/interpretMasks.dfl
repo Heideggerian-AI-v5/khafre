@@ -1,0 +1,7 @@
+isA(?g, Goal), hasFocus(?g, ?o), hasModality(?g, Support), isA(?s, Support), hasSupportee(?s, ?o), hasSupporter(?s, ?t) => storeContactMask(?o, ?t)
+
+isA(?m, ImageMask), from(?m, ContactMask) => about(?m, InpImg)
+isA(?m, ImageMask), from(?m, ContactMask), hasP(?m, contact), hasS(?m, ?o), hasO(?m, ?t), storeContactMask(?o, ?t) => storeMask(?m)
+isA(?m, ImageMask), from(?m, ContactMask), hasP(?m, contact), hasS(?m, ?o), hasO(?m, ?t), storeContactMask(?o, ?t) => masksPartOfObjType(?m, ?o)
+isA(?m, ImageMask), from(?m, ContactMask), hasP(?m, contact), hasS(?m, ?o), hasO(?m, ?t), storeContactMask(?o, ?t) => usedForTaskType(?m, Support)
+isA(?m, ImageMask), from(?m, ContactMask), hasP(?m, contact), hasS(?m, ?o), hasO(?m, ?t), storeContactMask(?o, ?t) => playsRole(?m, SupportableBy)

@@ -1,0 +1,4 @@
+=> isA(g, Goal)
+=> hasFocus(g, cup)
+=> hasModality(g, Support)
+

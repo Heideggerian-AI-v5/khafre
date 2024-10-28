@@ -4,12 +4,12 @@ import time
 
 from PIL import Image
 
-from khafre.bricks import ReifiedProcess
+from khafre.bricks import ReifiedProcess, _Wire
 
 def differentEnough(imageA, imageB, dt):
     return True
 
-class YoloFrameSaver(ReifiedProcess):
+class YOLOFrameSaver(ReifiedProcess):
     def __init__(self):
         super().__init__()
         self._basePath = os.getcwd().replace("\\", "/")
@@ -18,7 +18,7 @@ class YoloFrameSaver(ReifiedProcess):
     def _checkPublisherRequest(self, name: str, wire: _Wire):
         return False
     def _checkSubscriptionRequest(self, name: str, wire: _Wire):
-        return ("InputImg" == name)
+        return ("InpImg" == name)
     def _handleCommand(self, command):
         op, args = command
         if "SET_PATH" == op:
@@ -28,8 +28,8 @@ class YoloFrameSaver(ReifiedProcess):
     def _doWork(self):
         def _set2str(s):
             return '_'.join(sorted([str(x) for x in s]))
-        annotation = self._dataFromSubscriptions["InputImg"]["notification"]
-        image = self._dataFromSubscriptions["InputImg"]["image"]
+        annotation = self._dataFromSubscriptions["InpImg"]["notification"]
+        image = self._dataFromSubscriptions["InpImg"]["image"]
         height, width = image.shape
         if (self._oldImage is None) or (differentEnough(image, self._oldImage, self._dt)):
             fnamePrefix = os.path.join(self._basePath, "seg_%s" % time.asctime().replace(" ", "_").replace(":","_"))

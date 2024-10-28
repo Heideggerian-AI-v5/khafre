@@ -175,7 +175,7 @@ class Reasoner(ReifiedProcess):
         self._defaultFacts = {}
         self._storageMap = {}
     def _checkPublisherRequest(self, name, wire):
-        return False#name in self._outputNames
+        return True#name in self._outputNames
     def _checkSubscriptionRequest(self, name, wire):
         return True
     def _handleCommand(self, command):
@@ -189,14 +189,9 @@ class Reasoner(ReifiedProcess):
         if "TRIGGER" == op:
             self._armed = True
             self._defaultFacts = silkie.loadDFLFacts(args[0])
-        elif "REGISTER_WORKER" == op:
-            name, proc = args
-            self._workers[name] = proc
-        elif "UNREGISTER_WORKER" == op:
-            name = args[0]
-            if name in self._workers:
-                self._workers.pop(name)
-        elif "REGISTER_STORAGE_DESTINATION":
+        elif "RESET_SCHEMAS" == op:
+            self.persistentSchemas = {}
+        elif "REGISTER_STORAGE_DESTINATION" == op:
             inputName, outputName = args
             self._storageMap[inputName] = outputName
         elif "LOAD_THEORY" == op:
@@ -281,7 +276,11 @@ class Reasoner(ReifiedProcess):
         # By this point, any received commands have been handled and any ready to send outputs were sent.
         # A full set of inputs might not be available however.
         fullInput = all([v.get("notification") is not None for v in self._dataFromSubscriptions.values()])
-        if fullInput:
+        if self._armed:
+            facts = mergeFacts(self.persistentSchemas, self._defaultFacts)
+            maskFacts = []
+            imageResources = {}
+        elif fullInput:
             # TODOs for TASKABLES:
             #    - let optical flow report movement masks
             #    - contact/movement masks associated to triples
@@ -302,10 +301,6 @@ class Reasoner(ReifiedProcess):
                     maskFacts.append(("hasP", name, m["triple"][0]))
                     maskFacts.append(("hasS", name, m["triple"][1]))
                     maskFacts.append(("hasO", name, m["triple"][2]))
-        elif self._armed:
-            facts = mergeFacts(self.persistentSchemas, self._defaultFacts)
-            maskFacts = []
-            imageResources = {}
         if fullInput or self._armed:
             self._armed = False
             for k in self._dataFromSubscriptions.keys():
@@ -355,18 +350,27 @@ class Reasoner(ReifiedProcess):
             conclusions = _silkie(self.updateQuestionsTheory, facts, self.backgroundFacts)
             self.perceptionQueries = [_ensureTriple(t) for t in conclusions.defeasiblyProvable]
             ## masks to store / reified conjunctions of masks
-            facts = mergeFacts(facts, triples2Facts(maskFacts))
+            facts = mergeFacts(self.persistentSchemas, triples2Facts(maskFacts))
             conclusions = _silkie(self.interpretMasksTheory, facts, self.backgroundFacts)
-            masksToStore = [t[1] for t in conclusions.defeasiblyProvable if "storeMask" == t]
+            masksToStore = [t[1] for t in conclusions.defeasiblyProvable if "storeMask" == t[0]]
             maskResults = _prepareMaskResults(masksToStore, conclusions.defeasiblyProvable, imageResources, None)
             ## constructed masks to store
             facts = reifyConclusions(conclusions)
             conclusions = _silkie(self.storeMasksTheory, facts, self.backgroundFacts)
-            masksToStore = [t[1] for t in conclusions.defeasiblyProvable if "storeMask" == t]
+            masksToStore = [t[1] for t in conclusions.defeasiblyProvable if "storeMask" == t[0]]
             maskResults = _prepareMaskResults(masksToStore, conclusions.defeasiblyProvable, imageResources, maskResults)
             ## send masks to store
             for inputName, results in maskResults.items():
                 if (inputName in self._storageMap) and (inputName in self._dataFromSubscriptions):
                     self._requestToPublish(self._storageMap[inputName], results, self._dataFromSubscriptions[inputName]["image"])
             ## send perception queries
-            _ = [x.sendCommand(("PUSH_GOALS", self.perceptionQueries)) for x in self._workers.values()]
+            #_ = [x.sendCommand(("PUSH_GOALS", self.perceptionQueries)) for x in self._workers.values()]
+            _ = [self._callWorker(x, ("PUSH_GOALS", self.perceptionQueries)) for x in self._workers.values()]
+    def registerWorker(self, name, proc):
+        self._workers[name] = (proc._command, proc._event)
+    def _callWorker(self, worker, command, block=False, timeout=None):
+        q, e = worker
+        q.put(command, block=block, timeout=timeout)
+        with e:
+            e.notify_all()
+

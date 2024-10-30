@@ -17,10 +17,14 @@ class TaskableProcess(ReifiedProcess):
         self._goalQueue.put(goal)    
     def getGoalQueue(self):
         return self._goalQueue
+    def _customCommand(self, command):
+        pass
     def _handleCommand(self, command):
         op, args = command
         if "PUSH_GOALS" == op:
             self.sendGoal(args)
+        else:
+            self._customCommand(command)
     def _isForMe(self, p):
         return p.startswith(self._prefix+"/")
     def _update(self, address, s):

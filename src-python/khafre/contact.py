@@ -136,8 +136,9 @@ Additionally, gets goal data (sets of triples) from a queue.
             results = results.get("segments", [])
             retq = {}
             for e in results:
-                retq[e["type"]] = numpy.zeros(maskImg.shape,dtype=numpy.uint8)
-                cv.fillPoly(retq[e["type"]], pts = [e["polygon"]], color = 255)
+                retq[e["name"]] = numpy.zeros(maskImg.shape,dtype=numpy.uint8)
+                for p in e["polygons"]:
+                    cv.fillPoly(retq[e["name"]], pts = [p], color = 255)
             return retq
         def _s2c(s):
             h = hash(s)
@@ -149,7 +150,7 @@ Additionally, gets goal data (sets of triples) from a queue.
         imgHeight, imgWidth = depthImg.shape
         outputImg = numpy.zeros((imgHeight, imgWidth), dtype=numpy.uint32)
         results = {"imgId": maskResults.get("imgId"), "idx2Contact": {}, "contact2Idx": {}, "triples": set(), "masks": []}
-        qUniverse = [x["type"] for x in maskResults.get("segments", [])]
+        qUniverse = [x["name"] for x in maskResults.get("segments", [])]
         self._fillInGenericQueries(qUniverse)
         qobjs = set([x[1] for x in self._queries]).union([x[2] for x in self._queries])
         dilatedImgs = {k: cv.dilate(maskImgs[k], self._dilationKernel) for k in qobjs if k in maskImgs}
@@ -187,6 +188,9 @@ Additionally, gets goal data (sets of triples) from a queue.
             todos = [(k, _s2c(str(k))) for k in results["idx2Contact"].keys()]
             for k, color in todos:
                 self._dbgImg[outputImg==k]=color
+            #for e in maskResults["segments"]:
+            #    for p in e["polygons"]:
+            #        cv.fillPoly(self._dbgImg, pts = [p], color = (1.0,1.0,1.0))
             self._requestToPublish("DbgImg", "%.02f %.02f ifps | %d%% %d%% obj drop" % (rateMask if rateMask is not None else 0.0, rateDepth if rateDepth is not None else 0.0, droppedMask, droppedDepth), self._dbgImg)
     def _cleanup(self):
         pass

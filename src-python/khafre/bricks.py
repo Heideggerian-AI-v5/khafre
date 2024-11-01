@@ -7,6 +7,7 @@ import cv2 as cv
 import copy
 import ctypes
 from functools import reduce
+import json
 import os
 from multiprocessing import shared_memory, Condition, Process, Queue, SimpleQueue, Value
 import numpy
@@ -134,7 +135,7 @@ between entries to the queue. Reported in entries/second. Rates above
 last 100. Reported in %.
    """
    def __init__(self):
-       self._queue = SimpleQueue()
+       self._queue = Queue()
        self._entriesHistory = array.array('h',[1]*100)
        self._historyHead = 0
        self._previousTS = None
@@ -164,7 +165,9 @@ last 100. Reported in %.
            else:
                rate = 1e6
        self._previousTS = ts
+       #print("PUTting", rate, type(self._queue))
        self._queue.put((rate,e))
+       #print("DONE")
    def _get(self, block=True, timeout=None):
        if self._queue.empty():
            rate, e = self._queue.get()
@@ -211,7 +214,9 @@ class _Wire:
             self._npArray = numpy.ndarray(shape, dtype=dtype, buffer=self._shm.buf)
         self._finalizer = weakref.finalize(self,_closeWire,self._shm)
     def isReadyForPublishing(self):
-        return 0 == self._state.value
+        with self._state:
+            aux = self._state.value
+        return 0 == aux
     def publish(self, notifData, shmData):
         """
 AVOID using this function. Only included for some debug purposes.
@@ -252,11 +257,16 @@ class _PublisherPort:
     def hasSHM(self):
         return self._shm is not None
     def isReady(self):
-        return 0 == self._state.value
+        with self._state:
+            aux = self._state.value
+        return 0 == aux
     def publish(self, notifData, shmData):
+        #print("Publish on", self._name)
         if self._shmName is None and (shmData is not None):
+            #print("Publish on", self._name, "valErr")
             raise ValueError("Attempting to send an array over a wire with no shared memory.")
         if not self.isReady():
+            #print("Publish on", self._name, "asErr")
             raise AssertionError("Attempting to send before all readers copied previous data.")
         if shmData is not None:
             if self._shm is None:
@@ -266,8 +276,16 @@ class _PublisherPort:
             if(srcH != self._shape[0]) or (srcW != self._shape[1]):
                 shmData = cv.resize(shmData, (self._shape[1], self._shape[0]), interpolation=cv.INTER_LINEAR)
             numpy.copyto(self._npArray, shmData)
+        #print("Publish on", self._name, "toShm")
+        #if isinstance(notifData, dict) and ("segments" in notifData):
+        #    with open("bla.log", "w") as outfile:
+        #        _=outfile.write("%s\n" % str(notifData))
         _=[x.put(notifData) for x in self._notifications]
-        self._state.value = self._readerCount.value
+        #print("Publish on", self._name, "notif")
+        with self._state:
+            self._state.value = self._readerCount.value
+            #if not self._name.startswith("Dbg "):
+            #    print("Tx", self._name, self._state.value)
         for e in self._events:
             if e is not None:
                 with e:
@@ -295,7 +313,9 @@ class _SubscriberPort:
     def hasSHM(self):
         return self._shm is not None
     def isReady(self):
-        return (not self._notification.empty())
+        with self._state:
+            aux = self._state.value
+        return (not self._notification.empty()) and (0 < aux)
     def receive(self):
         if not self.isReady():
             raise AssertionError("Attempting to read before data available.")
@@ -308,6 +328,8 @@ class _SubscriberPort:
         notifData, fps, dropped = self._notification.getWithRates()
         with self._state:
             self._state.value -= 1
+            #if not self._name.startswith("Dbg "):
+            #    print("Rx", self._name, self._state.value)
         if self._event.get("event") is not None:
             with self._event["event"]:
                 self._event["event"].notify_all()
@@ -494,8 +516,12 @@ Runs the object's process and sets up graceful exit on SIGTERM.
                     haveEvent = haveEvent or all([x.isReady() for x in self._subscriptions.values()]) # Or maybe a full set of inputs is available
                     haveEvent = haveEvent or any([x.isReady() for x in self._publishers.values()]) # Or maybe one of the outputs can be updated
                     haveEvent = haveEvent or (not self._command.empty())
+                    #if not self._bypassEvent:
+                    #    print("EvCheck", type(self).__name__, all([x.isReady() for x in self._subscriptions.values()]), any([x.isReady() for x in self._publishers.values()]), (not self._command.empty()))
                     if not haveEvent:
                         self._event.wait()
+                #if not self._bypassEvent:
+                #    print("EvWake", type(self).__name__, all([x.isReady() for x in self._subscriptions.values()]), any([x.isReady() for x in self._publishers.values()]), (not self._command.empty()))
                 for name, pub in self._publishers.items():
                     if pub.isReady() and self._dataToPublish[name].get("ready", False):
                         pub.publish(self._dataToPublish[name].get("notification", None), self._dataToPublish[name].get("image", None))

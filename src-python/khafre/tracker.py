@@ -3,6 +3,7 @@ from khafre.bricks import ReifiedProcess
 from khafre.taskable import TaskableProcess
 import numpy
 import supervision
+import time
 import torch
 from ultralytics import YOLO
 
@@ -152,6 +153,7 @@ class ByteTracker(Tracker):
         detections = self._tracker.update_with_detections(detections)
         
         masks, boxes, confidences, classNames, idxs = detections.mask, detections.xyxy, detections.confidence, detections.data.get("class_name", []), detections.tracker_id
+        labels = [f"{className}_{tracker_id}" for className, tracker_id in zip(classNames, idxs)]
         
         height = inpImg.shape[0]
         width = inpImg.shape[1]
@@ -179,11 +181,10 @@ class ByteTracker(Tracker):
                 for p in polygons:
                     cv.fillPoly(outputImg, pts = [p], color = col)
 
-        #print("Tracking:", triples)
-        self._requestToPublish("OutImg", {"segments": segments, "triples": triples}, outputImg)
+        #self._requestToPublish("OutImg", {"segments": segments, "triples": triples}, outputImg)
+        self._requestToPublish("OutImg", {"segments": segments, "triples": []}, outputImg)
 
         if self.havePublisher("DbgImg"):
-            labels = [f"object{tracker_id}" for tracker_id in detections.tracker_id]
             annotatedFrame = self._bboxAnnotator.annotate(scene=inpImg.copy(), detections=detections)
             annotatedFrame = self._labelAnnotator.annotate(scene=annotatedFrame, detections=detections, labels=labels)
             annotatedFrame = numpy.asarray(self._polygonAnnotator.annotate(scene=annotatedFrame, detections=detections))

@@ -50,24 +50,26 @@ def main():
         procs["dbgP"] = DbgVisualizer()
         procs["objP"] = ByteTracker()
         # Monocular depth estimation is VERY computationally expensive, try to have it run on the GPU
-        #procs["dptP"] = TransformerDepthSegmentationWrapper(device="cuda")
+        procs["dptP"] = TransformerDepthSegmentationWrapper(device="cuda")
         #procs["conP"] = ContactDetection()
-        #procs["optP"] = OpticalFlow()
+        procs["optP"] = OpticalFlow()
 
         # Set up the connections to dbg visualizer and object detection.
 
-        drawWire("Screenshot Cam", (), [("Screenshot Cam", procs["dbgP"])], (imgHeight, imgWidth, 3), numpy.float32, wireList=wireList)
-        drawWire("Input Image", (), [("InpImg", procs["objP"])], (imgHeight, imgWidth, 3), numpy.uint8, wireList=wireList)
-        drawWire("Dbg Obj Seg", ("DbgImg", procs["objP"]), [("Object Tracking", procs["dbgP"])], (imgHeight, imgWidth, 3), numpy.float32, wireList=wireList)
-
         #drawWire("Screenshot Cam", (), [("Screenshot Cam", procs["dbgP"])], (imgHeight, imgWidth, 3), numpy.float32, wireList=wireList)
-        #drawWire("Input Image", (), [("InpImg", procs["objP"]), ("InpImg", procs["dptP"]), ("InpImg", procs["optP"])], (imgHeight, imgWidth, 3), numpy.uint8, wireList=wireList)
-        #drawWire("Dbg Obj Seg", ("DbgImg", procs["objP"]), [("Object Detection/Segmentation", procs["dbgP"])], (imgHeight, imgWidth, 3), numpy.float32, wireList=wireList)
-        #drawWire("Dbg Depth", ("DbgImg", procs["dptP"]), [("Depth Estimation", procs["dbgP"])], (imgHeight, imgWidth, 3), numpy.float32, wireList=wireList)
+        #drawWire("Input Image", (), [("InpImg", procs["objP"])], (imgHeight, imgWidth, 3), numpy.uint8, wireList=wireList)
+        #drawWire("Dbg Obj Seg", ("DbgImg", procs["objP"]), [("Object Tracking", procs["dbgP"])], (imgHeight, imgWidth, 3), numpy.float32, wireList=wireList)
+
+        drawWire("Dbg Cam", (), [("Screenshot Cam", procs["dbgP"])], (imgHeight, imgWidth, 3), numpy.float32, wireList=wireList)
+        drawWire("Input Image", (), [("InpImg", procs["objP"]), ("InpImg", procs["dptP"]), ("InpImg", procs["optP"])], (imgHeight, imgWidth, 3), numpy.uint8, wireList=wireList)
+        drawWire("Dbg Obj Seg", ("DbgImg", procs["objP"]), [("Object Detection/Segmentation", procs["dbgP"])], (imgHeight, imgWidth, 3), numpy.float32, wireList=wireList)
+        drawWire("Dbg Depth", ("DbgImg", procs["dptP"]), [("Depth Estimation", procs["dbgP"])], (imgHeight, imgWidth, 3), numpy.float32, wireList=wireList)
         #drawWire("Mask Image", ("OutImg", procs["objP"]), [("MaskImg", procs["conP"]), ("MaskImg", procs["optP"])], (imgHeight, imgWidth), numpy.uint16, wireList=wireList)
         #drawWire("Depth Image", ("OutImg", procs["dptP"]), [("DepthImg", procs["conP"]), ("DepthImg", procs["optP"])], (imgHeight, imgWidth), numpy.float32, wireList=wireList)
+        drawWire("Mask Image", ("OutImg", procs["objP"]), [("MaskImg", procs["optP"])], (imgHeight, imgWidth), numpy.uint16, wireList=wireList)
+        drawWire("Depth Image", ("OutImg", procs["dptP"]), [("DepthImg", procs["optP"])], (imgHeight, imgWidth), numpy.float32, wireList=wireList)
         #drawWire("Dbg Contact", ("DbgImg", procs["conP"]), [("Contact Detection", procs["dbgP"])], (imgHeight, imgWidth, 3), numpy.float32, wireList=wireList)
-        #drawWire("Dbg Optical Flow", ("DbgImg", procs["optP"]), [("Optical Flow (sparse)", procs["dbgP"])], (imgHeight, imgWidth, 3), numpy.float32, wireList=wireList)
+        drawWire("Dbg Optical Flow", ("DbgImg", procs["optP"]), [("Optical Flow (sparse)", procs["dbgP"])], (imgHeight, imgWidth, 3), numpy.float32, wireList=wireList)
         
         # Optional, but STRONGLY recommended: set up signal handlers. The handlers will trigger the 
         # termination of the various subprocesses. Alternatively, ensure in some other way that
@@ -87,11 +89,11 @@ def main():
         
         procs["objP"].sendCommand(("LOAD", ("yolov8n-seg.pt",)))
         procs["objP"].sendCommand(("START", ()))
-        #procs["dptP"].sendCommand(("LOAD", ("vinvino02/glpn-nyu",)))
+        procs["dptP"].sendCommand(("LOAD", ("vinvino02/glpn-nyu",)))
 
-        #procs["conP"].getGoalQueue().put([("contact/query", "knife", "apple"), ("contact/query", "spoon", "apple"), ("contact/query", "bowl", "apple")])
-        ##procs["conP"].getGoalQueue().put([("contact/query", "cup", "table"), ("contact/query", "cup", "dining table")])
-        #procs["optP"].getGoalQueue().put([("opticalFlow/query/relativeMovement", "cup", "table"), ("opticalFlow/query/relativeMovement", "cup", "dining table")])
+        ##procs["conP"].getGoalQueue().put([("contact/query", "knife", "apple"), ("contact/query", "spoon", "apple"), ("contact/query", "bowl", "apple")])
+        #procs["conP"].getGoalQueue().put([("contact/query", "cup", "table"), ("contact/query", "cup", "dining table")])
+        procs["optP"].getGoalQueue().put([("opticalFlow/query/relativeMovement", "cup", "table"), ("opticalFlow/query/relativeMovement", "cup", "dining table")])
 
         # Define and run some code that actually does something with the set up processes.
 
@@ -106,8 +108,8 @@ def main():
             screenshot = getImg(sct, monitor)
 
             # Send the screenshot to dbgvis and object detection.
-            if wireList["Screenshot Cam"].isReadyForPublishing():
-                wireList["Screenshot Cam"].publish("Hello World!", screenshot)
+            if wireList["Dbg Cam"].isReadyForPublishing():
+                wireList["Dbg Cam"].publish("Hello World!", screenshot)
             if wireList["Input Image"].isReadyForPublishing():
                 wireList["Input Image"].publish({"imgId": str(time.perf_counter())}, (screenshot*255).astype(numpy.uint8))
             return True

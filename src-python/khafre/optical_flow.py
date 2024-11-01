@@ -137,9 +137,10 @@ Additionally, gets goal data (sets of triples) from a queue.
             results = results.get("segments", [])
             retq = {}
             for e in results:
-                if e["type"] in qObjs:
-                    retq[e["type"]] = numpy.zeros(maskImg.shape,dtype=numpy.uint8)
-                    cv.fillPoly(retq[e["type"]], pts = [e["polygon"]], color = 255)
+                if e["name"] in qObjs:
+                    retq[e["name"]] = numpy.zeros(maskImg.shape,dtype=numpy.uint8)
+                    for p in e["polygons"]:
+                        cv.fillPoly(retq[e["name"]], pts = [p], color = 255)
             return retq
         self._previousImage = self._currentImage
         self._previousDepth = self._currentDepth
@@ -148,7 +149,7 @@ Additionally, gets goal data (sets of triples) from a queue.
         depthResults, self._currentDepth, rateDepth, droppedDepth = self._requestSubscribedData("DepthImg")
         maskResults, self._currentMask, rateMask, droppedMask = self._requestSubscribedData("MaskImg")
         self._currentImage = cv.cvtColor(inpImage, cv.COLOR_BGR2GRAY) #numpy.uint8(cv.cvtColor(inpImg, cv.COLOR_BGR2GRAY)*255)
-        qUniverse = [x["type"] for x in maskResults.get("segments", [])]
+        qUniverse = [x["name"] for x in maskResults.get("segments", [])]
         self._fillInGenericQueries(qUniverse)
         if not ((self._currentImage is None) or (self._previousImage is None) or (self._currentMask is None) or (self._previousMask is None) or (self._currentDepth is None) or (self._previousDepth is None)):
             featureParams = self._settings["featureParams"]
@@ -172,6 +173,9 @@ Additionally, gets goal data (sets of triples) from a queue.
                 if self._dbgImg is None:
                     self._dbgImg = numpy.zeros((self._currentImage.shape[0], self._currentImage.shape[1], 3), numpy.float32)
                 numpy.copyto(self._dbgImg, cv.cvtColor(self._currentImage.astype(self._dbgImg.dtype) / 255, cv.COLOR_GRAY2BGR))
+                #for e in maskResults["segments"]:
+                #    for p in e["polygons"]:
+                #        cv.fillPoly(self._dbgImg, pts = [p], color = (1.0,1.0,1.0))
                 for k in set(nowFeatures.keys()).intersection(self._previousFeatures.keys()):
                     for i, (new, old) in enumerate(zip(nowFeatures[k], self._previousFeatures[k])):
                         a, b = new.ravel().astype(int)

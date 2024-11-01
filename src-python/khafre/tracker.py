@@ -181,8 +181,7 @@ class ByteTracker(Tracker):
                 for p in polygons:
                     cv.fillPoly(outputImg, pts = [p], color = col)
 
-        #self._requestToPublish("OutImg", {"segments": segments, "triples": triples}, outputImg)
-        self._requestToPublish("OutImg", {"segments": segments, "triples": []}, outputImg)
+        self._requestToPublish("OutImg", {"segments": segments, "triples": triples}, outputImg)
 
         if self.havePublisher("DbgImg"):
             annotatedFrame = self._bboxAnnotator.annotate(scene=inpImg.copy(), detections=detections)

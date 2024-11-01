@@ -10,7 +10,8 @@ import time
 from khafre.bricks import drawWire, setSignalHandlers, startKhafreProcesses, stopKhafreProcesses
 from khafre.dbgvis import DbgVisualizer
 from khafre.depth import TransformerDepthSegmentationWrapper
-from khafre.segmentation import YOLOObjectSegmentationWrapper
+#from khafre.segmentation import YOLOObjectSegmentationWrapper
+from khafre.tracker import ByteTracker
 from khafre.contact import ContactDetection
 from khafre.optical_flow import OpticalFlow
 from khafre.reasoning import Reasoner
@@ -63,7 +64,7 @@ def main():
         # Construct process objects. These are not started yet.
         
         procs["dbgP"] = DbgVisualizer()
-        procs["objP"] = YOLOObjectSegmentationWrapper()
+        procs["objP"] = ByteTracker()
         # Monocular depth estimation is VERY computationally expensive, try to have it run on the GPU
         procs["dptP"] = TransformerDepthSegmentationWrapper(device="cuda")
         procs["conP"] = ContactDetection()
@@ -77,7 +78,7 @@ def main():
         drawWire("Input Image", (), [("InpImg", procs["objP"]), ("InpImg", procs["dptP"]), ("InpImg", procs["optP"]), ("InpImg", procs["reasoner"])], (imgHeight, imgWidth, 3), numpy.uint8, wireList=wireList)
         drawWire("Dbg Obj Seg", ("DbgImg", procs["objP"]), [("Object Detection/Segmentation", procs["dbgP"])], (imgHeight, imgWidth, 3), numpy.float32, wireList=wireList)
         drawWire("Dbg Depth", ("DbgImg", procs["dptP"]), [("Depth Estimation", procs["dbgP"])], (imgHeight, imgWidth, 3), numpy.float32, wireList=wireList)
-        drawWire("Mask Image", ("OutImg", procs["objP"]), [("MaskImg", procs["conP"]), ("MaskImg", procs["optP"])], (imgHeight, imgWidth), numpy.uint16, wireList=wireList)
+        drawWire("Mask Image", ("OutImg", procs["objP"]), [("MaskImg", procs["conP"]), ("MaskImg", procs["optP"]), ("MaskImg", procs["reasoner"])], (imgHeight, imgWidth), numpy.uint16, wireList=wireList)
         drawWire("Depth Image", ("OutImg", procs["dptP"]), [("DepthImg", procs["conP"]), ("DepthImg", procs["optP"])], (imgHeight, imgWidth), numpy.float32, wireList=wireList)
         drawWire("Dbg Contact", ("DbgImg", procs["conP"]), [("Contact Detection", procs["dbgP"])], (imgHeight, imgWidth, 3), numpy.float32, wireList=wireList)
         drawWire("Dbg Optical Flow", ("DbgImg", procs["optP"]), [("Optical Flow (sparse)", procs["dbgP"])], (imgHeight, imgWidth, 3), numpy.float32, wireList=wireList)
@@ -107,6 +108,7 @@ def main():
         # copying of a large object when starting the process.
         
         procs["objP"].sendCommand(("LOAD", ("yolov8n-seg.pt",)))
+        procs["objP"].sendCommand(("START", ()))
         procs["dptP"].sendCommand(("LOAD", ("vinvino02/glpn-nyu",)))
 
         procs["reasoner"].sendCommand(("LOAD_THEORY", ("perception interpretation", percIntTheory)))

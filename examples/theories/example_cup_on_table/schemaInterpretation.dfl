@@ -1,5 +1,5 @@
-isA(?g, Goal), hasFocus(?g, ?o), hasModality(?g, Support) => stet_contact/query(?o)
-isA(?g, Goal), hasFocus(?g, ?o), hasModality(?g, Support) => stet_opticalFlow/query/relativeMovement(?o)
+isA(?g, Goal), hasFocus(?g, ?oc), isA(?o, ?oc), hasModality(?g, Support) => stet_contact/query(?o)
+isA(?g, Goal), hasFocus(?g, ?oc), isA(?o, ?oc), hasModality(?g, Support) => stet_opticalFlow/query/relativeMovement(?o)
 
 isA(?s, Support), hasSupportee(?s, ?o), hasSupporter(?g, ?t) => stet_contact/query(?o, ?t)
 isA(?s, Support), hasSupportee(?s, ?o), hasSupporter(?g, ?t) => stet_opticalFlow/query/relativeMovement(?o, ?t)

@@ -155,7 +155,7 @@ Additionally, gets goal data (sets of triples) from a queue.
         qobjs = set([x[1] for x in self._queries]).union([x[2] for x in self._queries])
         dilatedImgs = {k: cv.dilate(maskImgs[k], self._dilationKernel) for k in qobjs if k in maskImgs}
         for k, (p, s, o) in enumerate(self._queries):
-            if (s not in maskImgs) or (o not in maskImgs):
+            if (s not in maskImgs) or (o not in maskImgs) or (s == o):
                 continue
             k = (k+1)*2
             idSO = k

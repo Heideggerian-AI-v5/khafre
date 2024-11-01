@@ -167,6 +167,7 @@ Additionally, gets goal data (sets of triples) from a queue.
                 self._previousFeatures[o] = getFeatures(self._previousFeatures.get(o), self._previousImage, self._previousMaskImgs[o], featureParams)
                 self._previousFeatures[o], nowFeatures[o], previous3D[o], now3D[o] = computeOpticalFlow(self._previousFeatures.get(o), self._previousImage, self._currentImage, self._currentMaskImgs[o], self._previousDepth, self._currentDepth, lkParams, f)
             relativeMovements = getRelativeMovements(previous3D, now3D, self._queries, self._settings["approachVelocity"], self._settings["departVelocity"])
+            relativeMovements = [t for t in relativeMovements if t[1] != t[2]]
             self._requestToPublish("OutImg", {"imgId": maskResults.get("imgId"), "triples": relativeMovements}, None)
             # Do we need to prepare a debug image?
             if self.havePublisher("DbgImg"):

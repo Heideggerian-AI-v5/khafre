@@ -1,7 +1,9 @@
-isA(?g, Goal), hasFocus(?g, ?o), hasModality(?g, Support), isA(?s, Support), hasSupportee(?s, ?o), hasSupporter(?s, ?t) => storeContactMask(?o, ?t)
+isA(?g, Goal), hasFocus(?g, ?oc), isA(?o, ?oc), hasModality(?g, Support), isA(?s, Support), hasSupportee(?s, ?o), hasSupporter(?s, ?t) => storeContactMask(?o, ?t)
+isA(?g, Goal), hasFocus(?g, ?oc), isA(?o, ?oc), hasModality(?g, Support), isA(?s, Support), hasSupportee(?s, ?o) => storeContactMaskForType(?o, ?oc)
 
 isA(?m, ImageMask), from(?m, ContactMask) => about(?m, InpImg)
+
 isA(?m, ImageMask), from(?m, ContactMask), hasP(?m, contact), hasS(?m, ?o), hasO(?m, ?t), storeContactMask(?o, ?t) => storeMask(?m)
-isA(?m, ImageMask), from(?m, ContactMask), hasP(?m, contact), hasS(?m, ?o), hasO(?m, ?t), storeContactMask(?o, ?t) => masksPartOfObjectType(?m, ?o)
+isA(?m, ImageMask), from(?m, ContactMask), hasP(?m, contact), hasS(?m, ?o), hasO(?m, ?t), storeContactMask(?o, ?t), storeContactMaskForType(?o, ?oc) => masksPartOfObjectType(?m, ?oc)
 isA(?m, ImageMask), from(?m, ContactMask), hasP(?m, contact), hasS(?m, ?o), hasO(?m, ?t), storeContactMask(?o, ?t) => usedForTaskType(?m, Support)
 isA(?m, ImageMask), from(?m, ContactMask), hasP(?m, contact), hasS(?m, ?o), hasO(?m, ?t), storeContactMask(?o, ?t) => playsRoleType(?m, SupportableBy)

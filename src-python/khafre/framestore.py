@@ -2,6 +2,8 @@ import itertools
 import os
 import time
 
+import cv2 as cv
+
 from PIL import Image
 
 from khafre.bricks import ReifiedProcess, _Wire
@@ -30,10 +32,14 @@ class YOLOFrameSaver(ReifiedProcess):
             return '_'.join(sorted([str(x) for x in s]))
         annotation = self._dataFromSubscriptions["InpImg"]["notification"]
         image = self._dataFromSubscriptions["InpImg"]["image"]
+        print("FS", len(annotation))
         height, width, channels = image.shape
         if (0 < len(annotation)) and ((self._oldImage is None) or (differentEnough(image, self._oldImage, self._dt))):
-            fnamePrefix = os.path.join(self._basePath, "seg_%s" % time.asctime().replace(" ", "_").replace(":","_"))
-            Image.fromarray(image).save(fnamePrefix + ".jpg")
+            self._oldImage = image
+            fnamePrefix = os.path.join(self._basePath, "seg_%s" % str(time.perf_counter()))
+            imageBGR = cv.cvtColor(image, cv.COLOR_BGR2RGB)
+            Image.fromarray(imageBGR).save(fnamePrefix + ".jpg")
+            print(" ... saved img", fnamePrefix)
             with open(fnamePrefix + ".txt", "w") as outfile:
                 for desc in annotation:
                     contours, hierarchy, semantics = desc["contours"], desc["hierarchy"], desc["semantics"]
@@ -46,3 +52,5 @@ class YOLOFrameSaver(ReifiedProcess):
                             if 0 < len(polygon):
                                 pstr += ("%f %f " % (polygon[0][0]/width, polygon[0][1]/height))
                             _ = outfile.write("%s %s\n" % (label, pstr))
+            print(" ... saved txt")
+

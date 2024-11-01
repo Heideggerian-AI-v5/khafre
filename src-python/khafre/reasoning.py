@@ -366,8 +366,10 @@ class Reasoner(ReifiedProcess):
             masksToStore = [t[1] for t in conclusions.defeasiblyProvable if "storeMask" == t[0]]
             maskResults = _prepareMaskResults(masksToStore, conclusions.defeasiblyProvable, imageResources, maskResults)
             ## send masks to store
+            print("Rs", [x.isReady() for x in self._publishers.values()])
             for inputName, results in maskResults.items():
                 if (inputName in self._storageMap) and (inputName in self._dataFromSubscriptions):
+                    #print("Rs", inputName)
                     self._requestToPublish(self._storageMap[inputName], results, imageResources[inputName])
             ## send perception queries
             #_ = [x.sendCommand(("PUSH_GOALS", self.perceptionQueries)) for x in self._workers.values()]

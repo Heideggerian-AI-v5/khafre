@@ -10,7 +10,6 @@ import time
 from khafre.bricks import drawWire, setSignalHandlers, startKhafreProcesses, stopKhafreProcesses
 from khafre.dbgvis import DbgVisualizer
 from khafre.depth import TransformerDepthSegmentationWrapper
-#from khafre.segmentation import YOLOObjectSegmentationWrapper
 from khafre.tracker import ByteTracker
 from khafre.contact import ContactDetection
 from khafre.optical_flow import OpticalFlow
@@ -85,9 +84,8 @@ def main():
         drawWire("OutImg Contact", ("OutImg", procs["conP"]), [("ContactMask", procs["reasoner"])], (imgHeight, imgWidth), numpy.uint32, wireList=wireList)
         drawWire("OutImg OpticalFlow", ("OutImg", procs["optP"]), [("Optical Flow (sparse)", procs["reasoner"])], (imgHeight, imgWidth), numpy.uint32, wireList=wireList)
         drawWire("Masks to Store", ("OutImg", procs["reasoner"]), [("InpImg", procs["storage"])], (imgHeight, imgWidth, 3), numpy.uint8, wireList=wireList)
+        drawWire("Dbg Storage", ("DbgImg", procs["storage"]), [("Frame Storage", procs["dbgP"])], (imgHeight, imgWidth, 3), numpy.float32, wireList=wireList)
         
-        #procs["reasoner"]._workers["contact"] = procs["conP"]
-        #procs["reasoner"]._workers["optflow"] = procs["optP"].sendCommand
         procs["reasoner"].registerWorker("contact", procs["conP"])
         procs["reasoner"].registerWorker("opticalFlow", procs["optP"])
 
@@ -121,11 +119,6 @@ def main():
         procs["reasoner"].sendCommand(("LOAD_THEORY", ("store masks", storeMasksTheory)))
         procs["reasoner"].sendCommand(("LOAD_FACTS", (backgroundFacts,)))
         procs["reasoner"].sendCommand(("REGISTER_STORAGE_DESTINATION", ("InpImg", "OutImg")))
-        #procs["reasoner"].sendCommand(("REGISTER_WORKER", (outputPeeker,)))
-
-        #procs["conP"].getGoalQueue().put([("contact/query", "knife", "apple"), ("contact/query", "spoon", "apple"), ("contact/query", "bowl", "apple")])
-        ##procs["conP"].getGoalQueue().put([("contact/query", "cup", "table"), ("contact/query", "cup", "dining table")])
-        #procs["optP"].getGoalQueue().put([("opticalFlow/query/relativeMovement", "cup", "table"), ("opticalFlow/query/relativeMovement", "cup", "dining table")])
 
         procs["reasoner"].sendCommand(("TRIGGER", (defaultFacts,)))
 

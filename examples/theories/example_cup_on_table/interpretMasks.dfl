@@ -1,5 +1,5 @@
-isA(?g, Goal), hasFocus(?g, ?oc), isA(?o, ?oc), hasModality(?g, Support), isA(?s, Support), hasSupportee(?s, ?o), hasSupporter(?s, ?t) => storeContactMask(?o, ?t)
-isA(?g, Goal), hasFocus(?g, ?oc), isA(?o, ?oc), hasModality(?g, Support), isA(?s, Support), hasSupportee(?s, ?o) => storeContactMaskForType(?o, ?oc)
+isA(?g, Goal), focuses(?g, ?o), hasModality(?g, Support), isA(?s, Support), hasSupportee(?s, ?o), hasSupporter(?s, ?t) => storeContactMask(?o, ?t)
+isA(?g, Goal), hasFocus(?g, ?oc), focuses(?g, ?o), hasModality(?g, Support), isA(?s, Support), hasSupportee(?s, ?o) => storeContactMaskForType(?o, ?oc)
 
 isA(?m, ImageMask), from(?m, ContactMask) => about(?m, InpImg)
 

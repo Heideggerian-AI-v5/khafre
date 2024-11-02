@@ -150,11 +150,11 @@ last 100. Reported in %.
        self._historyHead+=1
        self._historyHead%=100
    def flush(self):
-       while not self._queue.empty():
+       while self._queue.qsize():
            self._queue.get()
            self._markHistory()
    def empty(self):
-       return self._queue.empty()
+       return 0 == self._queue.qsize()
    def put(self,e):
        ts = time.perf_counter()
        rate = 0
@@ -165,15 +165,13 @@ last 100. Reported in %.
            else:
                rate = 1e6
        self._previousTS = ts
-       #print("PUTting", rate, type(self._queue))
        self._queue.put((rate,e))
-       #print("DONE")
    def _get(self, block=True, timeout=None):
-       if self._queue.empty():
+       if 0 == self._queue.qsize():
            rate, e = self._queue.get()
            self._markHistory()
        else:
-           while not self._queue.empty():
+           while self._queue.qsize():
                rate, e = self._queue.get()
                self._markHistory(done=False)
            self._markHistory(done=True,rewind=True)
@@ -230,8 +228,9 @@ AVOID using this function. Only included for some debug purposes.
             if(srcH != self._npArray.shape[0]) or (srcW != self._npArray.shape[1]):
                 shmData = cv.resize(shmData, (self._npArray.shape[1], self._npArray.shape[0]), interpolation=cv.INTER_LINEAR)
             numpy.copyto(self._npArray, shmData)
-        _=[x.put(notifData) for x in self._notifications]
-        self._state.value = self._readerCount.value
+        with self._state: 
+            _=[x.put(notifData) for x in self._notifications]
+            self._state.value = self._readerCount.value
         for e in self._readerEvents:
             if e is not None:
                 with e:
@@ -261,12 +260,9 @@ class _PublisherPort:
             aux = self._state.value
         return 0 == aux
     def publish(self, notifData, shmData):
-        #print("Publish on", self._name)
         if self._shmName is None and (shmData is not None):
-            #print("Publish on", self._name, "valErr")
             raise ValueError("Attempting to send an array over a wire with no shared memory.")
         if not self.isReady():
-            #print("Publish on", self._name, "asErr")
             raise AssertionError("Attempting to send before all readers copied previous data.")
         if shmData is not None:
             if self._shm is None:
@@ -276,16 +272,9 @@ class _PublisherPort:
             if(srcH != self._shape[0]) or (srcW != self._shape[1]):
                 shmData = cv.resize(shmData, (self._shape[1], self._shape[0]), interpolation=cv.INTER_LINEAR)
             numpy.copyto(self._npArray, shmData)
-        #print("Publish on", self._name, "toShm")
-        #if isinstance(notifData, dict) and ("segments" in notifData):
-        #    with open("bla.log", "w") as outfile:
-        #        _=outfile.write("%s\n" % str(notifData))
-        _=[x.put(notifData) for x in self._notifications]
-        #print("Publish on", self._name, "notif")
         with self._state:
+            _=[x.put(notifData) for x in self._notifications]
             self._state.value = self._readerCount.value
-            #if not self._name.startswith("Dbg "):
-            #    print("Tx", self._name, self._state.value)
         for e in self._events:
             if e is not None:
                 with e:
@@ -325,11 +314,9 @@ class _SubscriberPort:
                 self._shm = shared_memory.SharedMemory(name=self._shmName)
                 self._npArray = numpy.ndarray(self._shape, dtype=self._dtype, buffer= self._shm.buf)
             shmData = numpy.copy(self._npArray)
-        notifData, fps, dropped = self._notification.getWithRates()
         with self._state:
+            notifData, fps, dropped = self._notification.getWithRates()
             self._state.value -= 1
-            #if not self._name.startswith("Dbg "):
-            #    print("Rx", self._name, self._state.value)
         if self._event.get("event") is not None:
             with self._event["event"]:
                 self._event["event"].notify_all()
@@ -343,7 +330,7 @@ it on request and do custom cleanup code in such cases.
     def __init__(self):
         self._process=None
         self._daemon=False
-        self._command = Queue()
+        self._command = SimpleQueue()
         self._keepOn=False
         self._subscriptions={}
         self._publishers={}
@@ -363,7 +350,7 @@ it on request and do custom cleanup code in such cases.
     def _requestSubscribedData(self, name):
         return self._dataFromSubscriptions[name].get("notification"), self._dataFromSubscriptions[name].get("image"), self._dataFromSubscriptions[name].get("rate"), self._dataFromSubscriptions[name].get("dropped")
     def sendCommand(self, command, block=False, timeout=None):
-        self._command.put(command, block=block, timeout=timeout)
+        self._command.put(command)#, block=block, timeout=timeout)
         with self._event:
             self._event.notify_all()
     def _handleCommand(self, command):
@@ -494,6 +481,8 @@ started by this process in the cleanup code. This will be done by
 this process' SIGTERM handler (see the except block of _run).
         """
         pass
+    def _internalEvent(self):
+        return False
     def _run(self, *args, **kwargs):
         """
 Runs the object's process and sets up graceful exit on SIGTERM.
@@ -512,33 +501,26 @@ Runs the object's process and sets up graceful exit on SIGTERM.
             self._onStart() # Run process startup code.
             while self._keepOn:
                 with self._event: # Check if there is anything to do
-                    haveEvent = self._bypassEvent # Maybe process code requests another step immediately
+                    haveEvent = self._bypassEvent or self._internalEvent() # Maybe process code requests another step immediately
                     haveEvent = haveEvent or all([x.isReady() for x in self._subscriptions.values()]) # Or maybe a full set of inputs is available
-                    haveEvent = haveEvent or any([x.isReady() for x in self._publishers.values()]) # Or maybe one of the outputs can be updated
+                    haveEvent = haveEvent or any([(x.isReady() and (self._dataToPublish[name].get("ready", False))) for name, x in self._publishers.items()]) # Or maybe one of the outputs can be updated
                     haveEvent = haveEvent or (not self._command.empty())
-                    #if not self._bypassEvent:
-                    #    print("EvCheck", type(self).__name__, all([x.isReady() for x in self._subscriptions.values()]), any([x.isReady() for x in self._publishers.values()]), (not self._command.empty()))
                     if not haveEvent:
                         self._event.wait()
-                #if not self._bypassEvent:
-                #    print("EvWake", type(self).__name__, all([x.isReady() for x in self._subscriptions.values()]), any([x.isReady() for x in self._publishers.values()]), (not self._command.empty()))
                 for name, pub in self._publishers.items():
                     if pub.isReady() and self._dataToPublish[name].get("ready", False):
                         pub.publish(self._dataToPublish[name].get("notification", None), self._dataToPublish[name].get("image", None))
-                        self._dataToPublish["ready"] = False
+                        self._dataToPublish[name]["ready"] = False
                 while not self._command.empty():
                     self._handleCommand(self._command.get())
                 fullInput = all([x.isReady() for x in self._subscriptions.values()])
                 if self._bypassEvent or fullInput:
-                    if fullInput:
+                    if True:#fullInput:
                         for name, sub in self._subscriptions.items():
-                            notification, shmData, fps, dropped = sub.receive()
-                            self._dataFromSubscriptions[name] = {"notification": notification, "image": shmData, "rate": fps, "dropped": dropped}
-                    #if not self._bypassEvent:
-                    #    print("Does work", type(self).__name__)
+                            if sub.isReady():
+                                notification, shmData, fps, dropped = sub.receive()
+                                self._dataFromSubscriptions[name] = {"notification": notification, "image": shmData, "rate": fps, "dropped": dropped}
                     self._doWork()
-                    #if not self._bypassEvent:
-                    #    print("Finished work", type(self).__name__)
         except _GracefulExit:
             self._cleanup()
             # This will take care of terminating all daemon subprocesses started by this process.

@@ -12,8 +12,6 @@ Should not call this. A naive implementation of searching for contact masks in p
 present here to have a kind of easier to check reference and tester for the faster implementation in C++.
     """
     def _ci(searchWidth, threshold, imgHeight, imgWidth, dilImgD, maskImgD, maskImgN, contPN):
-        #dKS = cv.getStructuringElement(cv.MORPH_RECT,(searchWidth*2+1,searchWidth*2+1),(searchWidth,searchWidth))
-        #contPN = numpy.bitwise_and(dilImgD,maskImgN)
         contPN = numpy.array(maskImgN)
         return contPN
         dbg = set()
@@ -85,7 +83,10 @@ Returns:
             return contact
         while contactCount < pixelCount:
             contact = numpy.bitwise_and(mask, cv.dilate(contact, dilationKernel))
-            contactCount = _pixelCount(contact)
+            aux = _pixelCount(contact)
+            if aux <= (contactCount + 10):
+                break
+            contactCount = aux
         return contact
     contPS = numpy.zeros((imgHeight, imgWidth),dtype=numpy.uint8)
     contPO = numpy.zeros((imgHeight, imgWidth),dtype=numpy.uint8)
@@ -180,7 +181,6 @@ Additionally, gets goal data (sets of triples) from a queue.
         if self.havePublisher("DbgImg"):
             if self._dbgImg is None:
                 self._dbgImg = numpy.zeros((outputImg.shape[0], outputImg.shape[1], 3), numpy.float32)
-            #self._dbgImg[:,:,:]=0.0
             if (outputImg.shape[0] != self._dbgImg.shape[0]) or (outputImg.shape[1] != self._dbgImg.shape[1]):
                 numpy.copyto(self._dbgImg, cv.resize(cv.cvtColor(depthImg / numpy.max(depthImg), cv.COLOR_GRAY2BGR), (self._dbgImg.shape[1], self._dbgImg.shape[0]), interpolation=cv.INTER_LINEAR)) 
             else:
@@ -188,9 +188,6 @@ Additionally, gets goal data (sets of triples) from a queue.
             todos = [(k, _s2c(str(k))) for k in results["idx2Contact"].keys()]
             for k, color in todos:
                 self._dbgImg[outputImg==k]=color
-            #for e in maskResults["segments"]:
-            #    for p in e["polygons"]:
-            #        cv.fillPoly(self._dbgImg, pts = [p], color = (1.0,1.0,1.0))
             self._requestToPublish("DbgImg", "%.02f %.02f ifps | %d%% %d%% obj drop" % (rateMask if rateMask is not None else 0.0, rateDepth if rateDepth is not None else 0.0, droppedMask, droppedDepth), self._dbgImg)
     def _cleanup(self):
         pass

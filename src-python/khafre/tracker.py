@@ -78,6 +78,7 @@ class ByteTracker(Tracker):
         self._settings["track_activation_threshold"] = 0.25
         self._settings["det_interval"] = 0.1
         self._settings["det_thresh"] = (self._settings["track_activation_threshold"] + self._settings["det_interval"])
+        self._settings["nmm_threshold"] = 0.65
         self._tracker = None
         self._onSettingsUpdate["frame_rate"] = self._updateFrameRate
         self._onSettingsUpdate["lost_track_buffer"] = self._updateLostTrackBuffer
@@ -146,10 +147,9 @@ class ByteTracker(Tracker):
         
         notification, inpImg, rate, dropped = self._requestSubscribedData("InpImg")
         results = self._model(inpImg, conf=self._settings["conf"], verbose=False)[0]
-        
-        # TODO: filter out same-type/different type detections that overlap too much
-        
+                
         detections = supervision.Detections.from_ultralytics(results)
+        detections = detections.with_nmm(threshold=self._settings["nmm_threshold"])
         detections = self._tracker.update_with_detections(detections)
         
         masks, boxes, confidences, classNames, idxs = detections.mask, detections.xyxy, detections.confidence, detections.data.get("class_name", []), detections.tracker_id

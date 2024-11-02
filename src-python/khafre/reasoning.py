@@ -33,12 +33,9 @@ def closenessQuery(graph, source, target):
     try:
         lengths = networkx.shortest_path_length(graph, target=target)
     except networkx.NodeNotFound:
-        #print("NF")
         return []
     if source not in lengths:
-        #print("NL")
         return []
-    #print(lengths)
     return [k for k,v in lengths.items() if v < lengths[source]] + [source]
 
 def necessaryVertexQuery(graph, source, target):
@@ -130,7 +127,6 @@ def conclusions2Graph(conclusions, edgePredicate=None):
         edgePredicate = "connQueryEdge"
     retq = networkx.DiGraph()
     _ = [retq.add_edge(t[1],t[2]) for t in conclusions.defeasiblyProvable if edgePredicate == t[0]]
-    #_ = [print((t[1],t[2])) for t in conclusions.defeasiblyProvable if edgePredicate == t[0]]
     return retq
 
 def reifyConclusions(conclusions):
@@ -161,7 +157,6 @@ class Reasoner(ReifiedProcess):
     def __init__(self):
         super().__init__()
         self._dbgImg = None
-        self._bypassEvent = True
         #self._outputNames = {"OutImg", "DbgImg"}
         self.perceptionInterpretationTheory = silkie.TheoryTemplate()
         self.updateSchemasTheory = silkie.TheoryTemplate()
@@ -176,6 +171,8 @@ class Reasoner(ReifiedProcess):
         self._armed = False
         self._defaultFacts = {}
         self._storageMap = {}
+    def _internalEvent(self):
+        return self._armed
     def _checkPublisherRequest(self, name, wire):
         return True#name in self._outputNames
     def _checkSubscriptionRequest(self, name, wire):
@@ -285,6 +282,7 @@ class Reasoner(ReifiedProcess):
             facts = mergeFacts(self.persistentSchemas, self._defaultFacts)
             maskFacts = []
             imageResources = {}
+            isAs = []
         elif fullInput:
             # TODOs for TASKABLES:
             #    - let optical flow report movement masks
@@ -292,6 +290,7 @@ class Reasoner(ReifiedProcess):
             # Collect all inputs into an initial theory
             # TODO: use images too for grounding mask entities
             triples = set.union(*[set(v["notification"].get("triples", [])) for v in self._dataFromSubscriptions.values()])
+            isAs = [t for t in triples if "isA" == t[0]]
             facts = mergeFacts(self.persistentSchemas, triples2Facts(triples))
             imageResources = {k: v.get("image") for k, v in self._dataFromSubscriptions.items()}
             maskFacts = []
@@ -309,7 +308,7 @@ class Reasoner(ReifiedProcess):
         if fullInput or self._armed:
             self._armed = False
             for k in self._dataFromSubscriptions.keys():
-                self._dataFromSubscriptions[k] = {}
+                self._dataFromSubscriptions[k] = {"notification": None}
             ## observations (tuples) + prev persistent schemas (dfl facts) + theory -> reifiable/stet relations (triples)
             conclusions = _silkie(self.perceptionInterpretationTheory, facts, self.backgroundFacts)
             ## reifiable/stet relations (triples) + theory -> new persistent schemas (dfl facts)
@@ -358,7 +357,6 @@ class Reasoner(ReifiedProcess):
             facts = mergeFacts(self.persistentSchemas, triples2Facts(maskFacts))
             conclusions = _silkie(self.interpretMasksTheory, facts, self.backgroundFacts)
             masksToStore = [t[1] for t in conclusions.defeasiblyProvable if "storeMask" == t[0]]
-            #print("Masks to store", masksToStore, conclusions.defeasiblyProvable)
             maskResults = _prepareMaskResults(masksToStore, conclusions.defeasiblyProvable, imageResources, None)
             ## constructed masks to store
             facts = reifyConclusions(conclusions)
@@ -366,20 +364,16 @@ class Reasoner(ReifiedProcess):
             masksToStore = [t[1] for t in conclusions.defeasiblyProvable if "storeMask" == t[0]]
             maskResults = _prepareMaskResults(masksToStore, conclusions.defeasiblyProvable, imageResources, maskResults)
             ## send masks to store
-            print("Rs", [x.isReady() for x in self._publishers.values()])
             for inputName, results in maskResults.items():
                 if (inputName in self._storageMap) and (inputName in self._dataFromSubscriptions):
-                    #print("Rs", inputName)
                     self._requestToPublish(self._storageMap[inputName], results, imageResources[inputName])
             ## send perception queries
-            #_ = [x.sendCommand(("PUSH_GOALS", self.perceptionQueries)) for x in self._workers.values()]
-            #print("Reasoning", self.perceptionQueries)
             _ = [self._callWorker(x, ("PUSH_GOALS", self.perceptionQueries)) for x in self._workers.values()]
     def registerWorker(self, name, proc):
         self._workers[name] = (proc._command, proc._event)
     def _callWorker(self, worker, command, block=False, timeout=None):
         q, e = worker
-        q.put(command, block=block, timeout=timeout)
+        q.put(command)#, block=block, timeout=timeout)
         with e:
             e.notify_all()
 

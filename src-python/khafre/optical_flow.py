@@ -1,5 +1,4 @@
 import cv2 as cv
-from khafre.bricks import ReifiedProcess
 from khafre.taskable import TaskableProcess
 import math
 import numpy

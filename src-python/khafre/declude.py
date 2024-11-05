@@ -2,98 +2,8 @@ import cv2 as cv
 from pycpd import AffineRegistration
 import numpy
 
+from khafre.polygons import findTopPolygons
 from khafre.taskable import TaskableProcess
-
-def pushForward(polygons, Re, te):
-    if polygons is None:
-        return None
-    return [numpy.dot(x, Re) + te for x in polygons]
-
-def pullBackward(polygons, ReInv, te):
-    if polygons is None:
-        return None
-    return [numpy.dot(x-te, ReInv) for x in polygons]
-
-def register(polyStart, polyTarget):
-    reg = AffineRegistration(**{'X': polyTarget, 'Y': polyStart})
-    reg.register(lambda iteration=0, error=0, X=None, Y=None : None)
-    Re, te = reg.get_registration_parameters()
-    return Re, te, pushForward([polyStart], Re, te)[0]
-
-def checkOcclusion(imgFil, imgObj, polygon, occluders):
-    cv.fillPoly(imgFil, pts=[polygon], color=255)
-    for e in occluders:
-        cv.fillPoly(imgObj, pts=[e], color=255)
-    imgObj[imgFil==0]=0
-    res = cv.findContours(image=canvasTrg, mode=cv.RETR_TREE, method=cv.CHAIN_APPROX_SIMPLE)
-    imgObj[imgObj!=0]=0
-    imgFil[imgFil!=0]=0
-    # Interface change in opencv 3.2:
-    # old opencv: findCountours returns contours, hierarchy
-    # from 3.2: findContours returns image, contours, hierarchy
-    contours, hierarchy = res[-2], res[-1]
-    if hierarchy is None:
-        return False, None
-    return True, [x.reshape((len(x), 2)) for x, y in zip(contours, hierarchy[0]) if 0>y[3]]
-
-def polygonUnion(imgObj, polygonsA, polygonsB):
-    if polygonsA is None:
-        return polygonsB
-    if polygonsB is None:
-        return polygonsA
-    for e in polygonsA:
-        cv.fillPoly(imgObj, pts=[e], color=255)
-    for e in polygonsB:
-        cv.fillPoly(imgObj, pts=[e], color=255)
-    res = cv.findContours(image=canvasTrg, mode=cv.RETR_TREE, method=cv.CHAIN_APPROX_SIMPLE)
-    imgObj[imgObj!=0]=0
-    # Interface change in opencv 3.2:
-    # old opencv: findCountours returns contours, hierarchy
-    # from 3.2: findContours returns image, contours, hierarchy
-    contours, hierarchy = res[-2], res[-1]
-    if hierarchy is None:
-        return None
-    return [x.reshape((len(x), 2)) for x, y in zip(contours, hierarchy[0]) if 0>y[3]]
-
-def declude(imgHeight, imgWidth, objPolys, occluderPolys):
-    imgFil = numpy.zeros((imgHeight, imgWidth), dtype=numpy.uint8)
-    imgObj = numpy.zeros((imgHeight, imgWidth), dtype=numpy.uint8)
-    frames = {}
-    polyStart = None
-    # Step 1: estimate affine transforms from frame to frame
-    for k, (polyTarget, occluders) in enumerate(zip(objPolys, occluderPolys)):
-        frames[k] = {"Re": numpy.eye(2), "ReInv": numpy.eye(2), "te": numpy.array([0.0,0.0]), "occlusion": False, "occludedPolygons": None}
-        if polyStart is not None:
-            Re, te, adjustedPolygon = register(polyStart, polyTarget)
-            frames[k]["Re"] = Re
-            frames[k]["ReInv"] = numpy.linalg.pinv(Re)
-            frames[k]["te"] = te
-            occlusion, occludedPolygons = checkOcclusion(imgFil, imgObj, adjustedPolygon, occluders)
-            frames[k]["occlusion"] = occlusion
-            # Prefer to use the polygon for frame k as start for registering k+1,
-            # but in case of occlusion prefer the previous start polygon, transformed by registration
-            if frames[k]["occlusion"]:
-                polyTarget = adjustedPolygon
-            frames[k]["occludedPolygons"] = occludedPolygons
-        frames[k]["polygon"] = polyTarget
-        polyStart=polyTarget
-    # Step 2: merge occluded polygons and propagate forward
-    last = None
-    for k in range(len(frames)):
-        frame = frames[k]
-        last = polygonUnion(imgObj, pushForward(last, frame["Re"], frame["te"]), frame["occludedPolynomials"])
-        if not frame["occlusion"]:
-            frame["occludedPolynomials"] = last
-    # Step 3: merge and propagate backward
-    last = None
-    for k in range(len(frames)-1,-1,-1):
-        frame = frames[k]
-        last = polygonUnion(imgObj, last, frame["occludedPolynomials"])
-        if not frame["occlusion"]:
-            frame["occludedPolynomials"] = last
-        last = pullBackward(last, frame["ReInv"], frame["te"])
-    # Return decluded polygons
-    return [(k, frames[k]["occludedPolygons"]) for k in range(len(frames) if not frames[k]["occlusion"]]
 
 '''
 y = x.R+t
@@ -115,10 +25,12 @@ class Decluder(Taskable):
     def _performStep(self):
         """
         """
+        # TODO: use depthImg for estimating when an object is not occluded and estimated shape may be trimmed, rather than validPixels
+        # Read inputs
         inpResults, inpImg, rateInp, droppedInp = self._requestSubscribedData("InpImg")
         maskResults, maskImg, rateMask, droppedMask = self._requestSubscribedData("MaskImg")
         masks = {s["name"]: {"polygons": s["polygons"], "confidence": s["confidence"]} for s in maskResults["segments"]}
-        occImg = numpy.zeros((inpImg.shape[0], inpImg.shape[1]), dtype=numpy.uint32)
+        # Prepare queries
         qUniverse = [x["name"] for x in maskResults.get("segments", [])]
         self._fillInGenericQueries(qUniverse)
         sObjs = set([x[1] for x in self._queries])
@@ -129,52 +41,78 @@ class Decluder(Taskable):
             if s not in relevantOverlaps:
                 relevantOverlaps[s] = set()
             relevantOverlaps[s].add(o)
+        
+        # Make a mask for all pixels believed to belong to some recognizable object
+        validPixels = numpy.zeros(maskImg.shape[:2], dtype=numpy.uint8)
+        for name, maskData in masks.items():
+            if name in qObjs:
+                maskData["maskIst"] = numpy.zeros(maskImg.shape[:2], dtype=numpy.uint8)
+                for p in maskData["polygons"]:
+                    cv.fillPoly(maskData["maskIst"], pts = [p], color = 255)
+                validPixels[maskData["maskIst"] != 0] = 255
+            else:
+                for p in maskData["polygons"]:
+                    cv.fillPoly(validPixels, pts = [p], color = 255)
+
+        # Remove irrelevant entries from self._polygonData:
+        #     objects we are no longer interested in tracking overlaps for
+        for name in set(self._polygonData.keys()).difference(sObjs):
+            self._polygonData.pop(name)
+        #     and overlaps we no longer care about
         for name, data in self._polygonData.items():
-            for e in set().difference(relevantOverlaps.get(name, set()))
-            ##### Todo
+            for e in set(self._polygonData[name]["previousOverlaps"].keys()).difference(relevantOverlaps[name]):
+                self._polygonData[name]["previousOverlaps"].pop(e)
+
+        # Update polygons
+        scratchpad = numpy.zeros(maskImg.shape[:2], dtype=numpy.uint8)
+        for name, maskData in masks.items():
+            if name not in sObjs:
+                continue
+            if (name not in self._polygonData):
+                self._polygonData[name] = {"polygons": maskData["polygons"], "previousOverlaps": {}}
+            else:
+                polyTarget = numpy.concatenate(maskData["polygons"], direction=0)
+                polyStart = numpy.concatenate(self._polygonData[name]["polygons"], direction=0)
+                reg = AffineRegistration(**{'X': polyTarget, 'Y': polyStart})
+                reg.register(lambda iteration=0, error=0, X=None, Y=None : None)
+                Re, te = reg.get_registration_parameters()
+                tPolygons = [numpy.dot(x, Re) + te for x in self._polygonData[name]["polygons"]]
+                for p in tPolygons:
+                    cv.fillPoly(scratchpad, pts = [p], color = 255)
+                scratchPad[maskData["maskIst"] != 0] = 255
+                scratchPad[validPixels == 0] = 0
+                self._polygonData[name]["polygons"] = findTopPolygons(scratchpad)
+                maskData["maskSoll"] = numpy.copy(scratchpad)
+                scratchPad[:,:] = 0
+            self._polygonData[name]["age"] = -1
+
         declusionMasks = []
         triples = set()
-        # Update polygons
-        scratchpad = numpy.zeros(maskImg.shape, dtype=numpy.uint8)
-        validPixels = numpy.zeros(maskImg.shape, dtype=numpy.uint8)
-        for name, stuff in masks.items():
-            if name in qObjs:
-                stuff["maskIst"] = numpy.zeros(maskImg.shape, dtype=numpy.uint8)
-                for p in stuff["polygons"]:
-                    cv.fillPoly(stuff["maskIst"], pts = [p], color = 255)
-                validPixels[stuff["maskIst"] != 0] = 255
-            else:
-                for p in stuff["polygons"]:
-                    cv.fillPoly(validPixels, pts = [p], color = 255)
-        for name, stuff in masks.items():
-            if (name not in self._polygonData) or (name not in sObjs):
-                self._polygonData[name] = {"polygons": stuff["polygons"], "previousOverlaps": []}
-            else:
-                # update soll polygonData and soll mask by affineregistering to current ist polygon, cut out invalid differences from updated soll to ist
-                # using the transform from the affineregistering, update previousoverlaps polygons
-                # also merge current overlap to previousoverlap
-                self._polygonData[name], stuff["maskSoll"] = updatePolygons(self._polygonData[name], stuff["polygons"], scratchpad, validPixels)
-            self._polygonData[name]["age"] = -1
         maskId = 0
+        occImg = numpy.zeros((maskImg.shape[0], maskImg.shape[1]), dtype=numpy.uint32)
         for k, (s, p, o) in enumerate(self._queries):
-            # TODO: update previousoverlaps with current overlaps
             # Test for current occlusion of s by o
             scratchpad[masks[s]["maskSoll"] == 0] = 0
             scratchpad[masks[s]["maskSoll"] != 0] = 255
             scratchpad[masks[o]["maskIst"] == 0] = 0
+            # scratchpad now stores a bitmap showing the current occlusion of s by o
             cols, counts = numpy.unique(scratchpad, return_counts=True)
             overlap = {k:v for k,v in zip(cols, counts)}[255]
             if self._settings["minOverlap"] <= overlap:
                 triples.add(("occludedBy", s, o))
-            # Test whether a region of s previously occluded by o is now visible
-            _ = [cv.fillPoly(scratchpad, pts = [p], color = 255) for p in self._polygonData[s]["previousOverlaps"][o]]
+            _ = [cv.fillPoly(scratchpad, pts = [p], color = 255) for p in self._polygonData[s]["previousOverlaps"].get(o, [])]
+            # scratchpad now stores a bitmap showing current and past occlusion of s by o
+            self._polygonData[s]["previousOverlaps"][o] = findTopPolygons(scratchpad)
             scratchpad[masks[s]["maskIst"] == 0] = 0
+            # scratchpad now stores a bitmap showing what was occluded in the past by o but is now visible
             cols, counts = numpy.unique(scratchpad, return_counts=True)
             decluded = {k:v for k,v in zip(cols, counts)}[255]
             if self._settings["minOverlap"] <= decluded:
                 maskId += 1
-                declusionMasks.append({"hasId": maskId, "hasP": "declusionOf", "hasS": s, "hasO": o})
+                declusionMasks.append({"hasId": maskId, "hasP": "declusionOf", "hasS": s, "hasO": o, "polygons": findTopPolygons(scratchpad)})
                 occImg[scratchpad != 0] = maskId
+        self._requestToPublish("OutImg", {"imgId": maskResults.get("imgId"), "masks": masks, "triples": triples}, occImg)
+
         # Remove polygons that are too old. Renew! Renew!
         names = list(self._polygonData.keys())
         for name in names:
@@ -182,12 +120,15 @@ class Decluder(Taskable):
             data["age"] += 1
             if data["age"] > self._settings["maxAge"]:
                 self._polygonData.pop(name)
-        self._requestToPublish("OutImg", {"imgId": maskResults.get("imgId"), "masks": masks, "triples": triples}, occImg)
+        
         # Do we need to prepare a debug image?
         if self.havePublisher("DbgImg"):
             if self._dbgImg is None:
-                self._dbgImg = numpy.zeros((inpImg.shape[0], inpImg.shape[1], 3), numpy.float32)
-            numpy.copyto(self._dbgImg, inpImage.astype(self._dbgImg.dtype) / 255)
+                self._dbgImg = numpy.zeros((maskImg.shape[0], maskImg.shape[1], 3), dtype = numpy.float32)
+            if maskImg.shape[:2] == inpImg.shape[:2]:
+                numpy.copyto(self._dbgImg, inpImage.astype(self._dbgImg.dtype) / 255)
+            else:
+                numpy.copyto(self._dbgImg, cv.resize(inpImage, (maskImg.shape[1], maskImg.shape[0], 3), interpolation=cv.INTER_LINEAR).astype(self._dbgImg.dtype) / 255)
             for s in sObjs:
                 if s in self._polygonData:
                     polygons = self._polygonData[s]["polygons"]
@@ -199,3 +140,4 @@ class Decluder(Taskable):
                         color = (((h&0xFF0000) >> 16) / 255.0, ((h&0xFF00) >> 8) / 255.0, ((h&0xFF)) / 255.0)
                         cv.polylines(self._dbgImg, polygons, True, color, 3)
             self._requestToPublish("DbgImg","", self._dbgImg)
+

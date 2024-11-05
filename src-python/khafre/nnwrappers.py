@@ -19,7 +19,6 @@ Wires supported by this subprocess:
     def __init__(self):
         super().__init__()
         self._model = None
-        self._dbgImg = None
     def _checkSubscriptionRequest(self, name, wire):
         return ("InpImg" == name)
     def _checkPublisherRequest(self, name, wire):
@@ -41,7 +40,7 @@ Subclasses should overload this with code appropriate to load a neural model.
 Subclasses should overload this with code appropriate to use a neural model.
         """
         pass
-    def _prepareDbgImg(self, results, inputImg, outputImg, dbgImg):
+    def _prepareDbgImg(self, results, inputImg, outputImg):
         """
 Subclasses should overload this with code appropriate to preparing a dbg image
 from the neural network results.        
@@ -71,9 +70,8 @@ Subclasses should implement command handling code here.
             results["imgId"] = e["imgId"]
             self._requestToPublish("OutImg", results, outputImg)
             if self.havePublisher("DbgImg"):
-                if self._dbgImg is None:
-                    self._dbgImg = numpy.zeros(inpImg.shape, numpy.float32)
-                self._prepareDbgImg(results, inpImg, outputImg, self._dbgImg)
-                self._requestToPublish("DbgImg", "%.02f ifps | %d%% obj drop" % (rate if rate is not None else 0.0, dropped), self._dbgImg)
+                numpy.zeros(inpImg.shape, numpy.float32)
+                dbgImg = self._prepareDbgImg(results, inpImg, outputImg)
+                self._requestToPublish("DbgImg", "%.02f ifps | %d%% obj drop" % (rate if rate is not None else 0.0, dropped), dbgImg)
     def _cleanup(self):
         self._unloadModel()

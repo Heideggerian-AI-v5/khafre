@@ -157,8 +157,6 @@ def reifyConclusions(conclusions):
 class Reasoner(ReifiedProcess):
     def __init__(self):
         super().__init__()
-        self._dbgImg = None
-        #self._outputNames = {"OutImg", "DbgImg"}
         self.perceptionInterpretationTheory = silkie.TheoryTemplate()
         self.updateSchemasTheory = silkie.TheoryTemplate()
         self.connQueryTheory = silkie.TheoryTemplate()

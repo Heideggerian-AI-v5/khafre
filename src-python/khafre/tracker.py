@@ -20,19 +20,12 @@ Wires supported by this subprocess:
     """
     def __init__(self):
         super().__init__()
-        self._dbgImg = None
         self._prefix="tracker"
         self._model = None
     def _checkSubscriptionRequest(self, name, wire):
         return ("InpImg" == name)
     def _checkPublisherRequest(self, name, wire):
         return name in {"OutImg", "DbgImg"}
-    def _prepareDbgImg(self, results, inputImg, outputImg, dbgImg):
-        """
-Subclasses should overload this with code appropriate to preparing a dbg image
-from the neural network results.        
-        """
-        pass
     def _customCommandInternal(self, command):
         """
 Subclasses should implement command handling code here.
@@ -184,8 +177,6 @@ class ByteTracker(Tracker):
             annotatedFrame = self._bboxAnnotator.annotate(scene=inpImg.copy(), detections=detections)
             annotatedFrame = self._labelAnnotator.annotate(scene=annotatedFrame, detections=detections, labels=labels)
             annotatedFrame = numpy.asarray(self._polygonAnnotator.annotate(scene=annotatedFrame, detections=detections))
-            if self._dbgImg is None:
-                self._dbgImg = numpy.zeros(inpImg.shape, numpy.float32)
-            numpy.copyto(self._dbgImg, annotatedFrame.astype(numpy.float32)/255)
-            self._requestToPublish("DbgImg", "", self._dbgImg)
+            dbgImg = annotatedFrame.astype(numpy.float32) / 255
+            self._requestToPublish("DbgImg", "", dbgImg)
 

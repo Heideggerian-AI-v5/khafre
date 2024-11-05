@@ -6,7 +6,6 @@ import numpy
 class ImageSource(ReifiedProcess):
     def __init__(self):
         super().__init__()
-        self._dbgImg = None
         self._bypassEvent = True
         self._outputNames = {"OutImg", "DbgImg"}
     def _checkPublisherRequest(self, name, wire):

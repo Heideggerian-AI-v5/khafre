@@ -13,7 +13,6 @@ x = (y-t).Rinv
 class Decluder(Taskable):
     def __init__(self):
         super().__init__()
-        self._dbgImg = None
         self._prefix="declude"
         self._settings["maxAge"] = 30
         self._settings["minOverlap"] = 100
@@ -123,21 +122,19 @@ class Decluder(Taskable):
         
         # Do we need to prepare a debug image?
         if self.havePublisher("DbgImg"):
-            if self._dbgImg is None:
-                self._dbgImg = numpy.zeros((maskImg.shape[0], maskImg.shape[1], 3), dtype = numpy.float32)
             if maskImg.shape[:2] == inpImg.shape[:2]:
-                numpy.copyto(self._dbgImg, inpImage.astype(self._dbgImg.dtype) / 255)
+                dbgImg = inpImage.astype(numpy.float32) / 255
             else:
-                numpy.copyto(self._dbgImg, cv.resize(inpImage, (maskImg.shape[1], maskImg.shape[0], 3), interpolation=cv.INTER_LINEAR).astype(self._dbgImg.dtype) / 255)
+                dbgImg = cv.resize(inpImage, (maskImg.shape[1], maskImg.shape[0], 3), interpolation=cv.INTER_LINEAR).astype(numpy.float32) / 255)
             for s in sObjs:
                 if s in self._polygonData:
                     polygons = self._polygonData[s]["polygons"]
                     h = hash(s)
                     color = (((h&0xFF0000) >> 16) / 255.0, ((h&0xFF00) >> 8) / 255.0, ((h&0xFF)) / 255.0)
-                    cv.polylines(self._dbgImg, polygons, True, color, 3)
+                    cv.polylines(dbgImg, polygons, True, color, 3)
                     for o, polygons in self._polygonData.get(s, {"previousOverlaps": {}}):
                         h = hash((s,o))
                         color = (((h&0xFF0000) >> 16) / 255.0, ((h&0xFF00) >> 8) / 255.0, ((h&0xFF)) / 255.0)
-                        cv.polylines(self._dbgImg, polygons, True, color, 3)
-            self._requestToPublish("DbgImg","", self._dbgImg)
+                        cv.polylines(dbgImg, polygons, True, color, 3)
+            self._requestToPublish("DbgImg","", dbgImg)
 

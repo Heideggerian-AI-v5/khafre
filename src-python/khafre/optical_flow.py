@@ -108,7 +108,6 @@ Additionally, gets goal data (sets of triples) from a queue.
     """
     def __init__(self):
         super().__init__()
-        self._dbgImg = None
         self._prefix="opticalFlow"
         self._settings["featureParams"] = dict(maxCorners = 10, qualityLevel = 0.2, minDistance = 2, blockSize = 5)
         self._settings["lkParams"] = dict(winSize = (15,15), maxLevel = 2, criteria = (cv.TERM_CRITERIA_EPS | cv.TERM_CRITERIA_COUNT, 10, 0.03))
@@ -170,16 +169,14 @@ Additionally, gets goal data (sets of triples) from a queue.
             self._requestToPublish("OutImg", {"imgId": maskResults.get("imgId"), "triples": relativeMovements}, None)
             # Do we need to prepare a debug image?
             if self.havePublisher("DbgImg"):
-                if self._dbgImg is None:
-                    self._dbgImg = numpy.zeros((self._currentImage.shape[0], self._currentImage.shape[1], 3), numpy.float32)
-                numpy.copyto(self._dbgImg, cv.cvtColor(self._currentImage.astype(self._dbgImg.dtype) / 255, cv.COLOR_GRAY2BGR))
+                dbgImg = (cv.cvtColor(self._currentImage.astype(numpy.float32) / 255, cv.COLOR_GRAY2BGR))
                 for k in set(nowFeatures.keys()).intersection(self._previousFeatures.keys()):
                     for i, (new, old) in enumerate(zip(nowFeatures[k], self._previousFeatures[k])):
                         a, b = new.ravel().astype(int)
                         c, d = old.ravel().astype(int)
-                        self._dbgImg = cv.line(self._dbgImg, (a,b), (c,d), (1.0,0.5,1.0), 1)
-                        self._dbgImg = cv.rectangle(self._dbgImg,(c-2,d-2),(c+2,d+2),(1.0,0.5,1.0),-1)
-                self._requestToPublish("DbgImg","%.02f %.02f ifps | %d%% %d%% obj drop" % (rateMask if rateMask is not None else 0.0, rateDepth if rateDepth is not None else 0.0, droppedMask, droppedDepth), self._dbgImg)
+                        dbgImg = cv.line(dbgImg, (a,b), (c,d), (1.0,0.5,1.0), 1)
+                        dbgImg = cv.rectangle(dbgImg,(c-2,d-2),(c+2,d+2),(1.0,0.5,1.0),-1)
+                self._requestToPublish("DbgImg","%.02f %.02f ifps | %d%% %d%% obj drop" % (rateMask if rateMask is not None else 0.0, rateDepth if rateDepth is not None else 0.0, droppedMask, droppedDepth), dbgImg)
             self._previousFeatures = nowFeatures
         elif not ((self._currentImage is None) or (self._currentMask is None) or (self._currentDepth is None)):
             self._requestToPublish("OutImg", {"imgId": 0, "triples": []}, None)

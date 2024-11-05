@@ -24,7 +24,6 @@ class YOLOFrameSaver(ReifiedProcess):
         super().__init__()
         self._basePath = os.getcwd().replace("\\", "/")
         self._oldImage = None
-        self._dbgImg = None
         self._dt = 5
         self._at = 0.1
     def _checkPublisherRequest(self, name: str, wire: _Wire):
@@ -47,9 +46,7 @@ class YOLOFrameSaver(ReifiedProcess):
         height, width, channels = image.shape
         if (0 < len(annotation)) and ((self._oldImage is None) or (differentEnough(image, self._oldImage, self._dt, self._at))):
             if self.havePublisher("DbgImg"):
-                if self._dbgImg is None:
-                    self._dbgImg = numpy.zeros((image.shape[0], image.shape[1], 3), numpy.float32)
-                numpy.copyto(self._dbgImg, image / 255.0) 
+                dbgImg = image / 255.0
             self._oldImage = image
             fnamePrefix = os.path.join(self._basePath, "seg_%s" % str(time.perf_counter()))
             imageBGR = cv.cvtColor(image, cv.COLOR_BGR2RGB)
@@ -57,14 +54,13 @@ class YOLOFrameSaver(ReifiedProcess):
             with open(fnamePrefix + ".txt", "w") as outfile:
                 for desc in annotation:
                     polygons, semantics = desc["polygons"], desc["semantics"]
-                    print(polygons)
                     label = "partOf_%s_usedFor_%s_asRole_%s" % (_set2str(semantics.get("masksPartOfObjectType", [])), _set2str(semantics.get("usedForTaskType", [])), _set2str(semantics.get("playsRoleType", [])))
                     if self.havePublisher("DbgImg"):
                         labelHash = hash(label)
                         color = (((labelHash&0xFF0000) >> 16)/255.0, ((labelHash&0xFF00) >> 8)/255.0, (labelHash&0xFF)/255.0)
                     for polygon in polygons:
                         if self.havePublisher("DbgImg"):
-                            cv.fillPoly(self._dbgImg, pts = [polygon], color = color)
+                            cv.fillPoly(dbgImg, pts = [polygon], color = color)
                         pstr = ""
                         for p in polygon:
                             pstr += ("%f %f " % (p[0]/width, p[1]/height))
@@ -72,6 +68,6 @@ class YOLOFrameSaver(ReifiedProcess):
                             pstr += ("%f %f " % (polygon[0][0]/width, polygon[0][1]/height))
                         _ = outfile.write("%s %s\n" % (label, pstr))
             if self.havePublisher("DbgImg"):
-                self._requestToPublish("DbgImg", "Storage", self._dbgImg)
+                self._requestToPublish("DbgImg", "Storage", dbgImg)
 
 

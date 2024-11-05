@@ -118,7 +118,6 @@ Additionally, gets goal data (sets of triples) from a queue.
     """
     def __init__(self):
         super().__init__()
-        self._dbgImg = None
         self._prefix="contact"
         self._settings["searchWidth"] = 7
         self._settings["threshold"] = 0.05
@@ -180,15 +179,13 @@ Additionally, gets goal data (sets of triples) from a queue.
         self._requestToPublish("OutImg", results, outputImg)
         # Do we need to prepare a debug image?
         if self.havePublisher("DbgImg"):
-            if self._dbgImg is None:
-                self._dbgImg = numpy.zeros((outputImg.shape[0], outputImg.shape[1], 3), numpy.float32)
-            if (outputImg.shape[0] != self._dbgImg.shape[0]) or (outputImg.shape[1] != self._dbgImg.shape[1]):
-                numpy.copyto(self._dbgImg, cv.resize(cv.cvtColor(depthImg / numpy.max(depthImg), cv.COLOR_GRAY2BGR), (self._dbgImg.shape[1], self._dbgImg.shape[0]), interpolation=cv.INTER_LINEAR)) 
+            if (outputImg.shape[0] != depthImg.shape[0]) or (outputImg.shape[1] != depthImg.shape[1]):
+                dbgImg = cv.resize(cv.cvtColor(depthImg / numpy.max(depthImg), cv.COLOR_GRAY2BGR), (outputImg.shape[1], outputImg.shape[0]), interpolation=cv.INTER_LINEAR)
             else:
-                numpy.copyto(self._dbgImg, cv.cvtColor(depthImg / numpy.max(depthImg), cv.COLOR_GRAY2BGR)) 
+                dbgImg = numpy.copy(cv.cvtColor(depthImg / numpy.max(depthImg), cv.COLOR_GRAY2BGR)) 
             todos = [(k, _s2c(str(k))) for k in results["idx2Contact"].keys()]
             for k, color in todos:
-                self._dbgImg[outputImg==k]=color
-            self._requestToPublish("DbgImg", "%.02f %.02f ifps | %d%% %d%% obj drop" % (rateMask if rateMask is not None else 0.0, rateDepth if rateDepth is not None else 0.0, droppedMask, droppedDepth), self._dbgImg)
+                dbgImg[outputImg==k]=color
+            self._requestToPublish("DbgImg", "%.02f %.02f ifps | %d%% %d%% obj drop" % (rateMask if rateMask is not None else 0.0, rateDepth if rateDepth is not None else 0.0, droppedMask, droppedDepth), dbgImg)
     def _cleanup(self):
         pass

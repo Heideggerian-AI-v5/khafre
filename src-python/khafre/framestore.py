@@ -56,21 +56,21 @@ class YOLOFrameSaver(ReifiedProcess):
             Image.fromarray(imageBGR).save(fnamePrefix + ".jpg")
             with open(fnamePrefix + ".txt", "w") as outfile:
                 for desc in annotation:
-                    contours, hierarchy, semantics = desc["contours"], desc["hierarchy"], desc["semantics"]
+                    polygons, semantics = desc["polygons"], desc["semantics"]
+                    print(polygons)
                     label = "partOf_%s_usedFor_%s_asRole_%s" % (_set2str(semantics.get("masksPartOfObjectType", [])), _set2str(semantics.get("usedForTaskType", [])), _set2str(semantics.get("playsRoleType", [])))
                     if self.havePublisher("DbgImg"):
                         labelHash = hash(label)
                         color = (((labelHash&0xFF0000) >> 16)/255.0, ((labelHash&0xFF00) >> 8)/255.0, (labelHash&0xFF)/255.0)
-                    for polygon, h in zip(contours, hierarchy[0]):
-                        if (0 > h[3]) and (2 < len(polygon)):
-                            if self.havePublisher("DbgImg"):
-                                cv.fillPoly(self._dbgImg, pts = [polygon], color = color)
-                            pstr = ""
-                            for p in polygon:
-                                pstr += ("%f %f " % (p[0]/width, p[1]/height))
-                            if 0 < len(polygon):
-                                pstr += ("%f %f " % (polygon[0][0]/width, polygon[0][1]/height))
-                            _ = outfile.write("%s %s\n" % (label, pstr))
+                    for polygon in polygons:
+                        if self.havePublisher("DbgImg"):
+                            cv.fillPoly(self._dbgImg, pts = [polygon], color = color)
+                        pstr = ""
+                        for p in polygon:
+                            pstr += ("%f %f " % (p[0]/width, p[1]/height))
+                        if 0 < len(polygon):
+                            pstr += ("%f %f " % (polygon[0][0]/width, polygon[0][1]/height))
+                        _ = outfile.write("%s %s\n" % (label, pstr))
             if self.havePublisher("DbgImg"):
                 self._requestToPublish("DbgImg", "Storage", self._dbgImg)
 

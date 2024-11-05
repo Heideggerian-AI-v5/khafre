@@ -1,4 +1,5 @@
 import cv2 as cv
+from khafre.polygons import findTopPolygons
 from khafre.taskable import TaskableProcess
 import numpy
 
@@ -161,8 +162,6 @@ Additionally, gets goal data (sets of triples) from a queue.
             k = (k+1)*2
             idSO = k
             idOS = k-1
-            results["masks"].append({"hasId": idSO, "hasP": "contact", "hasS": s, "hasO": o})
-            results["masks"].append({"hasId": idOS, "hasP": "contact", "hasS": o, "hasO": s})
             results["idx2Contact"][idSO] = (s,o)
             results["idx2Contact"][idOS] = (o,s)
             results["contact2Idx"][(s,o)] = idSO
@@ -176,6 +175,8 @@ Additionally, gets goal data (sets of triples) from a queue.
                 results["triples"].add(("-contact", o, s))
             outputImg[contPS>0] = idSO
             outputImg[contPO>0] = idOS
+            results["masks"].append({"hasId": idSO, "hasP": "contact", "hasS": s, "hasO": o, "polygons": findTopPolygons(contPS)})
+            results["masks"].append({"hasId": idOS, "hasP": "contact", "hasS": o, "hasO": s, "polygons": findTopPolygons(contPO)})
         self._requestToPublish("OutImg", results, outputImg)
         # Do we need to prepare a debug image?
         if self.havePublisher("DbgImg"):

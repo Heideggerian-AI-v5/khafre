@@ -1,5 +1,6 @@
 import cv2 as cv
 from khafre.bricks import ReifiedProcess
+from khafre.polygons import findTopPolygons
 from khafre.taskable import TaskableProcess
 import numpy
 import supervision
@@ -171,11 +172,7 @@ class ByteTracker(Tracker):
             
                 maskImg = numpy.zeros(mask.shape, dtype=numpy.uint8)
                 maskImg[mask] = 255
-                contours, hierarchy = cv.findContours(image=maskImg, mode=cv.RETR_TREE, method=cv.CHAIN_APPROX_SIMPLE)
-                polygons = []
-                for polygon, h in zip(contours, hierarchy[0]):
-                    if (0 > h[3]) and (2 < len(polygon)):
-                        polygons.append(polygon)
+                polygons = findTopPolygons(maskImg)
                 segments.append({"name": oname, "type": className, "confidence": confidence, "box": box, "polygons": polygons, "id": col})
                 
                 for p in polygons:

@@ -21,6 +21,7 @@ import os
 import time
 
 from khafre.bricks import ReifiedProcess
+from khafre.polygons import findTopPolygons
 import khafre.silkie as silkie
 
 # Graph connectivity queries
@@ -222,7 +223,7 @@ class Reasoner(ReifiedProcess):
         def _silkie(theoryTemplate, facts, backgroundFacts):
             theory, _, i2s, _ = silkie.buildTheory(theoryTemplate, facts, backgroundFacts)
             return silkie.idx2strConclusions(silkie.dflInference(theory), i2s)
-        def _prepareMaskResults(masksToStore, triples, images, previous):
+        def _prepareMaskResults(masksToStore, triples, images, maskPolygons, previous):
             retq = previous
             if retq is None:
                 retq = {}
@@ -254,22 +255,20 @@ class Reasoner(ReifiedProcess):
                     maskKnowledge[t[0]].add(t[2])
                 sourceImg = list(maskKnowledge["from"])[0]
                 aboutImg = list(maskKnowledge["about"])[0]
+                aux = {"semantics": {k: maskKnowledge.get(k, set()) for k in ["masksPartOfObjectType", "usedForTaskType", "playsRoleType"]}}
                 if "hasConjunct" in maskKnowledge:
-                    maskImg = numpy.ones(images[sourceImg].shape, dtype=numpy.uint8)
+                    maskImg = numpy.ones(images[sourceImg].shape, dtype=numpy.uint8)*255
                     for conjunct in maskKnowledge["hasConjunct"]:
                         if (conjunct not in ignoreMasks) and (aboutMap[conjunct] == aboutMap[m]):
                             maskImg[images[fromMap[conjunct]] != idxMap[conjunct]] = 0
+                    if 2 != len(numpy.unique(maskImg)):
+                        continue
+                    aux["polygons"] = findTopPolygons(maskImg)
                 elif ("hasId" in maskKnowledge) and (1 == len(maskKnowledge["hasId"])):
                     idx = int(list(maskKnowledge["hasId"])[0])
-                    maskImg = numpy.zeros(images[sourceImg].shape, dtype=numpy.uint8)
-                    maskImg[images[sourceImg] == idx] = 255
+                    aux["polygons"] = maskPolygons[idx]
                 else:
                     continue
-                if 2 != len(numpy.unique(maskImg)):
-                    continue
-                aux = {"semantics": {k: maskKnowledge.get(k, set()) for k in ["masksPartOfObjectType", "usedForTaskType", "playsRoleType"]}}
-                aux["contours"], aux["hierarchy"] = cv.findContours(image=maskImg, mode=cv.RETR_TREE, method=cv.CHAIN_APPROX_SIMPLE)
-                aux["contours"] = [x.reshape((len(x), 2)) for x in aux["contours"]]
                 if aboutImg not in retq:
                     retq[aboutImg] = []
                 retq[aboutImg].append(aux)
@@ -278,6 +277,7 @@ class Reasoner(ReifiedProcess):
         # By this point, any received commands have been handled and any ready to send outputs were sent.
         # A full set of inputs might not be available however.
         fullInput = all([v.get("notification") is not None for v in self._dataFromSubscriptions.values()])
+        maskPolygons = {}
         if self._armed:
             facts = mergeFacts(self.persistentSchemas, self._defaultFacts)
             maskFacts = []
@@ -305,6 +305,7 @@ class Reasoner(ReifiedProcess):
                     maskFacts.append(("hasP", name, m["hasP"]))
                     maskFacts.append(("hasS", name, m["hasS"]))
                     maskFacts.append(("hasO", name, m["hasO"]))
+                    maskPolygons[int(m["hasId"])] = m["polygons"]
         if fullInput or self._armed:
             self._armed = False
             for k in self._dataFromSubscriptions.keys():
@@ -357,12 +358,12 @@ class Reasoner(ReifiedProcess):
             facts = mergeFacts(self.persistentSchemas, triples2Facts(maskFacts))
             conclusions = _silkie(self.interpretMasksTheory, facts, self.backgroundFacts)
             masksToStore = [t[1] for t in conclusions.defeasiblyProvable if "storeMask" == t[0]]
-            maskResults = _prepareMaskResults(masksToStore, conclusions.defeasiblyProvable, imageResources, None)
+            maskResults = _prepareMaskResults(masksToStore, conclusions.defeasiblyProvable, imageResources, maskPolygons, None)
             ## constructed masks to store
             facts = reifyConclusions(conclusions)
             conclusions = _silkie(self.storeMasksTheory, facts, self.backgroundFacts)
             masksToStore = [t[1] for t in conclusions.defeasiblyProvable if "storeMask" == t[0]]
-            maskResults = _prepareMaskResults(masksToStore, conclusions.defeasiblyProvable, imageResources, maskResults)
+            maskResults = _prepareMaskResults(masksToStore, conclusions.defeasiblyProvable, imageResources, maskPolygons, maskResults)
             ## send masks to store
             for inputName, results in maskResults.items():
                 if (inputName in self._storageMap) and (inputName in self._dataFromSubscriptions):

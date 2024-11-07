@@ -1,0 +1,4 @@
+isA(?g, Goal), focuses(?g, ?o), hasModality(?g, Penetration) => stet_declude/query(?o)
+isA(?g, Goal), focuses(?g, ?o), hasModality(?g, Penetration) => stet_contact/query(?o)
+
+

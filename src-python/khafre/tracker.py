@@ -141,6 +141,10 @@ class ByteTracker(Tracker):
         
         notification, inpImg, rate, dropped = self._requestSubscribedData("InpImg")
         results = self._model(inpImg, conf=self._settings["conf"], verbose=False)[0]
+        
+        names = [results.names[round(x)] for x in (results.boxes.cls.tolist())]
+        confs = [x for x in (results.boxes.conf.tolist())]
+        print([{"type": t, "confidence": c} for k,(t,c) in enumerate(zip(names, confs))])
                 
         detections = supervision.Detections.from_ultralytics(results)
         detections = detections.with_nmm(threshold=self._settings["nmm_threshold"])
@@ -166,7 +170,7 @@ class ByteTracker(Tracker):
                 maskImg = numpy.zeros(mask.shape, dtype=numpy.uint8)
                 maskImg[mask] = 255
                 polygons = findTopPolygons(maskImg)
-                segments.append({"name": oname, "type": className, "confidence": confidence, "box": box, "polygons": polygons, "id": col})
+                segments.append({"name": oname, "type": className.replace(" ", "_"), "confidence": confidence, "box": box, "polygons": polygons, "id": col})
                 
                 for p in polygons:
                     cv.fillPoly(outputImg, pts = [p], color = col)

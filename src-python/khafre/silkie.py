@@ -316,7 +316,6 @@ def dflInference(theory, teamDefeat=True, ambiguityPropagation=True, wellFounded
     if ambiguityPropagation:
         defeasibleInference = defeasibleInference + [pS[l] for l in pS.keys()] + [mS[l] for l in mS.keys()] + [pP[r] for r in pP.keys()] + [mP[r] for r in mP.keys()] + [pU[r] for r in pU.keys()] + [mU[r] for r in mU.keys()]
     if wellFoundedness:
-        # TODO
 # The defeasible core
 #     <fq> <- [rq] # a literal is founded only when it is foundation-reachable
 #     <fq> <- [nq] # a literal is founded only when it is NOT proven -dq
@@ -900,4 +899,3 @@ def buildTheory(rules, relevantFacts, knowledgeBase, debugTheory=False):
         theoryStr = getStrTheory(groundRules)
     return theory, s2i, i2s, theoryStr
 
-# TODO: use rule domination in dfl files/weight for consequent

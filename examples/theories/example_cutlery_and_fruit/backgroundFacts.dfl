@@ -1,0 +1,98 @@
+
+=> subclassOf(Fruit, Food)
+=> subclassOf(apple, Fruit)
+=> subclassOf(banana, Fruit)
+=> subclassOf(orange, Fruit)
+
+=> subclassOf(broccoli, Vegetable)
+=> subclassOf(carrot, Vegetable)
+
+=> subclassOf(cake, Food)
+=> subclassOf(donut, Food)
+=> subclassOf(hot_dog, Food)
+=> subclassOf(pizza, Food)
+=> subclassOf(sandwich, Food)
+
+=> subclassOf(person, Agent)
+=> subclassOf(Animal, Agent)
+
+=> subclassOf(bear, Animal)
+=> subclassOf(bird, Animal)
+=> subclassOf(cat, Animal)
+=> subclassOf(cow, Animal)
+=> subclassOf(dog, Animal)
+=> subclassOf(elephant, Animal)
+=> subclassOf(giraffe, Animal)
+=> subclassOf(horse, Animal)
+=> subclassOf(sheep, Animal)
+=> subclassOf(zebra, Animal)
+
+=> subclassOf(airplane, Vehicle)
+=> subclassOf(bicycle, Vehicle)
+=> subclassOf(boat, Vehicle)
+=> subclassOf(bus, Vehicle)
+=> subclassOf(car, Vehicle)
+=> subclassOf(motorcycle, Vehicle)
+=> subclassOf(train, Vehicle)
+=> subclassOf(truck, Vehicle)
+
+=> subclassOf(fork, Cutlery)
+=> subclassOf(knife, Cutlery)
+=> subclassOf(spoon, Cutlery)
+
+=> subclassOf(bed, Furniture)
+=> subclassOf(chair, Furniture)
+=> subclassOf(couch, Furniture)
+=> subclassOf(dining_table, Furniture)
+
+=> subclassOf(bowl, ContainerArtifact)
+=> subclassOf(bottle, ContainerArtifact)
+=> subclassOf(cup, ContainerArtifact)
+=> subclassOf(vase, ContainerArtifact)
+=> subclassOf(wine_glass, ContainerArtifact)
+
+=> subclassOf(bowl, Crockery)
+=> subclassOf(cup, Crockery)
+
+# 10: u'traffic light',
+# 11: u'fire hydrant',
+# 12: u'stop sign',
+# 13: u'parking meter',
+# 14: u'bench',
+
+# 25: u'backpack',
+# 26: u'umbrella',
+# 27: u'handbag',
+# 28: u'tie',
+# 29: u'suitcase',
+# 30: u'frisbee',
+# 31: u'skis',
+# 32: u'snowboard',
+# 33: u'sports ball',
+# 34: u'kite',
+# 35: u'baseball bat',
+# 36: u'baseball glove',
+# 37: u'skateboard',
+# 38: u'surfboard',
+# 39: u'tennis racket',
+
+# 59: u'potted plant',
+# 62: u'toilet',
+# 63: u'tv',
+# 64: u'laptop',
+# 65: u'mouse',
+# 66: u'remote',
+# 67: u'keyboard',
+# 68: u'cell_phone',
+# 69: u'microwave',
+# 70: u'oven',
+# 71: u'toaster',
+# 72: u'sink',
+# 73: u'refrigerator',
+# 74: u'book',
+# 75: u'clock',
+# 77: u'scissors',
+# 78: u'teddy bear',
+# 79: u'hair_drier',
+# 80: u'toothbrush'
+

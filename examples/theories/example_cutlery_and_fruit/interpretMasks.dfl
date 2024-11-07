@@ -1,0 +1,9 @@
+isA(?g, Goal), focuses(?g, ?o), hasModality(?g, Penetration) => storeDeclusionMask(?o)
+isA(?g, Goal), isA(?o, ?oc), focuses(?g, ?o), hasModality(?g, Penetration) => storeDeclusionMaskForType(?o, ?oc)
+
+isA(?m, ImageMask), from(?m, DeclusionMask) => about(?m, InpImg)
+
+isA(?m, ImageMask), from(?m, DeclusionMask), hasP(?m, declusionOf), hasS(?m, ?o), storeDeclusionMask(?o) => storeMask(?m)
+isA(?m, ImageMask), from(?m, DeclusionMask), hasP(?m, declusionOf), hasS(?m, ?o), storeDeclusionMask(?o), storeDeclusionMaskForType(?o, ?oc) => masksPartOfObjectType(?m, ?oc)
+isA(?m, ImageMask), from(?m, DeclusionMask), hasP(?m, declusionOf), hasS(?m, ?o), storeDeclusionMask(?o) => usedForTaskType(?m, Penetration)
+isA(?m, ImageMask), from(?m, DeclusionMask), hasP(?m, declusionOf), hasS(?m, ?o), storeDeclusionMask(?o) => playsRoleType(?m, Penetrator)

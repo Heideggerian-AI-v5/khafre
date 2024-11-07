@@ -17,7 +17,7 @@ class RecordedVideoFeed(ImageSource):
         self._atRealT = None
         self._ended = Value(ctypes.c_int8)
         self._ended.value = 1
-        self.atFrame = 0
+        #self.atFrame = 0
     def hasEnded(self):
         return (0 != self._ended.value)
     def _handleCommand(self, command):
@@ -31,15 +31,16 @@ class RecordedVideoFeed(ImageSource):
     def _doWork(self):
         if (self._videoCapture is None) or (not self._videoCapture.isOpened()) or (0 != self._ended.value):
             return
-        if 1000 >= self.atFrame:
-            #time.sleep(60)
-            self._atVideoT = 0
-            self._atRealT = None
-        self.atFrame += 1
+        #if 1000 >= self.atFrame:
+        #    #time.sleep(60)
+        #    self._atVideoT = 0
+        #    self._atRealT = None
+        #self.atFrame += 1
         c = time.perf_counter()
         frameT = 1.0/self._videoCapture.get(cv.CAP_PROP_FPS)
-        if self._atRealT is not None:
-            self._atVideoT = round(self._atVideoT + max((c - self._atRealT), frameT), 2)
+        #if self._atRealT is not None:
+        #    self._atVideoT = round(self._atVideoT + max((c - self._atRealT), frameT), 2)
+        self._atVideoT = round(self._atVideoT + frameT, 2)
         self._atRealT = c
         self._videoCapture.set(cv.CAP_PROP_POS_MSEC,self._atVideoT*1000)
         hasFrames, image = self._videoCapture.read()
@@ -47,10 +48,8 @@ class RecordedVideoFeed(ImageSource):
             idData = {"imgId": str(time.perf_counter())}
             self._requestToPublish("OutImg", idData, image)
             if self.havePublisher("DbgImg"):
-                if self._dbgImg is None:
-                    self._dbgImg = numpy.zeros(image.shape, numpy.float32)
-                self._dbgImg = image.astype(numpy.float32)/255.0
-                self._requestToPublish("DbgImg", str(idData), self._dbgImg)
+                dbgImg = image.astype(numpy.float32)/255.0
+                self._requestToPublish("DbgImg", str(idData), dbgImg)
         else:
             self._ended.value = 1
 
@@ -73,10 +72,8 @@ class WebStream(ImageSource):
                 idData = {"imgId": str(time.perf_counter())}
                 self._requestToPublish("OutImg", idData, image)
                 if self.havePublisher("DbgImg"):
-                    if self._dbgImg is None:
-                        self._dbgImg = numpy.zeros(image.shape, numpy.float32)
-                    self._dbgImg = image.astype(numpy.float32)/255.0
-                    self._requestToPublish("DbgImg", str(idData), self._dbgImg)
+                    dbgImg = image.astype(numpy.float32)/255.0
+                    self._requestToPublish("DbgImg", str(idData), dbgImg)
             else:
                 time.sleep(0.01)
         else:

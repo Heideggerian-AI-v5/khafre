@@ -1,0 +1,10 @@
+isA(?s, Occlusion), hasS(?s, ?o1), hasO(?s, ?o2) => hasOccludee(?s, ?o1)
+isA(?s, Occlusion), hasS(?s, ?o1), hasO(?s, ?o2) => hasOccluder(?s, ?o2)
+
+isA(?s, Contact), hasS(?s, ?o1) => hasParticipant(?s, ?o1)
+isA(?s, Contact), hasO(?s, ?o1) => hasParticipant(?s, ?o1)
+
+isA(?s, Penetration), hasS(?s, ?o1), hasO(?s, ?o2) => hasPenetrator(?s, ?o1)
+isA(?s, Penetration), hasS(?s, ?o1), hasO(?s, ?o2) => hasPenetree(?s, ?o2)
+
+

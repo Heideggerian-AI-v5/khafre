@@ -1,6 +1,4 @@
-### TODO
-# Prepare an alternative set of bricks that use threads instead of processes,
-# just to compare ...
+### TODO:  Prepare an alternative set of bricks that use threads instead of processes, just to compare ...
 
 import array
 import cv2 as cv

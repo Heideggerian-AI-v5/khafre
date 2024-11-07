@@ -1,0 +1,5 @@
+=> isA(g, Goal)
+=> hasFocus(g, Cutlery)
+=> hasPatient(g, Fruit)
+=> hasModality(g, Penetration)
+

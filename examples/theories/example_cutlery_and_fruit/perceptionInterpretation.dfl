@@ -1,0 +1,26 @@
+# Basic taxonomic inference -- but keep info about what was the most basic class as asserted
+# by object detection ...
+
+subclassOf(?a, ?b), subclassOf(?b, ?c) => subclassOf(?a, ?c)
+inferredIsA(?a, ?b), subclassOf(?b, ?c) => inferredIsA(?a, ?c)
+isA(?a, ?b) => inferredIsA(?a, ?b)
+
+# Goal is persistent for ever [in this example]
+
+isA(?g, Goal) => stet_isA(?g, Goal)
+hasFocus(?g, ?oc) => stet_hasFocus(?g, ?oc)
+hasPatient(?g, ?oc) => stet_hasPatient(?g, ?oc)
+hasModality(?g, ?m) => stet_hasModality(?g, ?m)
+
+# Identify an object of interest, keep class info
+
+inferredIsA(?o, ?oc), isA(?g, Goal), hasFocus(?g, ?oc) => stet_focuses(?g, ?o)
+inferredIsA(?o, ?oc), isA(?g, Goal), hasPatient(?g, ?oc) => stet_actsOn(?g, ?o)
+isA(?o, ?oc), isA(?g, Goal), stet_focuses(?g, ?o) => stet_isA(?o, ?oc)
+isA(?o, ?oc), isA(?g, Goal), stet_actsOn(?g, ?o) => stet_isA(?o, ?oc)
+
+# Convert some observations into reified schemas
+contact(?c1, ?c2) => reifiable_Contact(?c1, ?c2)
+occludedBy(?c1, ?c2) => reifiable_Occlusion(?c1, ?c2)
+contact(?c1, ?c2), occludedBy(?c1, ?c2) => reifiable_Penetration(?c1, ?c2)
+

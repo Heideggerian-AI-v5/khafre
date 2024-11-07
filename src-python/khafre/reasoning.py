@@ -284,9 +284,8 @@ class Reasoner(ReifiedProcess):
         elif fullInput:
             # TODOs for TASKABLES:
             #    - let optical flow report movement masks
-            #    - contact/movement masks associated to triples
+            #    - movement masks associated to triples
             # Collect all inputs into an initial theory
-            # TODO: use images too for grounding mask entities
             triples = set.union(*[set(v["notification"].get("triples", [])) for v in self._dataFromSubscriptions.values()])
             isAs = [t for t in triples if "isA" == t[0]]
             facts = mergeFacts(self.persistentSchemas, triples2Facts(triples))

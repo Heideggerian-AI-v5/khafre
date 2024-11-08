@@ -60,6 +60,7 @@ class Decluder(TaskableProcess):
         #     and overlaps we no longer care about
         for name, data in self._polygonData.items():
             for e in set(self._polygonData[name]["previousOverlaps"].keys()).difference(relevantOverlaps[name]):
+                print("POP", e)
                 self._polygonData[name]["previousOverlaps"].pop(e)
 
         # Update polygons
@@ -76,7 +77,6 @@ class Decluder(TaskableProcess):
                 reg = AffineRegistration(**{'X': polyTarget, 'Y': polyStart})
                 reg.register(lambda iteration=0, error=0, X=None, Y=None : None)
                 Re, te = reg.get_registration_parameters()
-                print("REGISTRATION", name, Re, te)
                 tPolygons = [(numpy.dot(x, Re) + te).astype(numpy.int32) for x in self._polygonData[name]["polygons"]]
                 for p in tPolygons:
                     cv.fillPoly(scratchpad, pts = [p], color = 255)
@@ -85,7 +85,9 @@ class Decluder(TaskableProcess):
                 self._polygonData[name]["polygons"] = findTopPolygons(scratchpad)
                 maskData["maskSoll"] = numpy.copy(scratchpad)
                 scratchpad[:,:] = 0
-                # TODO: update previous overlaps!!
+                for o, ps in self._polygonData[name]["previousOverlaps"].items():
+                    print("TRANSFORMING", name, o)
+                    self._polygonData[name]["previousOverlaps"][o] = [(numpy.dot(x, Re) + te).astype(numpy.int32) for x in ps]
             self._polygonData[name]["age"] = -1
 
         declusionMasks = []
@@ -96,17 +98,18 @@ class Decluder(TaskableProcess):
             if (s not in masks) or (o not in masks):
                 continue
             # Test for current occlusion of s by o
-            scratchpad[masks[s]["maskSoll"] == 0] = 0
-            scratchpad[masks[s]["maskSoll"] != 0] = 255
+            numpy.copyto(scratchpad, masks[s]["maskSoll"])
+            #scratchpad[masks[s]["maskSoll"] == 0] = 0
+            #scratchpad[masks[s]["maskSoll"] != 0] = 255
             scratchpad[masks[o]["maskIst"] == 0] = 0
             # scratchpad now stores a bitmap showing the current occlusion of s by o
             cols, counts = numpy.unique(scratchpad, return_counts=True)
             overlap = {k:v for k,v in zip(cols, counts)}.get(255, 0)
+            print("CURRENT OCCLUSION", s, o, overlap)
             if self._settings["minOverlap"] <= overlap:
                 triples.add(("occludedBy", s, o))
             else:
                 triples.add(("-occludedBy", s, o))
-            scratchpad[:,:] = 0
             _ = [cv.fillPoly(scratchpad, pts = [p], color = 255) for p in self._polygonData[s]["previousOverlaps"].get(o, [])]
             # scratchpad now stores a bitmap showing current and past occlusion of s by o
             self._polygonData[s]["previousOverlaps"][o] = findTopPolygons(scratchpad)
@@ -114,6 +117,7 @@ class Decluder(TaskableProcess):
             # scratchpad now stores a bitmap showing what was occluded in the past by o but is now visible
             cols, counts = numpy.unique(scratchpad, return_counts=True)
             decluded = {k:v for k,v in zip(cols, counts)}.get(255, 0)
+            print("DECLUSION", s, o, decluded)
             if self._settings["minOverlap"] <= decluded:
                 maskId += 1
                 declusionMasks.append({"hasId": maskId, "hasP": "declusionOf", "hasS": s, "hasO": o, "polygons": findTopPolygons(scratchpad)})
@@ -128,7 +132,6 @@ class Decluder(TaskableProcess):
             if data["age"] > self._settings["maxAge"]:
                 self._polygonData.pop(name)
         
-        print("DECLUDE", len(self._polygonData), [(k, ([x for x in v["previousOverlaps"]])) for k, v in self._polygonData.items()])
         # Do we need to prepare a debug image?
         if self.havePublisher("DbgImg"):
             if maskImg.shape[:2] == inpImg.shape[:2]:
@@ -136,7 +139,7 @@ class Decluder(TaskableProcess):
             else:
                 dbgImg = cv.resize(inpImg, (maskImg.shape[1], maskImg.shape[0], 3), interpolation=cv.INTER_LINEAR).astype(numpy.float32) / 255
             for s in sObjs:
-                if s in self._polygonData:
+                if (s in self._polygonData) and (s in masks):
                     polygons = self._polygonData[s]["polygons"]
                     h = hash(s)
                     color = (((h&0xFF0000) >> 16) / 255.0, ((h&0xFF00) >> 8) / 255.0, ((h&0xFF)) / 255.0)
@@ -145,6 +148,7 @@ class Decluder(TaskableProcess):
                         h = hash((s,o))
                         color = (((h&0xFF0000) >> 16) / 255.0, ((h&0xFF00) >> 8) / 255.0, ((h&0xFF)) / 255.0)
                         for p in polygons:
-                            cv.polylines(dbgImg, [p], True, color, 3)
+                            #cv.polylines(dbgImg, [p], True, color, 3)
+                            cv.fillPoly(dbgImg, pts = [p], color = (1.,1.,1.))
             self._requestToPublish("DbgImg","", dbgImg)
 

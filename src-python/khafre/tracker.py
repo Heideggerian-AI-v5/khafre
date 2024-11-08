@@ -144,7 +144,6 @@ class ByteTracker(Tracker):
         
         names = [results.names[round(x)] for x in (results.boxes.cls.tolist())]
         confs = [x for x in (results.boxes.conf.tolist())]
-        print([{"type": t, "confidence": c} for k,(t,c) in enumerate(zip(names, confs))])
                 
         detections = supervision.Detections.from_ultralytics(results)
         detections = detections.with_nmm(threshold=self._settings["nmm_threshold"])

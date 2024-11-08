@@ -1,4 +1,4 @@
-isA(?g, Goal), focuses(?g, ?o), hasModality(?g, Penetration) => stet_declude/query(?o)
-isA(?g, Goal), focuses(?g, ?o), hasModality(?g, Penetration) => stet_contact/query(?o)
+isA(?g, Goal), focuses(?g, ?o), actsOn(?g, ?p), hasModality(?g, Penetration) => stet_declude/query(?o, ?p)
+isA(?g, Goal), focuses(?g, ?o), actsOn(?g, ?p), hasModality(?g, Penetration) => stet_contact/query(?o, ?p)
 
 

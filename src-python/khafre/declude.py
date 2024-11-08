@@ -76,6 +76,7 @@ class Decluder(TaskableProcess):
                 reg = AffineRegistration(**{'X': polyTarget, 'Y': polyStart})
                 reg.register(lambda iteration=0, error=0, X=None, Y=None : None)
                 Re, te = reg.get_registration_parameters()
+                print("REGISTRATION", name, Re, te)
                 tPolygons = [(numpy.dot(x, Re) + te).astype(numpy.int32) for x in self._polygonData[name]["polygons"]]
                 for p in tPolygons:
                     cv.fillPoly(scratchpad, pts = [p], color = 255)
@@ -84,6 +85,7 @@ class Decluder(TaskableProcess):
                 self._polygonData[name]["polygons"] = findTopPolygons(scratchpad)
                 maskData["maskSoll"] = numpy.copy(scratchpad)
                 scratchpad[:,:] = 0
+                # TODO: update previous overlaps!!
             self._polygonData[name]["age"] = -1
 
         declusionMasks = []
@@ -104,6 +106,7 @@ class Decluder(TaskableProcess):
                 triples.add(("occludedBy", s, o))
             else:
                 triples.add(("-occludedBy", s, o))
+            scratchpad[:,:] = 0
             _ = [cv.fillPoly(scratchpad, pts = [p], color = 255) for p in self._polygonData[s]["previousOverlaps"].get(o, [])]
             # scratchpad now stores a bitmap showing current and past occlusion of s by o
             self._polygonData[s]["previousOverlaps"][o] = findTopPolygons(scratchpad)
@@ -125,21 +128,23 @@ class Decluder(TaskableProcess):
             if data["age"] > self._settings["maxAge"]:
                 self._polygonData.pop(name)
         
+        print("DECLUDE", len(self._polygonData), [(k, ([x for x in v["previousOverlaps"]])) for k, v in self._polygonData.items()])
         # Do we need to prepare a debug image?
         if self.havePublisher("DbgImg"):
             if maskImg.shape[:2] == inpImg.shape[:2]:
-                dbgImg = inpImage.astype(numpy.float32) / 255
+                dbgImg = inpImg.astype(numpy.float32) / 255
             else:
-                dbgImg = cv.resize(inpImage, (maskImg.shape[1], maskImg.shape[0], 3), interpolation=cv.INTER_LINEAR).astype(numpy.float32) / 255
+                dbgImg = cv.resize(inpImg, (maskImg.shape[1], maskImg.shape[0], 3), interpolation=cv.INTER_LINEAR).astype(numpy.float32) / 255
             for s in sObjs:
                 if s in self._polygonData:
                     polygons = self._polygonData[s]["polygons"]
                     h = hash(s)
                     color = (((h&0xFF0000) >> 16) / 255.0, ((h&0xFF00) >> 8) / 255.0, ((h&0xFF)) / 255.0)
                     cv.polylines(dbgImg, polygons, True, color, 3)
-                    for o, polygons in self._polygonData.get(s, {"previousOverlaps": {}}):
+                    for o, polygons in self._polygonData.get(s, {"previousOverlaps": {}})["previousOverlaps"].items():
                         h = hash((s,o))
                         color = (((h&0xFF0000) >> 16) / 255.0, ((h&0xFF00) >> 8) / 255.0, ((h&0xFF)) / 255.0)
-                        cv.polylines(dbgImg, polygons, True, color, 3)
+                        for p in polygons:
+                            cv.polylines(dbgImg, [p], True, color, 3)
             self._requestToPublish("DbgImg","", dbgImg)
 

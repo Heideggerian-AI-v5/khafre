@@ -500,11 +500,13 @@ Runs the object's process and sets up graceful exit on SIGTERM.
             while self._keepOn:
                 with self._event: # Check if there is anything to do
                     haveEvent = self._bypassEvent or self._internalEvent() # Maybe process code requests another step immediately
-                    haveEvent = haveEvent or all([x.isReady() for x in self._subscriptions.values()]) # Or maybe a full set of inputs is available
+                    haveEvent = haveEvent or ((0 < len(self._subscriptions)) and all([x.isReady() for x in self._subscriptions.values()])) # Or maybe a nontrivial full set of inputs is available
                     haveEvent = haveEvent or any([(x.isReady() and (self._dataToPublish[name].get("ready", False))) for name, x in self._publishers.items()]) # Or maybe one of the outputs can be updated
                     haveEvent = haveEvent or (not self._command.empty())
                     if not haveEvent:
                         self._event.wait()
+                if "RecordedVideoInput" == type(self).__name__:
+                    print(self._bypassEvent, self._internalEvent, )
                 for name, pub in self._publishers.items():
                     if pub.isReady() and self._dataToPublish[name].get("ready", False):
                         pub.publish(self._dataToPublish[name].get("notification", None), self._dataToPublish[name].get("image", None))
@@ -512,7 +514,8 @@ Runs the object's process and sets up graceful exit on SIGTERM.
                 while not self._command.empty():
                     self._handleCommand(self._command.get())
                 fullInput = all([x.isReady() for x in self._subscriptions.values()])
-                if self._bypassEvent or fullInput:
+                freeOutput = all([not x.get("ready", False) for x in self._dataToPublish.values()])
+                if (self._bypassEvent or fullInput) and freeOutput:
                     if True:#fullInput:
                         for name, sub in self._subscriptions.items():
                             if sub.isReady():

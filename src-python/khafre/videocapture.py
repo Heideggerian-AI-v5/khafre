@@ -41,6 +41,7 @@ class RecordedVideoFeed(ImageSource):
         #if self._atRealT is not None:
         #    self._atVideoT = round(self._atVideoT + max((c - self._atRealT), frameT), 2)
         self._atVideoT = round(self._atVideoT + frameT, 2)
+        print("FRAME", self._atVideoT)
         self._atRealT = c
         self._videoCapture.set(cv.CAP_PROP_POS_MSEC,self._atVideoT*1000)
         hasFrames, image = self._videoCapture.read()

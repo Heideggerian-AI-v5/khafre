@@ -68,7 +68,7 @@ def main():
 
         monitor = sct.monitors[1]
 
-        imgWidth,imgHeight = (1920, 1080) #(int(1920*720/1080),720)
+        imgWidth,imgHeight = (int(1920*480/1080),480)
         
         # We will need a debug visualizer, a depth estimator, and object detection processes.
         # Construct process objects. These are not started yet.
@@ -99,6 +99,7 @@ def main():
         drawWire("OutImg Declusion", ("OutImg", procs["decP"]), [("DeclusionMask", procs["reasoner"])], (imgHeight, imgWidth), numpy.uint32, wireList=wireList)
         drawWire("Masks to Store", ("OutImg", procs["reasoner"]), [("InpImg", procs["storage"])], (imgHeight, imgWidth, 3), numpy.uint8, wireList=wireList)
         drawWire("Dbg Storage", ("DbgImg", procs["storage"]), [("Frame Storage", procs["dbgP"])], (imgHeight, imgWidth, 3), numpy.float32, wireList=wireList)
+        drawWire("Dbg Declude", ("DbgImg", procs["decP"]), [("Declusion", procs["dbgP"])], (imgHeight, imgWidth, 3), numpy.float32, wireList=wireList)
         
         procs["reasoner"].registerWorker("contact", procs["conP"])
         procs["reasoner"].registerWorker("opticalFlow", procs["optP"])
@@ -121,6 +122,7 @@ def main():
         # copying of a large object when starting the process.
         
         procs["objP"].sendCommand(("LOAD", ("yolov8x-seg.pt",)))
+        #procs["objP"].sendCommand(("LOAD", ("yolo11x-seg.pt",)))
         procs["objP"].sendCommand(("START", ()))
         procs["dptP"].sendCommand(("LOAD", ("vinvino02/glpn-nyu",)))
 

@@ -160,7 +160,7 @@ def reifyConclusions(conclusions):
 def logImageSchematicEvents(reasoner, conclusions, imageResources, inpImgId):
     def _logSchema(outfile, desc, mode):
         name, statements = desc
-        _ = outfile.write("%s\n" % name)
+        _ = outfile.write("%s\n    rdf:type owl:NamedIndividual ;\n" % name)
         for t in statements:
             _ = outfile.write("    %s %s ;\n" % (t[0], t[1]))
         _ = outfile.write("    log:eventMode %s .\n\n" % mode)
@@ -222,7 +222,7 @@ def logImageSchematicEvents(reasoner, conclusions, imageResources, inpImgId):
             _ = outfile.write("log:hasId rdf:type owl:DatatypeProperty .\n\nlog:image_%d\n    rdf:type owl:NamedIndividual ;\n    rdf:type log:Image ;\n    log:hasId \"%s\"^^xsd:string .\n\n" % (reasoner._imageNumber, str(inpImgId)))
             _ = [_logSchema(outfile, s, "log:Ended") for s in lost]
             _ = [_logSchema(outfile, s, "log:Started") for s in added]
-            _ = [outfile.write("%s rdf:type %s .\n" % (o, " , ".join(sorted(list(participants[o]))))) for o in sorted(list(participants.keys()))]
+            _ = [outfile.write("%s rdf:type owl:NamedIndividual ;\n    rdf:type %s .\n" % (o, " , ".join(sorted(list(participants[o]))))) for o in sorted(list(participants.keys()))]
 
 
 class Reasoner(ReifiedProcess):

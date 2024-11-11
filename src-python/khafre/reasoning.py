@@ -157,6 +157,74 @@ def reifyConclusions(conclusions):
 #    triples = [("isA", "runningQuery", qtype), ("hasSource", "runningQuery", source), ("hasTarget", "runningQuery", target)]
 #    return triples2Facts(triples)
 
+def logImageSchematicEvents(reasoner, conclusions, imageResources, inpImgId):
+    def _logSchema(outfile, desc, mode):
+        name, statements = desc
+        _ = outfile.write("%s\n" % name)
+        for t in statements:
+            _ = outfile.write("    %s %s ;\n" % (t[0], t[1]))
+        _ = outfile.write("    log:eventMode %s .\n\n" % mode)
+    loggables = {t[1]: {"statements": [], "participants": set(), "properties": set()} for t in conclusions.defeasiblyProvable if ("isA" == t[0]) and ("Loggable" == t[2])}
+    for t in conclusions.defeasiblyProvable:
+        if t[1] in loggables:
+            if (("isA" != t[0]) or ("Loggable" != t[2])) and (t[0] not in ["hasO", "hasS"]):
+                if t[0] in ["isA", "inferredIsA", "rdf:type"]:
+                    loggables[t[1]]["statements"].append(("rdf:type", t[2]))
+                else:
+                    loggables[t[1]]["statements"].append((t[0], t[2]))
+                    loggables[t[1]]["properties"].add(t[0])
+                    loggables[t[1]]["participants"].add(t[2])
+    cleanup = []
+    for k, d in loggables.items():
+        d["statements"] = sorted(d["statements"])
+        if 1 >= len(d["statements"]):
+            # TODO: find out why empty reifications get added sometimes.
+            cleanup.append(k)
+    _ = [loggables.pop(e) for e in cleanup]
+    now = {tuple(v["statements"]): v for v in loggables.values()}
+    lost = []
+    added = []
+    toDel = []
+    participants = {}
+    properties = set()
+    for s, d in reasoner._previousSchemaSummary.items():
+        if s not in now:
+            d["age"] += 1
+            if reasoner._persistence <= d["age"]:
+                lost.append((d["name"], d["statements"]))
+                for o in d["participants"]:
+                    participants[o] = set()
+                properties = properties.union(d["properties"])
+                toDel.append(s)
+        else:
+            d["age"] = 0
+    for e in toDel:
+        reasoner._previousSchemaSummary.pop(e)
+    for s, d in now.items():
+        if s not in reasoner._previousSchemaSummary:
+            reasoner._currentSchema += 1
+            reasoner._previousSchemaSummary[s] = {"age": 0, "participants": d["participants"], "properties": d["properties"], "statements": d["statements"], "name": ("log:schematicRelation_%d"%reasoner._currentSchema)}
+            added.append((reasoner._previousSchemaSummary[s]["name"], reasoner._previousSchemaSummary[s]["statements"]))
+            for o in d["participants"]:
+                participants[o] = set()
+            properties = properties.union(d["properties"])
+    for t in conclusions.defeasiblyProvable:
+        if (t[0] in ("isA", "inferredIsA", "rdf:type")) and (t[1] in participants):
+            participants[t[1]].add(t[2])
+    if (0 != len(added)) or (0 != len(lost)):
+        fnamePrefix = os.path.join(reasoner._eventPath, "evt_%s" % str(time.perf_counter()))
+        if "InpImg" in imageResources:
+            imageBGR = cv.cvtColor(imageResources["InpImg"], cv.COLOR_BGR2RGB)
+            Image.fromarray(imageBGR).save(fnamePrefix + ".jpg")
+        with open(fnamePrefix + ".ttl", "w") as outfile:
+            _ = outfile.write("%s\n" % reasoner._logPrefix)
+            _ = [outfile.write("%s rdf:type owl:ObjectProperty .\n" % p) for p in sorted(list(properties))]
+            _ = outfile.write("log:hasId rdf:type owl:DatatypeProperty .\n\nlog:image_%d\n    rdf:type owl:NamedIndividual ;\n    rdf:type log:Image ;\n    log:hasId \"%s\"^^xsd:string .\n\n" % (reasoner._imageNumber, str(inpImgId)))
+            _ = [_logSchema(outfile, s, "log:Ended") for s in lost]
+            _ = [_logSchema(outfile, s, "log:Started") for s in added]
+            _ = [outfile.write("%s rdf:type %s .\n" % (o, " , ".join(sorted(list(participants[o]))))) for o in sorted(list(participants.keys()))]
+
+
 class Reasoner(ReifiedProcess):
     def __init__(self):
         super().__init__()
@@ -172,9 +240,25 @@ class Reasoner(ReifiedProcess):
         self._workers = {}
         self._armed = False
         self._eventPath = None
-        self._previousSchemaTriples = []
         self._defaultFacts = {}
         self._storageMap = {}
+        self._previousSchemaSummary = {}
+        self._persistence = 30
+        self._currentSchema = 0
+        self._imageNumber = 0
+        self._logPrefix = '''@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix xml: <http://www.w3.org/XML/1998/namespace> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix framester: <https://w3id.org/framester/schema/> .
+@prefix dul: <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#> .
+@prefix dfl: <http://www.ease-crc.org/ont/SOMA_DFL.owl#> .
+@prefix affordances_situations: <http://www.W3C.org/khafre/affordances_situations.owl#> .
+
+@prefix log: <file://./log.owl#> .
+
+        '''
     def _internalEvent(self):
         return self._armed
     def _checkPublisherRequest(self, name, wire):
@@ -221,34 +305,6 @@ class Reasoner(ReifiedProcess):
             path = args[0]
             self.backgroundFacts = silkie.loadDFLFacts(path)
     def _doWork(self):
-        def _getSchemas(triples):
-            def _summary(statement):
-                retq = []
-                if "isA" in statement:
-                    retq.append(("type", tuple(sorted(list(statement["isA"])))))
-                for k, v in statement.items():
-                    if "isA" != k:
-                        retq.append((k, tuple(sorted(list(v)))))
-                return tuple(sorted(retq))
-            loggables = [t[1] for t in triples if ("isA" == t[0]) and ("Loggable" == t[2])]
-            statements = {k: {} for k in loggables}
-            participants = set()
-            for t in triples:
-                if t[1] in statements:
-                    if ("isA" == t[0]) and ("Loggable" != t[2]):
-                        statements[t[1]]["type"] = statements[t[1]].get("type", set()).union([t[2]])
-                    elif ("isA" != t[0]) and (t[0] not in ["hasO", "hasS"]):
-                        statements[t[1]][t[0]] = statements[t[1]].get(t[0], set()).union([t[2]])
-                        participants.add(t[2])
-            participantTypes = {}
-            for t in triples:
-                if ("isA" == t[0]) and (t[1] in participants):
-                    participantTypes[t[1]] = participantTypes.get(t[1], set()).union([t[2]])
-            participants = sorted(list(participants))
-            retq = ([(("name", p), ("type", tuple(sorted(list(participantTypes.get(p, [])))))) for p in participants])
-            retq += sorted([_summary(x) for x in statements.values()])
-            retq = [x for x in retq if () != x]
-            return set(retq)
         def _ensureTriple(t):
             if (3 == len(t)) and ("" != t[2]):
                 return tuple(t)
@@ -388,23 +444,7 @@ class Reasoner(ReifiedProcess):
             self.persistentSchemas = mergeFacts(self.persistentSchemas, connectivityResults)
             conclusions = _silkie(self.closureTheory, self.persistentSchemas, self.backgroundFacts)
             if fullInput and (self._eventPath is not None) and (inpImgId is not None):
-                schemasNow = _getSchemas(conclusions.defeasiblyProvable)
-                schemasPrev= _getSchemas(self._previousSchemaTriples)
-                added = schemasNow.difference(schemasPrev)
-                lost = schemasPrev.difference(schemasNow)
-                toLog = {}
-                if 0 != len(added):
-                    toLog["added"] = sorted(list(added))
-                if 0 != len(lost):
-                    toLog["lost"] = sorted(list(lost))
-                if 0 != len(toLog):
-                    toLog["image_id"] = inpImgId
-                    fnamePrefix = os.path.join(self._eventPath, "evt_%s" % str(time.perf_counter()))
-                    if "InpImg" in imageResources:
-                        imageBGR = cv.cvtColor(imageResources["InpImg"], cv.COLOR_BGR2RGB)
-                        Image.fromarray(imageBGR).save(fnamePrefix + ".jpg")
-                    with open(fnamePrefix + ".json", "w") as outfile:
-                        _ = outfile.write("%s\n" % json.dumps(toLog))
+                logImageSchematicEvents(self, conclusions, imageResources, inpImgId)
             self._previousSchemaTriples = set(conclusions.defeasiblyProvable)
             self.persistentSchemas = conclusions2Facts(conclusions)            
             ## new persistent schemas (dfl facts) + theory -> reifiable questions, stet relations (triples)

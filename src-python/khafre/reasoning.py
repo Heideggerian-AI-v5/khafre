@@ -15,10 +15,13 @@ annotated image saver
 
 import cv2 as cv
 import itertools
+import json
 import networkx
 import numpy
 import os
 import time
+
+from PIL import Image
 
 from khafre.bricks import ReifiedProcess
 from khafre.polygons import findTopPolygons
@@ -168,6 +171,8 @@ class Reasoner(ReifiedProcess):
         self.perceptionQueries = []
         self._workers = {}
         self._armed = False
+        self._eventPath = None
+        self._previousSchemaTriples = []
         self._defaultFacts = {}
         self._storageMap = {}
     def _internalEvent(self):
@@ -184,7 +189,9 @@ class Reasoner(ReifiedProcess):
         #    reification/stets brick
         #    connectivity query brick
         #    memory block for persistent schemas? embed state memory in reasoner block?
-        if "TRIGGER" == op:
+        if "SET_PATH" == op:
+            self._eventPath = args[0]
+        elif "TRIGGER" == op:
             self._armed = True
             self._defaultFacts = silkie.loadDFLFacts(args[0])
         elif "RESET_SCHEMAS" == op:
@@ -214,6 +221,34 @@ class Reasoner(ReifiedProcess):
             path = args[0]
             self.backgroundFacts = silkie.loadDFLFacts(path)
     def _doWork(self):
+        def _getSchemas(triples):
+            def _summary(statement):
+                retq = []
+                if "isA" in statement:
+                    retq.append(("type", tuple(sorted(list(statement["isA"])))))
+                for k, v in statement.items():
+                    if "isA" != k:
+                        retq.append((k, tuple(sorted(list(v)))))
+                return tuple(sorted(retq))
+            loggables = [t[1] for t in triples if ("isA" == t[0]) and ("Loggable" == t[2])]
+            statements = {k: {} for k in loggables}
+            participants = set()
+            for t in triples:
+                if t[1] in statements:
+                    if ("isA" == t[0]) and ("Loggable" != t[2]):
+                        statements[t[1]]["type"] = statements[t[1]].get("type", set()).union([t[2]])
+                    elif ("isA" != t[0]) and (t[0] not in ["hasO", "hasS"]):
+                        statements[t[1]][t[0]] = statements[t[1]].get(t[0], set()).union([t[2]])
+                        participants.add(t[2])
+            participantTypes = {}
+            for t in triples:
+                if ("isA" == t[0]) and (t[1] in participants):
+                    participantTypes[t[1]] = participantTypes.get(t[1], set()).union([t[2]])
+            participants = sorted(list(participants))
+            retq = ([(("name", p), ("type", tuple(sorted(list(participantTypes.get(p, [])))))) for p in participants])
+            retq += sorted([_summary(x) for x in statements.values()])
+            retq = [x for x in retq if () != x]
+            return set(retq)
         def _ensureTriple(t):
             if (3 == len(t)) and ("" != t[2]):
                 return tuple(t)
@@ -276,6 +311,7 @@ class Reasoner(ReifiedProcess):
         # A full set of inputs might not be available however.
         fullInput = all([v.get("notification") is not None for v in self._dataFromSubscriptions.values()])
         maskPolygons = {}
+        inpImgId = None
         if self._armed:
             facts = mergeFacts(self.persistentSchemas, self._defaultFacts)
             maskFacts = []
@@ -290,6 +326,13 @@ class Reasoner(ReifiedProcess):
             isAs = [t for t in triples if "isA" == t[0]]
             facts = mergeFacts(self.persistentSchemas, triples2Facts(triples))
             imageResources = {k: v.get("image") for k, v in self._dataFromSubscriptions.items()}
+            inpImgId = self._dataFromSubscriptions.get("InpImg",{}).get("notification")
+            if inpImgId is None:
+                inpImgId = time.perf_counter()
+            else:
+                if isinstance(inpImgId, str):
+                    inpImgId = json.loads(inpImgId)
+                inpImgId = inpImgId.get("imgId", time.perf_counter())
             maskFacts = []
             cr = 0
             for k in self._dataFromSubscriptions.keys():
@@ -344,7 +387,26 @@ class Reasoner(ReifiedProcess):
                             connectivityResults = mergeFacts(connectivityResults, triples2Facts(triples))
             self.persistentSchemas = mergeFacts(self.persistentSchemas, connectivityResults)
             conclusions = _silkie(self.closureTheory, self.persistentSchemas, self.backgroundFacts)
-            self.persistentSchemas = conclusions2Facts(conclusions)
+            if fullInput and (self._eventPath is not None) and (inpImgId is not None):
+                schemasNow = _getSchemas(conclusions.defeasiblyProvable)
+                schemasPrev= _getSchemas(self._previousSchemaTriples)
+                added = schemasNow.difference(schemasPrev)
+                lost = schemasPrev.difference(schemasNow)
+                toLog = {}
+                if 0 != len(added):
+                    toLog["added"] = sorted(list(added))
+                if 0 != len(lost):
+                    toLog["lost"] = sorted(list(lost))
+                if 0 != len(toLog):
+                    toLog["image_id"] = inpImgId
+                    fnamePrefix = os.path.join(self._eventPath, "evt_%s" % str(time.perf_counter()))
+                    if "InpImg" in imageResources:
+                        imageBGR = cv.cvtColor(imageResources["InpImg"], cv.COLOR_BGR2RGB)
+                        Image.fromarray(imageBGR).save(fnamePrefix + ".jpg")
+                    with open(fnamePrefix + ".json", "w") as outfile:
+                        _ = outfile.write("%s\n" % json.dumps(toLog))
+            self._previousSchemaTriples = set(conclusions.defeasiblyProvable)
+            self.persistentSchemas = conclusions2Facts(conclusions)            
             ## new persistent schemas (dfl facts) + theory -> reifiable questions, stet relations (triples)
             conclusions = _silkie(self.schemaInterpretationTheory, self.persistentSchemas, self.backgroundFacts)
             ## reifiable questions/stet relations + theory -> new questions (tuples)

@@ -1,3 +1,6 @@
+=> subclassOf(Contact, Loggable)
+=> subclassOf(Occlusion, Loggable)
+=> subclassOf(Penetration, Loggable)
 
 => subclassOf(Fruit, Food)
 => subclassOf(apple, Fruit)

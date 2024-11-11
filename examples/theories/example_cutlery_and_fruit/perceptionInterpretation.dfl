@@ -5,6 +5,8 @@ subclassOf(?a, ?b), subclassOf(?b, ?c) => subclassOf(?a, ?c)
 inferredIsA(?a, ?b), subclassOf(?b, ?c) => inferredIsA(?a, ?c)
 isA(?a, ?b) => inferredIsA(?a, ?b)
 
+inferredIsA(?a, Loggable) => stet_isA(?a, Loggable)
+
 # Goal is persistent for ever [in this example]
 
 isA(?g, Goal) => stet_isA(?g, Goal)

@@ -36,6 +36,16 @@ def getImg(sct, monitor):
 
 def main():
 
+    basePath = os.path.dirname(os.path.abspath(__file__)).replace("\\","/")
+    storagePath = os.path.join(basePath, "stored_training_frames")
+    eventPath = os.path.join(basePath, "event_frames")
+    
+    if not os.path.isdir(storagePath):
+        os.mkdir(storagePath)
+    
+    if not os.path.isdir(eventPath):
+        os.mkdir(eventPath)
+
     parser = argparse.ArgumentParser(prog='stored_video_input', description='Analyze a video file using khafre', epilog='')
     parser.add_argument('-iv', '--input_video', default="", help="Path to the video file that will be used as input for khafre.")
     
@@ -138,6 +148,8 @@ def main():
         procs["reasoner"].sendCommand(("REGISTER_STORAGE_DESTINATION", ("InpImg", "OutImg")))
 
         procs["reasoner"].sendCommand(("TRIGGER", (defaultFacts,)))
+        procs["reasoner"].sendCommand(("SET_PATH", (eventPath,)))
+        procs["storage"].sendCommand(("SET_PATH", (storagePath,)))
 
         procs["vc"].sendCommand(("LOAD", (arguments.input_video,)))
         

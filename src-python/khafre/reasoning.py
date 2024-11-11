@@ -158,22 +158,27 @@ def reifyConclusions(conclusions):
 #    return triples2Facts(triples)
 
 def logImageSchematicEvents(reasoner, conclusions, imageResources, inpImgId):
+    def _ensurePrefix(s):
+        if ":" not in s:
+            return "log:"+s
+        return s
     def _logSchema(outfile, desc, mode):
         name, statements = desc
         _ = outfile.write("%s\n    rdf:type owl:NamedIndividual ;\n" % name)
         for t in statements:
-            _ = outfile.write("    %s %s ;\n" % (t[0], t[1]))
+            _ = outfile.write("    %s %s ;\n" % (_ensurePrefix(t[0]), _ensurePrefix(t[1])))
         _ = outfile.write("    log:eventMode %s .\n\n" % mode)
     loggables = {t[1]: {"statements": [], "participants": set(), "properties": set()} for t in conclusions.defeasiblyProvable if ("isA" == t[0]) and ("Loggable" == t[2])}
     for t in conclusions.defeasiblyProvable:
         if t[1] in loggables:
             if (("isA" != t[0]) or ("Loggable" != t[2])) and (t[0] not in ["hasO", "hasS"]):
-                if t[0] in ["isA", "inferredIsA", "rdf:type"]:
-                    loggables[t[1]]["statements"].append(("rdf:type", t[2]))
+                p, o = t[0], t[2]
+                if p in ["isA", "inferredIsA", "rdf:type"]:
+                    loggables[t[1]]["statements"].append(("rdf:type", o))
                 else:
-                    loggables[t[1]]["statements"].append((t[0], t[2]))
-                    loggables[t[1]]["properties"].add(t[0])
-                    loggables[t[1]]["participants"].add(t[2])
+                    loggables[t[1]]["statements"].append((p, o))
+                    loggables[t[1]]["properties"].add(p)
+                    loggables[t[1]]["participants"].add(o)
     cleanup = []
     for k, d in loggables.items():
         d["statements"] = sorted(d["statements"])
@@ -218,11 +223,11 @@ def logImageSchematicEvents(reasoner, conclusions, imageResources, inpImgId):
             Image.fromarray(imageBGR).save(fnamePrefix + ".jpg")
         with open(fnamePrefix + ".ttl", "w") as outfile:
             _ = outfile.write("%s\n" % reasoner._logPrefix)
-            _ = [outfile.write("%s rdf:type owl:ObjectProperty .\n" % p) for p in sorted(list(properties))]
+            _ = [outfile.write("%s rdf:type owl:ObjectProperty .\n" % _ensurePrefix(p)) for p in sorted(list(properties))]
             _ = outfile.write("log:hasId rdf:type owl:DatatypeProperty .\n\nlog:image_%d\n    rdf:type owl:NamedIndividual ;\n    rdf:type log:Image ;\n    log:hasId \"%s\"^^xsd:string .\n\n" % (reasoner._imageNumber, str(inpImgId)))
             _ = [_logSchema(outfile, s, "log:Ended") for s in lost]
             _ = [_logSchema(outfile, s, "log:Started") for s in added]
-            _ = [outfile.write("%s rdf:type owl:NamedIndividual ;\n    rdf:type %s .\n" % (o, " , ".join(sorted(list(participants[o]))))) for o in sorted(list(participants.keys()))]
+            _ = [outfile.write("%s rdf:type owl:NamedIndividual ;\n    rdf:type %s .\n" % (_ensurePrefix(o), " , ".join(sorted([_ensurePrefix(x) for x in participants[o]])))) for o in sorted(list(participants.keys()))]
 
 
 class Reasoner(ReifiedProcess):

@@ -28,6 +28,16 @@ from multiprocessing import Queue
 
 def main():
 
+    basePath = os.path.dirname(os.path.abspath(__file__)).replace("\\","/")
+    storagePath = os.path.join(basePath, "stored_training_frames")
+    eventPath = os.path.join(basePath, "event_frames")
+    
+    if not os.path.isdir(storagePath):
+        os.mkdir(storagePath)
+    
+    if not os.path.isdir(eventPath):
+        os.mkdir(eventPath)
+
     parser = argparse.ArgumentParser(prog='stored_video_input', description='Analyze a video file using khafre', epilog='')
     parser.add_argument('-iv', '--input_video', default="", help="Path to the video file that will be used as input for khafre.")
     
@@ -57,6 +67,7 @@ def main():
     procs = {}
 
     if True:
+
 
         imgWidth,imgHeight = (int(1920*480/1080),480)
         
@@ -120,6 +131,8 @@ def main():
         procs["reasoner"].sendCommand(("REGISTER_STORAGE_DESTINATION", ("InpImg", "OutImg")))
 
         procs["reasoner"].sendCommand(("TRIGGER", (defaultFacts,)))
+        procs["reasoner"].sendCommand(("SET_PATH", (eventPath,)))
+        procs["storage"].sendCommand(("SET_PATH", (storagePath,)))
 
         procs["vc"].sendCommand(("LOAD", (arguments.input_video,)))
         
@@ -136,8 +149,10 @@ def main():
         # This function tells the stored video process to produce a new frame, and will return false when
         # there are no more frames so that the looping is stopped.
         
-        print("Starting object segmentation and depth estimation will take a while, wait a few seconds for debug windows for them to show up.\nPress ESC to exit. (By the way, this is process %s)" % str(os.getpid()))
+        print("Starting object segmentation and depth estimation will take a while. (By the way, this is process %s)" % str(os.getpid()))
 
+        # Loop the above function until a key is released. For this example, that will be the ESCAPE key.
+        
         while True:
             # Place the image into the shared port. Also, notify the consumer (DbgVis) that something happened.
             # Note: screenshot is likely larger than the producer's image. producer.send will automatically resize
@@ -149,7 +164,7 @@ def main():
             if procs["vc"].hasEnded():
                 break
                 
-        
+
         # A clean exit: stop all subprocesses.
         # In general, you can use stopKhafreProcesses to do what it says. Note that by default it will not raise exceptions.
         # If you want to stop processes and handle exceptions yourself, run stopKhafreProcesses(procs, exceptions=True)

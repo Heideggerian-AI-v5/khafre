@@ -63,9 +63,10 @@ class ByteTracker(Tracker):
         self._bboxAnnotator = supervision.BoxAnnotator()
         self._labelAnnotator = supervision.LabelAnnotator()
         self._polygonAnnotator = supervision.PolygonAnnotator()
+        self._settings["max_det"] = 20
         self._settings["conf"] = 0.25
         self._settings["frame_rate"] = 30
-        self._settings["lost_track_buffer"] = 30
+        self._settings["lost_track_buffer"] = 60
         self._settings["max_time_lost"] = int((self._settings["frame_rate"] / 30) * self._settings["lost_track_buffer"])
         self._settings["minimum_matching_threshold"] = 0.8
         self._settings["minimum_consecutive_frames"] = 1
@@ -140,7 +141,7 @@ class ByteTracker(Tracker):
             return
         
         notification, inpImg, rate, dropped = self._requestSubscribedData("InpImg")
-        results = self._model(inpImg, conf=self._settings["conf"], verbose=False)[0]
+        results = self._model(inpImg, conf=self._settings["conf"], retina_masks=True, max_det=self._settings["max_det"], verbose=False)[0]
         
         names = [results.names[round(x)] for x in (results.boxes.cls.tolist())]
         confs = [x for x in (results.boxes.conf.tolist())]

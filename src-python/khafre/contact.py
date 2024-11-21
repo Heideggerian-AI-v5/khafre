@@ -167,15 +167,17 @@ Additionally, gets goal data (sets of triples) from a queue.
             results["contact2Idx"][(o,s)] = idOS
             contPS, contPO = contact(self._settings["searchWidth"], self._settings["threshold"], imgHeight, imgWidth, s, o, dilatedImgs, maskImgs, depthImg)
             if (contPS>0).any():
-                results["triples"].add(("contact", s, o))
-                results["triples"].add(("contact", o, s))
+                self._triplesFilter.addTriple(("contact", s, o))
+                self._triplesFilter.addTriple(("contact", o, s))
+                if self._triplesFilter.hasTriple(("contact", s, o)):
+                    outputImg[contPS>0] = idSO
+                    outputImg[contPO>0] = idOS
+                    results["masks"].append({"hasId": idSO, "hasP": "contact", "hasS": s, "hasO": o, "polygons": findTopPolygons(contPS)})
+                    results["masks"].append({"hasId": idOS, "hasP": "contact", "hasS": o, "hasO": s, "polygons": findTopPolygons(contPO)})
             else:
-                results["triples"].add(("-contact", s, o))
-                results["triples"].add(("-contact", o, s))
-            outputImg[contPS>0] = idSO
-            outputImg[contPO>0] = idOS
-            results["masks"].append({"hasId": idSO, "hasP": "contact", "hasS": s, "hasO": o, "polygons": findTopPolygons(contPS)})
-            results["masks"].append({"hasId": idOS, "hasP": "contact", "hasS": o, "hasO": s, "polygons": findTopPolygons(contPO)})
+                self._triplesFilter.addTriple(("-contact", s, o))
+                self._triplesFilter.addTriple(("-contact", o, s))
+            results["triples"] = self._triplesFilter.getActiveTriples()
         self._requestToPublish("OutImg", results, outputImg)
         # Do we need to prepare a debug image?
         if self.havePublisher("DbgImg"):

@@ -60,7 +60,7 @@ class Decluder(TaskableProcess):
         #     and overlaps we no longer care about
         for name, data in self._polygonData.items():
             for e in set(self._polygonData[name]["previousOverlaps"].keys()).difference(relevantOverlaps[name]):
-                print("POP", e)
+                #print("POP", e)
                 self._polygonData[name]["previousOverlaps"].pop(e)
 
         # Update polygons
@@ -86,7 +86,7 @@ class Decluder(TaskableProcess):
                 maskData["maskSoll"] = numpy.copy(scratchpad)
                 scratchpad[:,:] = 0
                 for o, ps in self._polygonData[name]["previousOverlaps"].items():
-                    print("TRANSFORMING", name, o)
+                    #print("TRANSFORMING", name, o)
                     self._polygonData[name]["previousOverlaps"][o] = [(numpy.dot(x, Re) + te).astype(numpy.int32) for x in ps]
             self._polygonData[name]["age"] = -1
 
@@ -105,7 +105,7 @@ class Decluder(TaskableProcess):
             # scratchpad now stores a bitmap showing the current occlusion of s by o
             cols, counts = numpy.unique(scratchpad, return_counts=True)
             overlap = {k:v for k,v in zip(cols, counts)}.get(255, 0)
-            print("CURRENT OCCLUSION", s, o, overlap)
+            #print("CURRENT OCCLUSION", s, o, overlap)
             if self._settings["minOverlap"] <= overlap:
                 triples.add(("occludedBy", s, o))
             else:
@@ -117,12 +117,13 @@ class Decluder(TaskableProcess):
             # scratchpad now stores a bitmap showing what was occluded in the past by o but is now visible
             cols, counts = numpy.unique(scratchpad, return_counts=True)
             decluded = {k:v for k,v in zip(cols, counts)}.get(255, 0)
-            print("DECLUSION", s, o, decluded)
+            #print("DECLUSION", s, o, decluded)
             if self._settings["minOverlap"] <= decluded:
                 maskId += 1
                 declusionMasks.append({"hasId": maskId, "hasP": "declusionOf", "hasS": s, "hasO": o, "polygons": findTopPolygons(scratchpad)})
                 occImg[scratchpad != 0] = maskId
-        self._requestToPublish("OutImg", {"imgId": maskResults.get("imgId"), "masks": declusionMasks, "triples": triples}, occImg)
+        _ = [self._triplesFilter.addTriple(t) for t in triples]
+        self._requestToPublish("OutImg", {"imgId": maskResults.get("imgId"), "masks": declusionMasks, "triples": self._triplesFilter.getActiveTriples()}, occImg)
 
         # Remove polygons that are too old. Renew! Renew!
         names = list(self._polygonData.keys())

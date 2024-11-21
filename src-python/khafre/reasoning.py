@@ -168,6 +168,12 @@ def logImageSchematicEvents(reasoner, conclusions, imageResources, inpImgId):
         for t in statements:
             _ = outfile.write("    %s %s ;\n" % (_ensurePrefix(t[0]), _ensurePrefix(t[1])))
         _ = outfile.write("    log:eventMode %s .\n\n" % mode)
+    def _loggableName(loggable):
+        retq = ";".join(sorted([t[1] for t in loggable["statements"] if "rdf:type" == t[0]]))
+        retq += "("
+        retq += ",".join(sorted([f"{str(t[0])}: {str(t[1])}" for t in loggable["statements"] if "rdf:type" != t[0]]))
+        retq += ")"
+        return retq
     loggables = {t[1]: {"statements": [], "participants": set(), "properties": set()} for t in conclusions.defeasiblyProvable if ("isA" == t[0]) and ("Loggable" == t[2])}
     for t in conclusions.defeasiblyProvable:
         if t[1] in loggables:
@@ -217,10 +223,19 @@ def logImageSchematicEvents(reasoner, conclusions, imageResources, inpImgId):
         if (t[0] in ("isA", "inferredIsA", "rdf:type")) and (t[1] in participants):
             participants[t[1]].add(t[2])
     if (0 != len(added)) or (0 != len(lost)):
-        fnamePrefix = os.path.join(reasoner._eventPath, "evt_%s" % str(time.perf_counter()))
+        fnameRaw = "evt_%s" % str(time.perf_counter())
+        fnamePrefix = os.path.join(reasoner._eventPath, fnameRaw)
         if "InpImg" in imageResources:
             imageBGR = cv.cvtColor(imageResources["InpImg"], cv.COLOR_BGR2RGB)
             Image.fromarray(imageBGR).save(fnamePrefix + ".jpg")
+            reasoner._storyBoard["columns"][len(reasoner._storyBoard["columns"])] = ("./" + fnameRaw + ".jpg", str(inpImgId))
+            for row in reasoner._storyBoard["rows"].values():
+                row.append(False)
+            for loggable in loggables.values():
+                loggableName = _loggableName(loggable)
+                if loggableName not in reasoner._storyBoard["rows"]:
+                    reasoner._storyBoard["rows"][loggableName] = [False]*len(reasoner._storyBoard["columns"])
+                reasoner._storyBoard["rows"][loggableName][-1] = True
         with open(fnamePrefix + ".ttl", "w") as outfile:
             _ = outfile.write("%s\n" % reasoner._logPrefix)
             _ = [outfile.write("%s rdf:type owl:ObjectProperty .\n" % _ensurePrefix(p)) for p in sorted(list(properties))]
@@ -248,9 +263,12 @@ class Reasoner(ReifiedProcess):
         self._defaultFacts = {}
         self._storageMap = {}
         self._previousSchemaSummary = {}
-        self._persistence = 30
+        self._persistence = 1#30
         self._currentSchema = 0
         self._imageNumber = 0
+        self._storyBoard = {"rows": {}, "columns": {}}
+        self._summaryHeight = None
+        self._summaryWidth = None
         self._logPrefix = '''@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
@@ -285,6 +303,8 @@ class Reasoner(ReifiedProcess):
             self._defaultFacts = silkie.loadDFLFacts(args[0])
         elif "RESET_SCHEMAS" == op:
             self.persistentSchemas = {}
+        elif "STORE_SUMMARY" == op:
+            self._storeSummary()
         elif "REGISTER_STORAGE_DESTINATION" == op:
             inputName, outputName = args
             self._storageMap[inputName] = outputName
@@ -394,6 +414,10 @@ class Reasoner(ReifiedProcess):
                 if isinstance(inpImgId, str):
                     inpImgId = json.loads(inpImgId)
                 inpImgId = inpImgId.get("imgId", time.perf_counter())
+            if (self._summaryHeight is None) and ("InpImg" in imageResources):
+                height, width = imageResources["InpImg"].shape[:2]
+                self._summaryHeight = 480
+                self._summaryWidth = int(width*self._summaryHeight/height)
             maskFacts = []
             cr = 0
             for k in self._dataFromSubscriptions.keys():
@@ -481,4 +505,53 @@ class Reasoner(ReifiedProcess):
         q.put(command)#, block=block, timeout=timeout)
         with e:
             e.notify_all()
-
+    def _cleanup(self):
+        self._storeSummary()
+    def _storeSummary(self):
+        print("STORING", os.path.isdir(self._eventPath), len(self._storyBoard["rows"]))
+        if os.path.isdir(self._eventPath):
+            if 0 < len(self._storyBoard["rows"]):
+                table = "<table id=\"allCells\" border=\"2\">\n<tr><td />"
+                varDeclares = "      const allCells = document.getElementById(\"allCells\");\n        img = document.getElementById(\"image\");\n"
+                mouseoverFn = "function mouseover(event) {\n"
+                cid = 0
+                for k in sorted(list(self._storyBoard["columns"].keys())):
+                    imgId = self._storyBoard["columns"][k][1]
+                    table += (f"<td>{str(imgId)}</td>")
+                table += "</tr>\n"
+                for name, cells in self._storyBoard["rows"].items():
+                    table += (f"<tr><td>{str(name)}</td>")
+                    for k, c in enumerate(cells):
+                        if c:
+                            table += (f"<td class=\"active\" id=\"cell{str(cid)}\">&nbsp</td>")
+                        else:
+                            table += (f"<td class=\"inactive\" id=\"cell{str(cid)}\">&nbsp</td>")
+                        varDeclares += (f"const cell{str(cid)} = document.getElementById(\"cell{str(cid)}\");\n")
+                        mouseoverFn += (f"if (event.target == cell{str(cid)}) {{\n  img.style.visibility = 'visible';\nimg.src = \"{str(self._storyBoard["columns"][k][0])}\";}}\n")
+                        cid += 1
+                    table += "</tr>\n"
+                mouseoverFn += "      }\n"
+                table += "      </table>\n"
+                with open(os.path.join(self._eventPath, "summary.html"), "w") as outfile:
+                    _ = outfile.write("<html>\n")
+                    _ = outfile.write("  <head>\n    <style type=\"text/css\">td.active{background-color:#00FF00;}\ntd.inactive{background-color:#FFFFFF;}\n")
+                    _ = outfile.write("  </style>\n</head>\n")
+                    _ = outfile.write("  <body>\n")
+                    _ = outfile.write("    %s\n<img id=\"image\" width=\"%d\" height=\"%d\" />" % (table, self._summaryWidth, self._summaryHeight))
+                    _ = outfile.write("    <script>\n")
+                    _ = outfile.write("      %s\n" % varDeclares)
+                    _ = outfile.write("      %s\n" % mouseoverFn)
+                    _ = outfile.write("""
+      function mouseout(event) {
+        if(event.target==allCells)
+        {
+          img.style.visibility = 'hidden';
+        }
+      }
+      
+      document.addEventListener(\"mouseover\", mouseover);
+      document.addEventListener(\"mouseover\", mouseout);
+                    """)
+                    _ = outfile.write("    </script>\n")
+                    _ = outfile.write("  </body>\n")
+                    _ = outfile.write("</html>\n")

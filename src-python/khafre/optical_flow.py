@@ -64,7 +64,7 @@ def getRobotRelativeKinematics(previous3D, now3D):
     if 0 == min(len(now3D),len(previous3D)):
         return None, None
     retq = [(nw - pr) for pr, nw in zip(previous3D, now3D)]
-    return sum(now3D)/len(now3D), sum(retq)/len(retq)
+    return sum(now3D)/len(now3D), numpy.median(retq, 0) #sum(retq)/len(retq)
 
 def getRelativeMovements(previous3D, now3D, queries, approachV, departV):
     def _relativeSpeed(vs, vo, ps, po):
@@ -78,6 +78,20 @@ def getRelativeMovements(previous3D, now3D, queries, approachV, departV):
     kinematicData = {k: getRobotRelativeKinematics(previous3D[k], now3D[k]) for k in now3D.keys() if (previous3D.get(k) is not None) and (now3D[k] is not None)}
     kinematicData["self"] = (numpy.array([0,0,0]), numpy.array([0,0,0]))
     retq = set()
+    for o, d in kinematicData.items():
+        vel = d[1]
+        spd = math.sqrt(vel[0]*vel[0] + vel[1]*vel[1] + vel[2]*vel[2])
+        # TODO: add a way to specify up/down direction. For now assume camera oriented so that +y is down.
+        if 0.01 < spd:
+            leftward = -vel[0]/spd
+            rightward = vel[0]/spd
+            upward = -vel[1]/spd
+            downward = vel[1]/spd
+            toward = -vel[2]/spd
+            away = vel[2]/spd
+            for p, c in [("leftwardMovement", leftward), ("rightwardMovement", rightward), ("upwardMovement", upward), ("downwardMovement", downward), ("towardMovement", toward), ("awayMovement", away)]:
+                if 0.8 < c:
+                    retq.add((p, o, o))
     for p, s, o in queries:
         if (s in kinematicData) and (o in kinematicData):
             dV = _relativeSpeed(kinematicData[s][1], kinematicData[o][1], kinematicData[s][0], kinematicData[o][0])
@@ -124,6 +138,13 @@ Additionally, gets goal data (sets of triples) from a queue.
         self._previousMaskImgs = {}
         self._currentMaskImgs = {}
         self._previousFeatures = {}
+        self._triplesFilter.setMaxDisconfirmations(4)
+        self._triplesFilter.setIncompatible("leftwardMovement", ["rightwardMovement"])
+        self._triplesFilter.setIncompatible("upwardMovement", ["downwardMovement"])
+        self._triplesFilter.setIncompatible("towardMovement", ["awayMovement"])
+        self._triplesFilter.setIncompatible("approaches", ["departs", "stillness"])
+        self._triplesFilter.setIncompatible("departs", ["approaches", "stillness"])
+        self._triplesFilter.setIncompatible("stillness", ["departs", "approaches"])
     def _checkSubscriptionRequest(self, name, wire):
         return name in {"InpImg", "MaskImg", "DepthImg"}
     def _checkPublisherRequest(self, name, wire):
@@ -166,7 +187,8 @@ Additionally, gets goal data (sets of triples) from a queue.
                 self._previousFeatures[o], nowFeatures[o], previous3D[o], now3D[o] = computeOpticalFlow(self._previousFeatures.get(o), self._previousImage, self._currentImage, self._currentMaskImgs[o], self._previousDepth, self._currentDepth, lkParams, f)
             relativeMovements = getRelativeMovements(previous3D, now3D, self._queries, self._settings["approachVelocity"], self._settings["departVelocity"])
             relativeMovements = [t for t in relativeMovements if t[1] != t[2]]
-            self._requestToPublish("OutImg", {"imgId": maskResults.get("imgId"), "triples": relativeMovements}, None)
+            _ = [self._triplesFilter.addTriple(t) for t in relativeMovements]
+            self._requestToPublish("OutImg", {"imgId": maskResults.get("imgId"), "triples": self._triplesFilter.getActiveTriples()}, None)
             # Do we need to prepare a debug image?
             if self.havePublisher("DbgImg"):
                 dbgImg = (cv.cvtColor(self._currentImage.astype(numpy.float32) / 255, cv.COLOR_GRAY2BGR))
@@ -179,6 +201,6 @@ Additionally, gets goal data (sets of triples) from a queue.
                 self._requestToPublish("DbgImg","%.02f %.02f ifps | %d%% %d%% obj drop" % (rateMask if rateMask is not None else 0.0, rateDepth if rateDepth is not None else 0.0, droppedMask, droppedDepth), dbgImg)
             self._previousFeatures = nowFeatures
         elif not ((self._currentImage is None) or (self._currentMask is None) or (self._currentDepth is None)):
-            self._requestToPublish("OutImg", {"imgId": 0, "triples": []}, None)
+            self._requestToPublish("OutImg", {"imgId": 0, "triples": self._triplesFilter.getActiveTriples()}, None)
     def _cleanup(self):
         pass

@@ -186,6 +186,8 @@ def main():
         # In general, you can use stopKhafreProcesses to do what it says. Note that by default it will not raise exceptions.
         # If you want to stop processes and handle exceptions yourself, run stopKhafreProcesses(procs, exceptions=True)
 
+        procs["reasoner"].sendCommand(("STORE_SUMMARY", ()))
+
         stopKhafreProcesses(procs)
 
 if "__main__" == __name__:

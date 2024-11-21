@@ -2,17 +2,91 @@ import ast
 from khafre.bricks import RatedSimpleQueue, ReifiedProcess
 from multiprocessing import Lock
 
+
+class TriplesFilter:
+    def __init__(self, maxDisconfirmations=1, maxNonconfirmations=5):
+        self._triples = {}
+        self._incompatibles = {}
+        self._swapIncompatibles = {}
+        self._maxDisconfirmations = maxDisconfirmations
+        self._maxNonconfirmations = maxNonconfirmations
+    def _negation(self, p):
+        if not p.startswith("-"):
+            return "-"+p
+        return p[1:]
+    def _trimTriples(self, k, v):
+        toDelete = []
+        for e, d in self._triples.items():
+            if v <= d[k]:
+                toDelete.append(e)
+        _ = [self._triples.pop(e) for e in toDelete]
+    def setIncompatible(self, p, incompatibles):
+        self._incompatibles[p] = self._incompatibles.get(p, set()).union(incompatibles)
+        for e in incompatibles:
+            self._incompatibles[e] = self._incompatibles.get(e, set()).union([p])
+    def setSwapIncompatible(self, p, incompatibles):
+        self._swapIncompatibles[p] = self._swapIncompatibles.get(p, set()).union(incompatibles)
+        for e in incompatibles:
+            self._swapIncompatibles[e] = self._swapIncompatibles.get(e, set()).union([p])
+    def setMaxDisconfirmations(self, v):
+        self._maxDisconfirmations = v
+        self._trimTriples("disconfirmations", v)
+    def setMaxNonconfirmations(self, v):
+        self._maxNonconfirmations = v
+        self._trimTriples("nonconfirmations", v)
+    def updateTriples(self):
+        toDelete = []
+        for t, v in self._triples.items():
+            v["nonconfirmations"] += 1
+            if self._maxNonconfirmations <= v["nonconfirmations"]:
+                toDelete.append(t)
+        for e in toDelete:
+            self._triples.pop(e)
+    def addTriple(self, triple):
+        p, s, o = triple
+        incompatibles = set(self._incompatibles.get(p, []))
+        incompatibles.add(self._negation(p))
+        swapIncompatibles = set(self._swapIncompatibles.get(p, []))
+        haveIncompatible = False
+        for np in incompatibles:
+            if (np, s, o) in self._triples:
+                self._triples[(np, s, o)]["disconfirmations"] += 1
+                if self._maxDisconfirmations <= self._triples[(np, s, o)]["disconfirmations"]:
+                    self._triples.pop((np, s, o))
+                else:
+                    haveIncompatible = True
+        for np in swapIncompatibles:
+            if (np, o, s) in self._triples:
+                self._triples[(np, o, s)]["disconfirmations"] += 1
+                if self._maxDisconfirmations <= self._triples[(np, o, s)]["disconfirmations"]:
+                    self._triples.pop((np, o, s))
+                else:
+                    haveIncompatible = True
+        if not haveIncompatible:
+            self._triples[triple] = {"nonconfirmations": 0, "disconfirmations": 0}
+    def getActiveTriples(self):
+        return set(self._triples.keys())
+    def hasTriple(self, triple):
+        return triple in self._triples
+
 class TaskableProcess(ReifiedProcess):
     def __init__(self):
         super().__init__()
         self._goalQueue = RatedSimpleQueue()
         self._prefix = None
-        self._settings = {}
+        self._settings = {"maxDisconfirmations": 2, "maxNonconfirmations": 30}
         self._onSettingsUpdate = {}
+        self._onSettingsUpdate["maxDisconfirmations"] = self._updateMaxDisconfirmations
+        self._onSettingsUpdate["maxNonconfirmations"] = self._updateMaxNonconfirmations
         self._queries = set()
         self._queryPredicates = set()
         self._symmetricPredicates = set()
         self._currentGoals = []
+        self._triplesFilter = TriplesFilter(maxDisconfirmations=self._settings["maxDisconfirmations"], maxNonconfirmations=self._settings["maxNonconfirmations"])
+    def _updateMaxDisconfirmations(self, v):
+        self._triplesFilter.setMaxDisconfirmations(v)
+    def _updateMaxNonconfirmations(self, v):
+        self._triplesFilter.setMaxNonconfirmations(v)
     def sendGoal(self, goal):
         self._goalQueue.put(goal)    
     def getGoalQueue(self):
@@ -79,6 +153,7 @@ that could possibly be the answer.
         self._queries = queries
     def _doWork(self):
         self._interpretGoal()
+        self._triplesFilter.updateTriples()
         self._performStep()
     def _performStep(self):
         pass

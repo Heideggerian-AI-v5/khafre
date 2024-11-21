@@ -165,6 +165,9 @@ def main():
                 break
                 
 
+        procs["reasoner"].sendCommand(("STORE_SUMMARY", ()))
+        time.sleep(0.1)
+
         # A clean exit: stop all subprocesses.
         # In general, you can use stopKhafreProcesses to do what it says. Note that by default it will not raise exceptions.
         # If you want to stop processes and handle exceptions yourself, run stopKhafreProcesses(procs, exceptions=True)

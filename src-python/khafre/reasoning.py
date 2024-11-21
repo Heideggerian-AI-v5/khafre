@@ -475,7 +475,7 @@ class Reasoner(ReifiedProcess):
             if fullInput and (self._eventPath is not None) and (inpImgId is not None):
                 logImageSchematicEvents(self, conclusions, imageResources, inpImgId)
             self._previousSchemaTriples = set(conclusions.defeasiblyProvable)
-            self.persistentSchemas = conclusions2Facts(conclusions)            
+            self.persistentSchemas = conclusions2Facts(conclusions)
             ## new persistent schemas (dfl facts) + theory -> reifiable questions, stet relations (triples)
             conclusions = _silkie(self.schemaInterpretationTheory, self.persistentSchemas, self.backgroundFacts)
             ## reifiable questions/stet relations + theory -> new questions (tuples)

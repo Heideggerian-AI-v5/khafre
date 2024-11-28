@@ -1,0 +1,124 @@
+# Can also/should have the Loggable assertions as defaultFacts i.e. goal specification ...
+
+=> subclassOf(Contact, Loggable)
+=> subclassOf(Support, Loggable)
+=> subclassOf(Linkage, Loggable)
+=> subclassOf(SPG, Loggable)
+
+=> subclassOf(Approach, SPG)
+=> subclassOf(Departure, SPG)
+=> subclassOf(Stillness, SPG)
+=> subclassOf(VerticalMovement, SPG)
+=> subclassOf(Falling, VerticalMovement)
+=> subclassOf(Rising, VerticalMovement)
+
+=> subclassOf(Agent, Supportable)
+=> subclassOf(ContainerArtifact, Supportable)
+=> subclassOf(Crockery, Supportable)
+=> subclassOf(Cutlery, Supportable)
+=> subclassOf(Decoration, Supportable)
+=> subclassOf(Food, Supportable)
+
+=> subclassOf(Fruit, Food)
+
+=> subclassOf(apple, Fruit)
+=> subclassOf(banana, Fruit)
+=> subclassOf(orange, Fruit)
+
+=> subclassOf(Vegetable, Food)
+
+=> subclassOf(broccoli, Vegetable)
+=> subclassOf(carrot, Vegetable)
+
+=> subclassOf(cake, Food)
+=> subclassOf(donut, Food)
+=> subclassOf(hot_dog, Food)
+=> subclassOf(pizza, Food)
+=> subclassOf(sandwich, Food)
+
+=> subclassOf(person, Agent)
+=> subclassOf(Animal, Agent)
+
+=> subclassOf(bear, Animal)
+=> subclassOf(bird, Animal)
+=> subclassOf(cat, Animal)
+=> subclassOf(cow, Animal)
+=> subclassOf(dog, Animal)
+=> subclassOf(elephant, Animal)
+=> subclassOf(giraffe, Animal)
+=> subclassOf(horse, Animal)
+=> subclassOf(sheep, Animal)
+=> subclassOf(zebra, Animal)
+
+=> subclassOf(airplane, Vehicle)
+=> subclassOf(bicycle, Vehicle)
+=> subclassOf(boat, Vehicle)
+=> subclassOf(bus, Vehicle)
+=> subclassOf(car, Vehicle)
+=> subclassOf(motorcycle, Vehicle)
+=> subclassOf(train, Vehicle)
+=> subclassOf(truck, Vehicle)
+
+=> subclassOf(fork, Cutlery)
+=> subclassOf(knife, Cutlery)
+=> subclassOf(spoon, Cutlery)
+
+=> subclassOf(bed, Furniture)
+=> subclassOf(bench, Furniture)
+=> subclassOf(chair, Furniture)
+=> subclassOf(couch, Furniture)
+=> subclassOf(dining_table, Furniture)
+=> subclassOf(toilet, Furniture)
+
+# Meh, just to have a convenient superclass to refer to these things for later.
+=> subclassOf(potted plant, Supportable)
+=> subclassOf(tv, Supportable)
+=> subclassOf(laptop, Supportable)
+=> subclassOf(mouse, Supportable)
+=> subclassOf(remote, Supportable)
+=> subclassOf(keyboard, Supportable)
+=> subclassOf(cell_phone, Supportable)
+=> subclassOf(sink, Supportable)
+=> subclassOf(book, Supportable)
+=> subclassOf(clock, Supportable)
+
+=> subclassOf(bowl, ContainerArtifact)
+=> subclassOf(bottle, ContainerArtifact)
+=> subclassOf(cup, ContainerArtifact)
+=> subclassOf(vase, ContainerArtifact)
+=> subclassOf(wine_glass, ContainerArtifact)
+=> subclassOf(microwave, ContainerArtifact)
+=> subclassOf(oven, ContainerArtifact)
+=> subclassOf(toaster, ContainerArtifact)
+=> subclassOf(refrigerator, ContainerArtifact)
+
+=> subclassOf(bowl, Crockery)
+=> subclassOf(cup, Crockery)
+
+# 10: u'traffic light',
+# 11: u'fire hydrant',
+# 12: u'stop sign',
+# 13: u'parking meter',
+
+# 25: u'backpack',
+# 27: u'handbag',
+# 29: u'suitcase',
+
+# 26: u'umbrella',
+# 28: u'tie',
+# 30: u'frisbee',
+# 31: u'skis',
+# 32: u'snowboard',
+# 33: u'sports ball',
+# 34: u'kite',
+# 35: u'baseball bat',
+# 36: u'baseball glove',
+# 37: u'skateboard',
+# 38: u'surfboard',
+# 39: u'tennis racket',
+
+# 77: u'scissors',
+# 78: u'teddy bear',
+# 79: u'hair_drier',
+# 80: u'toothbrush'
+

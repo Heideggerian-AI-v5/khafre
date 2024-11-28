@@ -1,0 +1,14 @@
+=> isA(g_SPG, Goal)
+=> hasFocus(g_SPG, Agent)
+=> hasPatient(g_SPG, Agent)
+=> hasModality(g_SPG, SPG)
+
+=> isA(g_Support, Goal)
+=> hasFocus(g_Support, Furniture)
+=> hasPatient(g_Support, Supportable)
+=> hasModality(g_Support, Support)
+
+=> isA(g_Linkage, Goal)
+=> hasFocus(g_Linkage, Agent)
+=> hasPatient(g_Linkage, Agent)
+=> hasModality(g_Linkage, Linkage)

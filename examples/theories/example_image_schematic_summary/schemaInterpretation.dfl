@@ -1,0 +1,13 @@
+isA(?g, Goal), focuses(?g, ?o), actsOn(?g, ?p), hasModality(?g, Support) => stet_opticalFlow/query(?o, ?p)
+isA(?g, Goal), focuses(?g, ?o), actsOn(?g, ?p), hasModality(?g, Support) => stet_contact/query(?o, ?p)
+
+isA(?g, Goal), focuses(?g, ?o), actsOn(?g, ?p), hasModality(?g, Linkage) => stet_opticalFlow/query(?o, ?p)
+isA(?g, Goal), focuses(?g, ?o), actsOn(?g, ?p), hasModality(?g, Linkage) => stet_contact/query(?o, ?p)
+
+isA(?g, Goal), focuses(?g, ?o), actsOn(?g, ?p), hasModality(?g, SPG) => stet_opticalFlow/query(?o, ?p)
+
+# Not using decluder in this example
+#isA(?g, Goal), focuses(?g, ?o), actsOn(?g, ?p), hasModality(?g, Penetration) => stet_declude/query(?o, ?p)
+#isA(?g, Goal), focuses(?g, ?o), actsOn(?g, ?p), hasModality(?g, Penetration) => stet_contact/query(?o, ?p)
+
+

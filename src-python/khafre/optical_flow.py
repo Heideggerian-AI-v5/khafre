@@ -76,6 +76,7 @@ def getRelativeMovements(previous3D, now3D, queries, approachV, departV):
         dPDir = [x/dPNorm for x in dPVec]
         return sum(a*b for a,b in zip(dPDir, dVVec))
     kinematicData = {k: getRobotRelativeKinematics(previous3D[k], now3D[k]) for k in now3D.keys() if (previous3D.get(k) is not None) and (now3D[k] is not None)}
+    kinematicData = {k: v for k, v in kinematicData.items() if v[0] is not None}
     kinematicData["self"] = (numpy.array([0,0,0]), numpy.array([0,0,0]))
     retq = set()
     for o, d in kinematicData.items():

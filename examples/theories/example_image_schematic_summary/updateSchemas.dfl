@@ -1,0 +1,27 @@
+isA(?s, Contact), hasS(?s, ?o1) => hasParticipant(?s, ?o1)
+isA(?s, Contact), hasO(?s, ?o1) => hasParticipant(?s, ?o1)
+isA(?s, Approach), hasS(?s, ?o1) => hasParticipant(?s, ?o1)
+isA(?s, Approach), hasO(?s, ?o1) => hasParticipant(?s, ?o1)
+isA(?s, Departure), hasS(?s, ?o1) => hasParticipant(?s, ?o1)
+isA(?s, Departure), hasO(?s, ?o1) => hasParticipant(?s, ?o1)
+isA(?s, Stillness), hasS(?s, ?o1) => hasParticipant(?s, ?o1)
+isA(?s, Stillness), hasO(?s, ?o1) => hasParticipant(?s, ?o1)
+isA(?s, Falling), hasS(?s, ?o1) => hasParticipant(?s, ?o1)
+isA(?s, Falling), hasO(?s, ?o1) => hasParticipant(?s, ?o1)
+isA(?s, Rising), hasS(?s, ?o1) => hasParticipant(?s, ?o1)
+isA(?s, Rising), hasO(?s, ?o1) => hasParticipant(?s, ?o1)
+
+isA(?s, Support), hasS(?s, ?o1) => hasSupporter(?s, ?o1)
+isA(?s, Support), hasO(?s, ?o1) => hasSupportee(?s, ?o1)
+
+isA(?s, Linkage), hasS(?s, ?o1) => hasParticipant(?s, ?o1)
+isA(?s, Linkage), hasO(?s, ?o1) => hasParticipant(?s, ?o1)
+
+# Not using decluder in this example
+#isA(?s, Occlusion), hasS(?s, ?o1), hasO(?s, ?o2) => hasOccludee(?s, ?o1)
+#isA(?s, Occlusion), hasS(?s, ?o1), hasO(?s, ?o2) => hasOccluder(?s, ?o2)
+
+#isA(?s, Penetration), hasS(?s, ?o1), hasO(?s, ?o2) => hasPenetrator(?s, ?o1)
+#isA(?s, Penetration), hasS(?s, ?o1), hasO(?s, ?o2) => hasPenetree(?s, ?o2)
+
+

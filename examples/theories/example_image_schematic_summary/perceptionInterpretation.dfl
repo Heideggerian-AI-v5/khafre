@@ -1,0 +1,45 @@
+# Basic taxonomic inference -- but keep info about what was the most basic class as asserted
+# by object detection ...
+
+subclassOf(?a, ?b), subclassOf(?b, ?c) => subclassOf(?a, ?c)
+inferredIsA(?a, ?b), subclassOf(?b, ?c) => inferredIsA(?a, ?c)
+isA(?a, ?b) => inferredIsA(?a, ?b)
+
+inferredIsA(?a, Loggable) => stet_isA(?a, Loggable)
+
+# Goal is persistent for ever [in this example]
+
+isA(?g, Goal) => stet_isA(?g, Goal)
+hasFocus(?g, ?oc) => stet_hasFocus(?g, ?oc)
+hasPatient(?g, ?oc) => stet_hasPatient(?g, ?oc)
+hasModality(?g, ?m) => stet_hasModality(?g, ?m)
+
+# Identify an object of interest, keep class info
+
+inferredIsA(?o, ?oc), isA(?g, Goal), hasFocus(?g, ?oc) => stet_focuses(?g, ?o)
+inferredIsA(?o, ?oc), isA(?g, Goal), hasPatient(?g, ?oc) => stet_actsOn(?g, ?o)
+isA(?o, ?oc), isA(?g, Goal), stet_focuses(?g, ?o) => stet_isA(?o, ?oc)
+isA(?o, ?oc), isA(?g, Goal), stet_actsOn(?g, ?o) => stet_isA(?o, ?oc)
+
+# Convert some observations into reified schemas
+contact(?c1, ?c2) => reifiable_Contact(?c1, ?c2)
+approaches(?c1, ?c2) => reifiable_Approach(?c1, ?c2)
+departs(?c1, ?c2) => reifiable_Departure(?c1, ?c2)
+stillness(?c1, ?c2) => reifiable_Stillness(?c1, ?c2)
+downwardMovement(?c1, ?c1) => reifiable_Falling(?c1)
+upwardMovement(?c1, ?c1) => reifiable_Rising(?c1)
+
+default_support: contact(?c1, ?c2), stillness(?c1, ?c2), inferredIsA(?c1, Furniture), inferredIsA(?c2, Supportable) => reifiable_Support(?c1, ?c2)
+falling_breaks_support: contact(?c1, ?c2), downwardMovement(?c2, ?c2) => -reifiable_Support(?c1, ?c2)
+
+falling_breaks_support > default_support
+
+# An attempt to capture "grasping": an agent that can pull itself to something, or something to itself, or maintains contact in stillness
+# after having pulled it(self) to it(self).
+contact(?c1, ?c2), inferredIsA(?c1, Agent), approaches(?c1, ?c2) => reifiable_Linkage(?c1, ?c2)
+contact(?c1, ?c2), inferredIsA(?c1, Agent), stillness(?c1, ?c2), isA(?s, Linkage), hasParticipant(?s, ?c1), hasParticipant(?s, ?c2) => reifiable_Linkage(?c1, ?c2)
+
+# Not using decluder in this example
+#occludedBy(?c1, ?c2) => reifiable_Occlusion(?c1, ?c2)
+#contact(?c1, ?c2), occludedBy(?c1, ?c2) => reifiable_Penetration(?c1, ?c2)
+

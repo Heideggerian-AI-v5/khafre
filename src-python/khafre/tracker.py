@@ -63,17 +63,17 @@ class ByteTracker(Tracker):
         self._bboxAnnotator = supervision.BoxAnnotator()
         self._labelAnnotator = supervision.LabelAnnotator()
         self._polygonAnnotator = supervision.PolygonAnnotator()
-        self._settings["max_det"] = 20
-        self._settings["conf"] = 0.25
+        self._settings["max_det"] = 80
+        self._settings["conf"] = 0.05
         self._settings["frame_rate"] = 30
         self._settings["lost_track_buffer"] = 60
         self._settings["max_time_lost"] = int((self._settings["frame_rate"] / 30) * self._settings["lost_track_buffer"])
         self._settings["minimum_matching_threshold"] = 0.8
         self._settings["minimum_consecutive_frames"] = 1
-        self._settings["track_activation_threshold"] = 0.25
+        self._settings["track_activation_threshold"] = 0.5
         self._settings["det_interval"] = 0.1
         self._settings["det_thresh"] = (self._settings["track_activation_threshold"] + self._settings["det_interval"])
-        self._settings["nmm_threshold"] = 0.65
+        self._settings["nmm_threshold"] = 0.35
         self._tracker = None
         self._onSettingsUpdate["frame_rate"] = self._updateFrameRate
         self._onSettingsUpdate["lost_track_buffer"] = self._updateLostTrackBuffer
@@ -163,6 +163,7 @@ class ByteTracker(Tracker):
             for mask, box, confidence, className, idx in zip(masks, boxes, confidences, classNames, idxs):
                 if mask is None:
                     continue
+                className = className.replace(" ", "_")
                 oname = f"{className}_{idx}"
                 triples.add(("isA", oname, className))
                 col = len(triples)
@@ -170,7 +171,7 @@ class ByteTracker(Tracker):
                 maskImg = numpy.zeros(mask.shape, dtype=numpy.uint8)
                 maskImg[mask] = 255
                 polygons = findTopPolygons(maskImg)
-                segments.append({"name": oname, "type": className.replace(" ", "_"), "confidence": confidence, "box": box, "polygons": polygons, "id": col})
+                segments.append({"name": oname, "type": className, "confidence": confidence, "box": box, "polygons": polygons, "id": col})
                 
                 for p in polygons:
                     cv.fillPoly(outputImg, pts = [p], color = col)

@@ -227,8 +227,10 @@ AVOID using this function. Only included for some debug purposes.
                 shmData = cv.resize(shmData, (self._npArray.shape[1], self._npArray.shape[0]), interpolation=cv.INTER_LINEAR)
             numpy.copyto(self._npArray, shmData)
         with self._state: 
+            #print("WIRE publishing notification", self._name)
             _=[x.put(notifData) for x in self._notifications]
             self._state.value = self._readerCount.value
+            #print("    WIRE done               ", self._name)
         for e in self._readerEvents:
             if e is not None:
                 with e:
@@ -271,8 +273,10 @@ class _PublisherPort:
                 shmData = cv.resize(shmData, (self._shape[1], self._shape[0]), interpolation=cv.INTER_LINEAR)
             numpy.copyto(self._npArray, shmData)
         with self._state:
+            #print("PORT publishing notification", self._name)
             _=[x.put(notifData) for x in self._notifications]
             self._state.value = self._readerCount.value
+            #print("    PORT done               ", self._name)
         for e in self._events:
             if e is not None:
                 with e:
@@ -328,7 +332,7 @@ it on request and do custom cleanup code in such cases.
     def __init__(self):
         self._process=None
         self._daemon=False
-        self._command = SimpleQueue()
+        self._command = SimpleQueue()#Queue()
         self._keepOn=False
         self._subscriptions={}
         self._publishers={}
@@ -502,7 +506,7 @@ Runs the object's process and sets up graceful exit on SIGTERM.
                     haveEvent = self._bypassEvent or self._internalEvent() # Maybe process code requests another step immediately
                     haveEvent = haveEvent or ((0 < len(self._subscriptions)) and all([x.isReady() for x in self._subscriptions.values()])) # Or maybe a nontrivial full set of inputs is available
                     haveEvent = haveEvent or any([(x.isReady() and (self._dataToPublish[name].get("ready", False))) for name, x in self._publishers.items()]) # Or maybe one of the outputs can be updated
-                    haveEvent = haveEvent or (not self._command.empty())
+                    haveEvent = haveEvent or (not self._command.empty())#(0 != self._command.qsize())
                     if not haveEvent:
                         self._event.wait()
                 if "RecordedVideoInput" == type(self).__name__:
@@ -511,7 +515,7 @@ Runs the object's process and sets up graceful exit on SIGTERM.
                     if pub.isReady() and self._dataToPublish[name].get("ready", False):
                         pub.publish(self._dataToPublish[name].get("notification", None), self._dataToPublish[name].get("image", None))
                         self._dataToPublish[name]["ready"] = False
-                while not self._command.empty():
+                while (not self._command.empty()):#(0 != self._command.qsize()):
                     self._handleCommand(self._command.get())
                 fullInput = all([x.isReady() for x in self._subscriptions.values()])
                 freeOutput = all([not x.get("ready", False) for x in self._dataToPublish.values()])

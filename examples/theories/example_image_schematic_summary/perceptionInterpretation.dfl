@@ -18,8 +18,8 @@ hasModality(?g, ?m) => stet_hasModality(?g, ?m)
 
 inferredIsA(?o, ?oc), isA(?g, Goal), hasFocus(?g, ?oc) => stet_focuses(?g, ?o)
 inferredIsA(?o, ?oc), isA(?g, Goal), hasPatient(?g, ?oc) => stet_actsOn(?g, ?o)
-isA(?o, ?oc), isA(?g, Goal), stet_focuses(?g, ?o) => stet_isA(?o, ?oc)
-isA(?o, ?oc), isA(?g, Goal), stet_actsOn(?g, ?o) => stet_isA(?o, ?oc)
+#isA(?o, ?oc), isA(?g, Goal), stet_focuses(?g, ?o) => stet_isA(?o, ?oc)
+#isA(?o, ?oc), isA(?g, Goal), stet_actsOn(?g, ?o) => stet_isA(?o, ?oc)
 
 # Convert some observations into reified schemas
 contact(?c1, ?c2) => reifiable_Contact(?c1, ?c2)

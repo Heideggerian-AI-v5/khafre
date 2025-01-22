@@ -497,7 +497,10 @@ class Reasoner(ReifiedProcess):
                 if (inputName in self._storageMap) and (inputName in self._dataFromSubscriptions):
                     self._requestToPublish(self._storageMap[inputName], results, imageResources[inputName])
             ## send perception queries
-            _ = [self._callWorker(x, ("PUSH_GOALS", self.perceptionQueries)) for x in self._workers.values()]
+            print("CALL Workers", len(self.perceptionQueries))
+            print(self.perceptionQueries)
+            _ = [(print("  s"), self._callWorker(x, ("PUSH_GOALS", self.perceptionQueries)), print("  e")) for x in self._workers.values()]
+            print("    done call")
     def registerWorker(self, name, proc):
         self._workers[name] = (proc._command, proc._event)
     def _callWorker(self, worker, command, block=False, timeout=None):
@@ -508,7 +511,7 @@ class Reasoner(ReifiedProcess):
     def _cleanup(self):
         self._storeSummary()
     def _storeSummary(self):
-        print("STORING", os.path.isdir(self._eventPath), len(self._storyBoard["rows"]))
+        print("STORING", os.path.isdir(self._eventPath), len(self._storyBoard["rows"]), len(self._storyBoard["columns"]))
         if os.path.isdir(self._eventPath):
             if 0 < len(self._storyBoard["rows"]):
                 table = "<table id=\"allCells\" border=\"2\">\n<tr><td />"

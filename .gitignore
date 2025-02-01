@@ -162,3 +162,10 @@ cython_debug/
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
 .vscode
+
+# Misc stuff
+#     place to dump temporary files created by examples ...
+tmp/
+#     models downloaded by the examples
+examples/*.pt
+

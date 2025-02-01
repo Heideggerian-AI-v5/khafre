@@ -20,6 +20,12 @@ class RecordedVideoFeed(ImageSource):
         #self.atFrame = 0
     def hasEnded(self):
         return (0 != self._ended.value)
+    def waitForLoad(self):
+        while (0 != self._ended.value):
+            time.sleep(0.1)
+    def waitForEnd(self):
+        while (0 == self._ended.value):
+            time.sleep(0.1)
     def _handleCommand(self, command):
         op, args = command
         if "LOAD" == op:

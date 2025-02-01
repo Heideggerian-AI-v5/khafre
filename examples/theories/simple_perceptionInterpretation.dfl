@@ -1,5 +1,0 @@
-isA(?g, Goal) => stet_isA(?g, Goal)
-hasFocus(?g, ?o) => stet_hasFocus(?g, ?o)
-
-contact(?c1, ?c2) => reifiable_Contact(?c1, ?c2)
-contact(?c1, ?c2), isA(?c2, Table) => reifiable_Support(?c1, ?c2)

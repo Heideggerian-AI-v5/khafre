@@ -70,7 +70,7 @@ class ByteTracker(Tracker):
         self._settings["max_time_lost"] = int((self._settings["frame_rate"] / 30) * self._settings["lost_track_buffer"])
         self._settings["minimum_matching_threshold"] = 0.8
         self._settings["minimum_consecutive_frames"] = 1
-        self._settings["track_activation_threshold"] = 0.5
+        self._settings["track_activation_threshold"] = 0.3
         self._settings["det_interval"] = 0.1
         self._settings["det_thresh"] = (self._settings["track_activation_threshold"] + self._settings["det_interval"])
         self._settings["nmm_threshold"] = 0.35

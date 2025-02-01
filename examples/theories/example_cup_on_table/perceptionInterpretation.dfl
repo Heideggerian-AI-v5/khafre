@@ -1,8 +1,0 @@
-isA(?g, Goal) => stet_isA(?g, Goal)
-hasFocus(?g, ?oc) => stet_hasFocus(?g, ?oc)
-hasModality(?g, ?m) => stet_hasModality(?g, ?m)
-
-isA(?o, ?oc), isA(?g, Goal), hasFocus(?g, ?oc) => stet_focuses(?g, ?o)
-
-contact(?c1, ?c2) => reifiable_Contact(?c1, ?c2)
-contact(?c1, ?c2), stillness(?c1, ?c2) => reifiable_Support(?c1, ?c2)

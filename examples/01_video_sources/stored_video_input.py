@@ -1,9 +1,7 @@
 import argparse
-import base64
 import cv2 as cv
 import numpy
 import os
-from PIL import Image
 import sys
 import time
 
@@ -64,26 +62,14 @@ def main():
     procs["vc"].sendCommand(("LOAD", (arguments.input_video,)))
     procs["objP"].sendCommand(("LOAD", ("yolov8x-seg.pt",)))
     
-    while True:
-        if not procs["vc"].hasEnded():
-            break
-        time.sleep(0.1)
+    procs["vc"].waitForLoad()
 
     # Define and run some code that actually does something with the set up processes.
 
     # This function will be called repeatedly until some condition happens: either a key is released,
     # or something inside the function triggers the end.
         
-    # This function tells the stored video process to produce a new frame, and will return false when
-    # there are no more frames so that the looping is stopped.
-
     def exampleFn(procs):
-        # Place the image into the shared port. Also, notify the consumer (DbgVis) that something happened.
-        # Note: screenshot is likely larger than the producer's image. producer.send will automatically resize
-        # in this case.
-
-        # DbgVis can also print something for us. We could also have sent a notification with an empty string
-        # instead.
         time.sleep(0.1)
         return not procs["vc"].hasEnded()
 

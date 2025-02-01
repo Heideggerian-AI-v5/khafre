@@ -1,5 +1,4 @@
 import cv2 as cv
-from multiprocessing import Queue
 import numpy as np
 import sapien
 

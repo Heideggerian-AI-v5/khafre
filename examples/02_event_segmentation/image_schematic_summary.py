@@ -1,19 +1,22 @@
 import argparse
-import base64
 import cv2 as cv
 import numpy
 import os
-from PIL import Image
 import sys
 import time
 
 from khafre.bricks import drawWire, setSignalHandlers, startKhafreProcesses, stopKhafreProcesses
 from khafre.dbgvis import DbgVisualizer
+from khafre.declude import Decluder
 from khafre.depth import TransformerDepthSegmentationWrapper
-from khafre.flowtracker_v1 import FlowTracker
 from khafre.tracker import ByteTracker
+from khafre.contact import ContactDetection
+from khafre.optical_flow import OpticalFlow
+from khafre.reasoning import Reasoner
+from khafre.framestore import YOLOFrameSaver
 from khafre.videocapture import RecordedVideoFeed
 
+from multiprocessing import Queue
 
 ### Image Schematic Summary example: selects frames from a video where image schematic relations
 # such as contact, occlusion, linkage, and relative movement change between objects of interest
@@ -31,10 +34,22 @@ def main():
     # our resources.
     basePath = os.path.dirname(os.path.abspath(__file__)).replace("\\","/")
     
+    percIntTheory = os.path.join(basePath, "theories/example_image_schematic_summary/perceptionInterpretation.dfl")
+    updSchTheory = os.path.join(basePath, "theories/example_image_schematic_summary/updateSchemas.dfl")
+    connQTheory = os.path.join(basePath, "theories/example_image_schematic_summary/connectivityQueries.dfl")
+    schClsTheory = os.path.join(basePath, "theories/example_image_schematic_summary/schemaClosure.dfl")
+    schIntTheory = os.path.join(basePath, "theories/example_image_schematic_summary/schemaInterpretation.dfl")
+    updQTheory = os.path.join(basePath, "theories/example_image_schematic_summary/updateQueries.dfl")
+    interpMasksTheory = os.path.join(basePath, "theories/example_image_schematic_summary/interpretMasks.dfl")
+    storeMasksTheory = os.path.join(basePath, "theories/example_image_schematic_summary/storeMasks.dfl")
+    backgroundFacts = os.path.join(basePath, "theories/example_image_schematic_summary/backgroundFacts.dfl")
+    defaultFacts = os.path.join(basePath, "theories/example_image_schematic_summary/defaultFacts.dfl")
+
     # Setting up a command line argument parser and reading the provided arguments.
-    parser = argparse.ArgumentParser(prog='stored_video_input', description='Analyze a video file using khafre', epilog='')
+    parser = argparse.ArgumentParser(prog='stored_video_input', description='Analyze a video file using khafre to produce an image schematic event segmentation.', epilog='')
     parser.add_argument('-iv', '--input_video', default="", help="REQUIRED: Path to the video file that will be used as input for khafre.")
     parser.add_argument('-nogui', '--nogui', action='store_true', help='OPTIONAL: Flag to disable debug visualization. Will also disable early termination via ESCAPE keypress (early termination via keyboard interrupt or terminate signal remains available). Use this on systems with no window manager. You will likely need this when running khafre on remote machines too.')
+    parser.add_argument('-efp', '--event_frames_path', default="./event_frames", help="OPTIONAL: Path to the folder where khafre will store selected frames and their image schematic descriptions.")
     parser.add_argument('-ml', '--max_lines', default="640", help="OPTIONAL: Maximum number of lines for a video frame. If the input video has higher resolution, it will be downscaled so that its frame height matches this parameter. Default is 640. If parameter given, must be convertible to integer.")
     
     arguments = parser.parse_args()
@@ -64,7 +79,18 @@ def main():
         print(e)
         print("Will now exit.")
         sys.exit(0)
-
+    
+    eventPath = os.path.abspath(arguments.event_frames_path).replace("\\","/")
+    
+    if not os.path.isdir(eventPath):
+        try:
+            os.mkdir(eventPath)
+        except Exception as e:
+            print("Encountered exception during an attempt to create a folder for the selected frames.")
+            print(e)
+            print("Will now exit.")
+            sys.exit(0)
+    
     ######### Part 1: khafre usage example.
 
     # IMPORTANT: this will be our registry of "wires", connections between khafre subprocesses.
@@ -84,21 +110,31 @@ def main():
     procs["vc"] = RecordedVideoFeed()
     if not headless:
         procs["dbgP"] = DbgVisualizer()
-    #procs["objP"] = ByteTracker()
-    procs["objP"] = FlowTracker()
+    procs["objP"] = ByteTracker()
     # Monocular depth estimation is VERY computationally expensive, try to have it run on the GPU
-    #procs["dptP"] = TransformerDepthSegmentationWrapper(device="cuda")
+    procs["dptP"] = TransformerDepthSegmentationWrapper(device="cuda")
+    procs["conP"] = ContactDetection()
+    procs["optP"] = OpticalFlow()
+    procs["reasoner"] = Reasoner()
 
     # Set up the connections between processes.
 
     if not headless:
         drawWire("Video Dbg", ("DbgImg", procs["vc"]), [("Video", procs["dbgP"])], (imgHeight, imgWidth, 3), numpy.float32, wireList=wireList)
         drawWire("Dbg Obj Seg", ("DbgImg", procs["objP"]), [("Object Detection/Segmentation", procs["dbgP"])], (imgHeight, imgWidth, 3), numpy.float32, wireList=wireList)
-        #drawWire("Dbg Depth", ("DbgImg", procs["dptP"]), [("Depth Estimation", procs["dbgP"])], (imgHeight, imgWidth, 3), numpy.float32, wireList=wireList)
+        drawWire("Dbg Depth", ("DbgImg", procs["dptP"]), [("Depth Estimation", procs["dbgP"])], (imgHeight, imgWidth, 3), numpy.float32, wireList=wireList)
+        drawWire("Dbg Contact", ("DbgImg", procs["conP"]), [("Contact Detection", procs["dbgP"])], (imgHeight, imgWidth, 3), numpy.float32, wireList=wireList)
+        drawWire("Dbg Optical Flow", ("DbgImg", procs["optP"]), [("Optical Flow (sparse)", procs["dbgP"])], (imgHeight, imgWidth, 3), numpy.float32, wireList=wireList)
 
-    drawWire("Input Image", ("OutImg", procs["vc"]), [("InpImg", procs["objP"])], (imgHeight, imgWidth, 3), numpy.uint8, wireList=wireList)
-    #drawWire("Input Image", ("OutImg", procs["vc"]), [("InpImg", procs["objP"]), ("InpImg", procs["dptP"])], (imgHeight, imgWidth, 3), numpy.uint8, wireList=wireList)
-    #drawWire("Depth Image", ("OutImg", procs["dptP"]), [("DepthImg", procs["objP"])], (imgHeight, imgWidth), numpy.float32, wireList=wireList)
+    drawWire("Input Image", ("OutImg", procs["vc"]), [("InpImg", procs["objP"]), ("InpImg", procs["dptP"]), ("InpImg", procs["optP"]), ("InpImg", procs["reasoner"])], (imgHeight, imgWidth, 3), numpy.uint8, wireList=wireList)
+    drawWire("Mask Image", ("OutImg", procs["objP"]), [("MaskImg", procs["conP"]), ("MaskImg", procs["optP"]), ("MaskImg", procs["reasoner"])], (imgHeight, imgWidth), numpy.uint16, wireList=wireList)
+    drawWire("Depth Image", ("OutImg", procs["dptP"]), [("DepthImg", procs["conP"]), ("DepthImg", procs["optP"])], (imgHeight, imgWidth), numpy.float32, wireList=wireList)
+    drawWire("OutImg Contact", ("OutImg", procs["conP"]), [("ContactMask", procs["reasoner"])], (imgHeight, imgWidth), numpy.uint32, wireList=wireList)
+    drawWire("OutImg OpticalFlow", ("OutImg", procs["optP"]), [("Optical Flow (sparse)", procs["reasoner"])], (imgHeight, imgWidth), numpy.uint32, wireList=wireList)
+
+    # To coordinate the video analysis, reasoning needs to be given access to the command queue of several processes.        
+    procs["reasoner"].registerWorker("contact", procs["conP"])
+    procs["reasoner"].registerWorker("opticalFlow", procs["optP"])
 
     # Optional, but STRONGLY recommended: set up signal handlers. The handlers will trigger the 
     # termination of the various subprocesses. Alternatively, ensure in some other way that
@@ -117,21 +153,38 @@ def main():
     # RECOMMENDED: tell the object detection to load a model AFTER starting the process. This might avoid some unnecessary
     # copying of a large object when starting the process.
 
-    #procs["dptP"].sendCommand(("LOAD", ("vinvino02/glpn-nyu",)))
     procs["objP"].sendCommand(("LOAD", ("yolov8x-seg.pt",)))
     #procs["objP"].sendCommand(("LOAD", ("yolo11x-seg.pt",)))
     procs["objP"].sendCommand(("START", ()))
+    procs["dptP"].sendCommand(("LOAD", ("vinvino02/glpn-nyu",)))
+
+    # Load theories and facts: these describe how reasoning should reconfigure the video analysis and adapt it
+    # frame by frame to the situation.
+
+    procs["reasoner"].sendCommand(("LOAD_THEORY", ("perception interpretation", percIntTheory)))
+    procs["reasoner"].sendCommand(("LOAD_THEORY", ("update schemas", updSchTheory)))
+    procs["reasoner"].sendCommand(("LOAD_THEORY", ("connectivity queries", connQTheory)))
+    procs["reasoner"].sendCommand(("LOAD_THEORY", ("schema closure", schClsTheory)))
+    procs["reasoner"].sendCommand(("LOAD_THEORY", ("schema interpretation", schIntTheory)))
+    procs["reasoner"].sendCommand(("LOAD_THEORY", ("update questions", updQTheory)))
+    procs["reasoner"].sendCommand(("LOAD_THEORY", ("interpret masks", interpMasksTheory)))
+    procs["reasoner"].sendCommand(("LOAD_THEORY", ("store masks", storeMasksTheory)))
+    procs["reasoner"].sendCommand(("LOAD_FACTS", (backgroundFacts,)))
+
+    # Set the path to store the selected frames in.
+
+    procs["reasoner"].sendCommand(("SET_PATH", (eventPath,)))
+
+    # The first decision of the reasoner is about how to configure analysis, before anything is seen.
+    # From this point, the khafre system is ready to do something.
+
+    procs["reasoner"].sendCommand(("TRIGGER", (defaultFacts,)))
 
     # Load and start sending the video to khafre.
-
     procs["vc"].sendCommand(("LOAD", (inputVideo,)))
 
     # Wait for the video to load.
-
-    while True:
-        if not procs["vc"].hasEnded():
-            break
-        time.sleep(0.1)
+    procs["vc"].waitForLoad()
 
     # Define and run some code that actually does something with the set up processes.
 
@@ -157,10 +210,12 @@ def main():
 
         # Loop while there are frames left to process.
 
-        while True:
-            time.sleep(0.1)
-            if procs["vc"].hasEnded():
-                break
+        procs["vc"].waitForEnd()
+
+    # Once the video is finished, tell reasoning to also make a summary.html of the selected frames.
+
+    procs["reasoner"].sendCommand(("STORE_SUMMARY", ()))
+    time.sleep(0.1)
 
     # A clean exit: stop all subprocesses.
     # In general, you can use stopKhafreProcesses to do what it says. Note that by default it will not raise exceptions.

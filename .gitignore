@@ -167,5 +167,5 @@ cython_debug/
 #     place to dump temporary files created by examples ...
 tmp/
 #     models downloaded by the examples
-examples/*.pt
+*.pt
 

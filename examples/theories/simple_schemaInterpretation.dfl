@@ -1,2 +1,0 @@
-isA(?g, Goal), hasFocus(?g, ?o) => stet_connectivity/query(?o)
-isA(?s, Support), hasSupportee(?s, ?o1), hasSupporter(?s, ?o2) => stet_connectivity/query(?o1, ?o2)

@@ -1,9 +1,7 @@
 import argparse
-import base64
 import cv2 as cv
 import numpy
 import os
-from PIL import Image
 import sys
 import time
 
@@ -14,10 +12,7 @@ from khafre.videocapture import WebStream
 from khafre.utils import repeatUntilKey
 
 
-## Stored video example: shows how to set up a connection to the khafre debug visualizer and object segmentation.
-# In this example, what we will visualize is a prerecorded video of your choosing. You select which video by giving
-# a command line argument, then khafre will display object segmentations for as many frames as it can process in
-# real-time.
+## Websocket video example: shows how to set up a connection from a websocket offering a video stream to the khafre debug visualizer and object segmentation.
 
 def main():
     
@@ -38,6 +33,7 @@ def main():
     
     procs = {}
 
+    # Frames will be resized where necessary.
     imgWidth,imgHeight = (400,300)
         
     procs["dbgP"] = DbgVisualizer()
@@ -69,16 +65,7 @@ def main():
     # This function will be called repeatedly until some condition happens: either a key is released,
     # or something inside the function triggers the end.
         
-    # This function tells the stored video process to produce a new frame, and will return false when
-    # there are no more frames so that the looping is stopped.
-
     def exampleFn(procs):
-        # Place the image into the shared port. Also, notify the consumer (DbgVis) that something happened.
-        # Note: screenshot is likely larger than the producer's image. producer.send will automatically resize
-        # in this case.
-
-        # DbgVis can also print something for us. We could also have sent a notification with an empty string
-        # instead.
         time.sleep(0.1)
         return True
 

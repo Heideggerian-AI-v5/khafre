@@ -66,7 +66,7 @@ def getRobotRelativeKinematics(previous3D, now3D):
     retq = [(nw - pr) for pr, nw in zip(previous3D, now3D)]
     return sum(now3D)/len(now3D), numpy.median(retq, 0) #sum(retq)/len(retq)
 
-def getRelativeMovements(previous3D, now3D, queries, approachV, departV):
+def getRelativeMovements(previous3D, now3D, queries, approachV, departV, fallV, descendV, downDir=None):
     def _relativeSpeed(vs, vo, ps, po):
         if (vs is None) or (vo is None) or (ps is None) or (po is None):
             return None
@@ -75,10 +75,22 @@ def getRelativeMovements(previous3D, now3D, queries, approachV, departV):
         dPNorm = max(0.0001, math.sqrt(sum(x*x for x in dPVec)))
         dPDir = [x/dPNorm for x in dPVec]
         return sum(a*b for a,b in zip(dPDir, dVVec))
+    if downDir is None:
+        downDir = [0,1,0]
     kinematicData = {k: getRobotRelativeKinematics(previous3D[k], now3D[k]) for k in now3D.keys() if (previous3D.get(k) is not None) and (now3D[k] is not None)}
     kinematicData = {k: v for k, v in kinematicData.items() if v[0] is not None}
-    kinematicData["self"] = (numpy.array([0,0,0]), numpy.array([0,0,0]))
     retq = set()
+    for k, v in kinematicData.items():
+        velocity = v[1]
+        if fallV < numpy.dot(velocity, downDir):
+            retq.add(("falls", k))
+        elif descendV < numpy.dot(velocity, downDir):
+            retq.add(("descends", k))
+        elif -fallV > numpy.dot(velocity, downDir):
+            retq.add(("rises", k))
+        elif -descendV > numpy.dot(velocity, downDir):
+            retq.add(("ascends", k))
+    kinematicData["self"] = (numpy.array([0,0,0]), numpy.array([0,0,0]))
     for o, d in kinematicData.items():
         vel = d[1]
         spd = math.sqrt(vel[0]*vel[0] + vel[1]*vel[1] + vel[2]*vel[2])
@@ -129,6 +141,8 @@ Additionally, gets goal data (sets of triples) from a queue.
         self._settings["approachVelocity"] = -0.02
         self._settings["departVelocity"] = 0.02
         self._settings["focalDistance"] = 200.0
+        self._settings["fallVelocity"] = 0.9
+        self._settings["descendVelocity"] = 0.5
         self._symmetricPredicates.add("opticalFlow/query/relativeMovement")
         self._previousImage = None
         self._previousDepth = None
@@ -186,7 +200,7 @@ Additionally, gets goal data (sets of triples) from a queue.
             for o in qObjs:
                 self._previousFeatures[o] = getFeatures(self._previousFeatures.get(o), self._previousImage, self._previousMaskImgs[o], featureParams)
                 self._previousFeatures[o], nowFeatures[o], previous3D[o], now3D[o] = computeOpticalFlow(self._previousFeatures.get(o), self._previousImage, self._currentImage, self._currentMaskImgs[o], self._previousDepth, self._currentDepth, lkParams, f)
-            relativeMovements = getRelativeMovements(previous3D, now3D, self._queries, self._settings["approachVelocity"], self._settings["departVelocity"])
+            relativeMovements = getRelativeMovements(previous3D, now3D, self._queries, self._settings["approachVelocity"], self._settings["departVelocity"], self._settings["fallVelocity"], self._settings["descendVelocity"])
             relativeMovements = [t for t in relativeMovements if t[1] != t[2]]
             _ = [self._triplesFilter.addTriple(t) for t in relativeMovements]
             self._requestToPublish("OutImg", {"imgId": maskResults.get("imgId"), "triples": self._triplesFilter.getActiveTriples()}, None)

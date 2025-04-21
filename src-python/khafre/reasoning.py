@@ -157,7 +157,7 @@ def reifyConclusions(conclusions):
 #    triples = [("isA", "runningQuery", qtype), ("hasSource", "runningQuery", source), ("hasTarget", "runningQuery", target)]
 #    return triples2Facts(triples)
 
-def logImageSchematicEvents(reasoner, conclusions, imageResources, inpImgId):
+def logImageSchematicEvents(reasoner, conclusions, imageResources, inpImgId, segmentations, objectTriples):
     def _ensurePrefix(s):
         if ":" not in s:
             return "log:"+s
@@ -222,12 +222,25 @@ def logImageSchematicEvents(reasoner, conclusions, imageResources, inpImgId):
     for t in conclusions.defeasiblyProvable:
         if (t[0] in ("isA", "inferredIsA", "rdf:type")) and (t[1] in participants):
             participants[t[1]].add(t[2])
+    for t in objectTriples:
+        if t[1] in participants:
+            participants[t[1]].add(t[2])
     if (0 != len(added)) or (0 != len(lost)):
         fnameRaw = "evt_%s" % str(time.perf_counter())
         fnamePrefix = os.path.join(reasoner._eventPath, fnameRaw)
         if "InpImg" in imageResources:
             imageBGR = cv.cvtColor(imageResources["InpImg"], cv.COLOR_BGR2RGB)
+            height, width = imageResources["InpImg"].shape[:2]
             Image.fromarray(imageBGR).save(fnamePrefix + ".jpg")
+            with open(fnamePrefix + ".txt", "w") as outfile:
+                for name, polygons in segmentations.items():
+                    for polygon in polygons:
+                        pstr = ""
+                        for p in polygon:
+                            pstr += ("%f %f " % (p[0]/width, p[1]/height))
+                        if 0 < len(polygon):
+                            pstr += ("%f %f " % (polygon[0][0]/width, polygon[0][1]/height))
+                        _ = outfile.write("%s %s\n" % (name, pstr))
             reasoner._storyBoard["columns"][len(reasoner._storyBoard["columns"])] = ("./" + fnameRaw + ".jpg", str(inpImgId))
             for row in reasoner._storyBoard["rows"].values():
                 row.append(False)
@@ -392,6 +405,7 @@ class Reasoner(ReifiedProcess):
         # A full set of inputs might not be available however.
         fullInput = all([v.get("notification") is not None for v in self._dataFromSubscriptions.values()])
         maskPolygons = {}
+        objectTriples = {}
         inpImgId = None
         if self._armed:
             facts = mergeFacts(self.persistentSchemas, self._defaultFacts)
@@ -431,6 +445,8 @@ class Reasoner(ReifiedProcess):
                     maskFacts.append(("hasS", name, m["hasS"]))
                     maskFacts.append(("hasO", name, m["hasO"]))
                     maskPolygons[int(m["hasId"])] = m["polygons"]
+            segmentations = {x["name"]: x["polygons"] for x in self._dataFromSubscriptions.get("MaskImg", {}).get("notification", {}).get("segments", [])}
+            objectTriples = self._dataFromSubscriptions.get("MaskImg", {}).get("notification", {}).get("triples", [])
         if fullInput or self._armed:
             self._armed = False
             for k in self._dataFromSubscriptions.keys():
@@ -473,7 +489,7 @@ class Reasoner(ReifiedProcess):
             self.persistentSchemas = mergeFacts(self.persistentSchemas, connectivityResults)
             conclusions = _silkie(self.closureTheory, self.persistentSchemas, self.backgroundFacts)
             if fullInput and (self._eventPath is not None) and (inpImgId is not None):
-                logImageSchematicEvents(self, conclusions, imageResources, inpImgId)
+                logImageSchematicEvents(self, conclusions, imageResources, inpImgId, segmentations, objectTriples)
             self._previousSchemaTriples = set(conclusions.defeasiblyProvable)
             self.persistentSchemas = conclusions2Facts(conclusions)
             ## new persistent schemas (dfl facts) + theory -> reifiable questions, stet relations (triples)

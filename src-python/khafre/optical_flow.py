@@ -83,13 +83,13 @@ def getRelativeMovements(previous3D, now3D, queries, approachV, departV, fallV, 
     for k, v in kinematicData.items():
         velocity = v[1]
         if fallV < numpy.dot(velocity, downDir):
-            retq.add(("falls", k))
+            retq.add(("falls", k, ''))
         elif descendV < numpy.dot(velocity, downDir):
-            retq.add(("descends", k))
+            retq.add(("descends", k, ''))
         elif -fallV > numpy.dot(velocity, downDir):
-            retq.add(("rises", k))
+            retq.add(("rises", k, ''))
         elif -descendV > numpy.dot(velocity, downDir):
-            retq.add(("ascends", k))
+            retq.add(("ascends", k, ''))
     kinematicData["self"] = (numpy.array([0,0,0]), numpy.array([0,0,0]))
     for o, d in kinematicData.items():
         vel = d[1]
@@ -104,7 +104,7 @@ def getRelativeMovements(previous3D, now3D, queries, approachV, departV, fallV, 
             away = vel[2]/spd
             for p, c in [("leftwardMovement", leftward), ("rightwardMovement", rightward), ("upwardMovement", upward), ("downwardMovement", downward), ("towardMovement", toward), ("awayMovement", away)]:
                 if 0.8 < c:
-                    retq.add((p, o, o))
+                    retq.add((p, o, ''))
     for p, s, o in queries:
         if (s in kinematicData) and (o in kinematicData):
             dV = _relativeSpeed(kinematicData[s][1], kinematicData[o][1], kinematicData[s][0], kinematicData[o][0])
@@ -201,7 +201,7 @@ Additionally, gets goal data (sets of triples) from a queue.
                 self._previousFeatures[o] = getFeatures(self._previousFeatures.get(o), self._previousImage, self._previousMaskImgs[o], featureParams)
                 self._previousFeatures[o], nowFeatures[o], previous3D[o], now3D[o] = computeOpticalFlow(self._previousFeatures.get(o), self._previousImage, self._currentImage, self._currentMaskImgs[o], self._previousDepth, self._currentDepth, lkParams, f)
             relativeMovements = getRelativeMovements(previous3D, now3D, self._queries, self._settings["approachVelocity"], self._settings["departVelocity"], self._settings["fallVelocity"], self._settings["descendVelocity"])
-            relativeMovements = [t for t in relativeMovements if t[1] != t[2]]
+            relativeMovements = [t for t in relativeMovements if (3 > len(t)) or (t[1] != t[2])]
             _ = [self._triplesFilter.addTriple(t) for t in relativeMovements]
             self._requestToPublish("OutImg", {"imgId": maskResults.get("imgId"), "triples": self._triplesFilter.getActiveTriples()}, None)
             # Do we need to prepare a debug image?

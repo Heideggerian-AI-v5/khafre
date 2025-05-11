@@ -148,6 +148,7 @@ Additionally, gets goal data (sets of triples) from a queue.
         maskResults, maskImg, rateMask, droppedMask = self._requestSubscribedData("MaskImg")
         maskImgs = _getMaskImgs(maskImg, maskResults)
         depthResults, depthImg, rateDepth, droppedDepth = self._requestSubscribedData("DepthImg")
+        print("CONTACT ObjTriples", maskResults["triples"])
         imgHeight, imgWidth = depthImg.shape
         outputImg = numpy.zeros((imgHeight, imgWidth), dtype=numpy.uint32)
         results = {"imgId": maskResults.get("imgId"), "idx2Contact": {}, "contact2Idx": {}, "triples": set(), "masks": []}

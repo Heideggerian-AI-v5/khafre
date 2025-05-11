@@ -43,23 +43,39 @@ class TriplesFilter:
         for e in toDelete:
             self._triples.pop(e)
     def addTriple(self, triple):
-        p, s, o = triple
+        def _swapTriple(triple):
+            if (2 < len(triple)) and ('' != triple[2]):
+                return (triple[0], triple[2], triple[1])
+            return triple
+        def _negateTriple(triple, np):
+            if 2 < len(triple):
+                ntriple = (np, s, o)
+            else:
+                ntriple = (np, s)
+            return ntriple
+        p = triple[0]
+        s = triple[1]
+        o = None
+        if 2 < len(triple):
+            o = triple[2]
         incompatibles = set(self._incompatibles.get(p, []))
         incompatibles.add(self._negation(p))
         swapIncompatibles = set(self._swapIncompatibles.get(p, []))
         haveIncompatible = False
         for np in incompatibles:
-            if (np, s, o) in self._triples:
-                self._triples[(np, s, o)]["disconfirmations"] += 1
-                if self._maxDisconfirmations <= self._triples[(np, s, o)]["disconfirmations"]:
-                    self._triples.pop((np, s, o))
+            ntriple = _negateTriple(triple, np)
+            if ntriple in self._triples:
+                self._triples[ntriple]["disconfirmations"] += 1
+                if self._maxDisconfirmations <= self._triples[ntriple]["disconfirmations"]:
+                    self._triples.pop(ntriple)
                 else:
                     haveIncompatible = True
         for np in swapIncompatibles:
-            if (np, o, s) in self._triples:
-                self._triples[(np, o, s)]["disconfirmations"] += 1
-                if self._maxDisconfirmations <= self._triples[(np, o, s)]["disconfirmations"]:
-                    self._triples.pop((np, o, s))
+            ntriple = _negateTriple(_swapTriple(triple), np)
+            if ntriple in self._triples:
+                self._triples[ntriple]["disconfirmations"] += 1
+                if self._maxDisconfirmations <= self._triples[ntriple]["disconfirmations"]:
+                    self._triples.pop(ntriple)
                 else:
                     haveIncompatible = True
         if not haveIncompatible:

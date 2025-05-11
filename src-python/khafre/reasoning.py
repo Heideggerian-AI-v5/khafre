@@ -91,14 +91,17 @@ def triples2Facts_internal(ts, prefix=None):
         prefix = ""
     retq = {}
     for t in ts:
-        p,s,o = t
+        p = t[0]
         if p.startswith("-"):
             p = "-" + prefix + p[1:]
         else:
             p = prefix + p
         if p not in retq:
             retq[p] = silkie.PFact(p)
-        retq[p].addFact(s, o, silkie.DEFEASIBLE)
+        if 2 < len(t):
+            retq[p].addFact(t[1], t[2], silkie.DEFEASIBLE)
+        else:
+            retq[p].addFact(t[1], '', silkie.DEFEASIBLE)
     return retq
 
 def triples2Facts(ts, prefix=None):
@@ -180,6 +183,8 @@ def logImageSchematicEvents(reasoner, conclusions, imageResources, inpImgId, seg
             if (("isA" != t[0]) or ("Loggable" != t[2])) and (t[0] not in ["hasO", "hasS"]):
                 p, o = t[0], t[2]
                 if p in ["isA", "inferredIsA", "rdf:type"]:
+                    if (o is None) or ('' == o):
+                        print("EMPTY Type in triple", t)
                     loggables[t[1]]["statements"].append(("rdf:type", o))
                 else:
                     loggables[t[1]]["statements"].append((p, o))
@@ -193,6 +198,8 @@ def logImageSchematicEvents(reasoner, conclusions, imageResources, inpImgId, seg
             cleanup.append(k)
     _ = [loggables.pop(e) for e in cleanup]
     now = {tuple(v["statements"]): v for v in loggables.values()}
+    print("NOW", now)
+    print("PREVIOUS", reasoner._previousSchemaSummary)
     lost = []
     added = []
     toDel = []
@@ -207,6 +214,7 @@ def logImageSchematicEvents(reasoner, conclusions, imageResources, inpImgId, seg
                     participants[o] = set()
                 properties = properties.union(d["properties"])
                 toDel.append(s)
+                print("LOSING schema", s, d)
         else:
             d["age"] = 0
     for e in toDel:
@@ -215,6 +223,7 @@ def logImageSchematicEvents(reasoner, conclusions, imageResources, inpImgId, seg
         if s not in reasoner._previousSchemaSummary:
             reasoner._currentSchema += 1
             reasoner._previousSchemaSummary[s] = {"age": 0, "participants": d["participants"], "properties": d["properties"], "statements": d["statements"], "name": ("log:schematicRelation_%d"%reasoner._currentSchema)}
+            print("ADDING schema", s, d)
             added.append((reasoner._previousSchemaSummary[s]["name"], reasoner._previousSchemaSummary[s]["statements"]))
             for o in d["participants"]:
                 participants[o] = set()
@@ -250,6 +259,9 @@ def logImageSchematicEvents(reasoner, conclusions, imageResources, inpImgId, seg
                     reasoner._storyBoard["rows"][loggableName] = [False]*len(reasoner._storyBoard["columns"])
                 reasoner._storyBoard["rows"][loggableName][-1] = True
         with open(fnamePrefix + ".ttl", "w") as outfile:
+            for o in sorted(list(participants.keys())):
+                if 0 == len(participants[o]):
+                    print("EMPTY log", o, objectTriples)
             _ = outfile.write("%s\n" % reasoner._logPrefix)
             _ = [outfile.write("%s rdf:type owl:ObjectProperty .\n" % _ensurePrefix(p)) for p in sorted(list(properties))]
             _ = outfile.write("log:hasId rdf:type owl:DatatypeProperty .\n\nlog:image_%d\n    rdf:type owl:NamedIndividual ;\n    rdf:type log:Image ;\n    log:hasId \"%s\"^^xsd:string .\n\n" % (reasoner._imageNumber, str(inpImgId)))
@@ -276,6 +288,7 @@ class Reasoner(ReifiedProcess):
         self._defaultFacts = {}
         self._storageMap = {}
         self._previousSchemaSummary = {}
+        self._storedObjectTriples = {}
         self._persistence = 1#30
         self._currentSchema = 0
         self._imageNumber = 0
@@ -418,6 +431,7 @@ class Reasoner(ReifiedProcess):
             #    - movement masks associated to triples
             # Collect all inputs into an initial theory
             triples = set.union(*[set(v["notification"].get("triples", [])) for v in self._dataFromSubscriptions.values()])
+            #print("PERC TRIPLES", triples)
             isAs = [t for t in triples if "isA" == t[0]]
             facts = mergeFacts(self.persistentSchemas, triples2Facts(triples))
             imageResources = {k: v.get("image") for k, v in self._dataFromSubscriptions.items()}
@@ -447,6 +461,20 @@ class Reasoner(ReifiedProcess):
                     maskPolygons[int(m["hasId"])] = m["polygons"]
             segmentations = {x["name"]: x["polygons"] for x in self._dataFromSubscriptions.get("MaskImg", {}).get("notification", {}).get("segments", [])}
             objectTriples = self._dataFromSubscriptions.get("MaskImg", {}).get("notification", {}).get("triples", [])
+            for t in objectTriples:
+                p, s, o = t
+                if s not in self._storedObjectTriples:
+                    self._storedObjectTriples[s] = set()
+                self._storedObjectTriples[s].add((p, s, o))
+            triplesParticipants = set([t[1] for t in triples]).union([t[2] for t in triples])
+            for kps in self._previousSchemaSummary.keys():
+                for t in kps:
+                    triplesParticipants.add(t[1])
+            for s in set(self._storedObjectTriples.keys()).difference(triplesParticipants):
+                self._storedObjectTriples.pop(s)
+            objectTriples = []
+            for s, ts in self._storedObjectTriples.items():
+                objectTriples += list(ts)
         if fullInput or self._armed:
             self._armed = False
             for k in self._dataFromSubscriptions.keys():

@@ -12,13 +12,13 @@
 #    Annotation properties
 #################################################################
 
-###  http://www.W3C.org/khafre/affordances_situations.owl#hasCOCOName
+###  http://www.semanticweb.org/pomarlan/ontologies/2025/4/untitled-ontology-26/hasCOCOName
 :hasCOCOName rdf:type owl:AnnotationProperty ;
              rdfs:comment "Associates an ontology object class name to the class label used by an object classifier pretrained on the COCO dataset." ;
              rdfs:subPropertyOf :hasObjectClassifierName .
 
 
-###  http://www.W3C.org/khafre/affordances_situations.owl#hasObjectClassifierName
+###  http://www.semanticweb.org/pomarlan/ontologies/2025/4/untitled-ontology-26/hasObjectClassifierName
 :hasObjectClassifierName rdf:type owl:AnnotationProperty ;
                          rdfs:comment """Associates an ontology object class name to the class label used by an object classifier.
 
@@ -31,36 +31,55 @@ Note that while the classifier USES such labels, they usually COME FROM the data
 #    Object Properties
 #################################################################
 
-###  http://www.W3C.org/khafre/affordances_situations.owl#hasOccludee
+###  http://www.W3C.org/khafre/affordances_situations.owl#hasApproacher
+:hasApproacher rdf:type owl:ObjectProperty ;
+               rdfs:subPropertyOf :hasTrajector .
+
+
+###  http://www.W3C.org/khafre/affordances_situations.owl#hasDeparter
+:hasDeparter rdf:type owl:ObjectProperty ;
+             rdfs:subPropertyOf :hasTrajector .
+
+
+###  http://www.W3C.org/khafre/affordances_situations.owl#hasTrajector
+:hasTrajector rdf:type owl:ObjectProperty ;
+              rdfs:subPropertyOf :hasParticipant .
+
+
+###  http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasRole
+<http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasRole> rdf:type owl:ObjectProperty .
+
+
+###  http://www.semanticweb.org/pomarlan/ontologies/2025/4/untitled-ontology-26/hasOccludee
 :hasOccludee rdf:type owl:ObjectProperty ;
              rdfs:subPropertyOf :hasParticipant .
 
 
-###  http://www.W3C.org/khafre/affordances_situations.owl#hasOccluder
+###  http://www.semanticweb.org/pomarlan/ontologies/2025/4/untitled-ontology-26/hasOccluder
 :hasOccluder rdf:type owl:ObjectProperty ;
              rdfs:subPropertyOf :hasParticipant .
 
 
-###  http://www.W3C.org/khafre/affordances_situations.owl#hasParticipant
+###  http://www.semanticweb.org/pomarlan/ontologies/2025/4/untitled-ontology-26/hasParticipant
 :hasParticipant rdf:type owl:ObjectProperty .
 
 
-###  http://www.W3C.org/khafre/affordances_situations.owl#hasPenetrator
+###  http://www.semanticweb.org/pomarlan/ontologies/2025/4/untitled-ontology-26/hasPenetrator
 :hasPenetrator rdf:type owl:ObjectProperty ;
                rdfs:subPropertyOf :hasParticipant .
 
 
-###  http://www.W3C.org/khafre/affordances_situations.owl#hasPenetree
+###  http://www.semanticweb.org/pomarlan/ontologies/2025/4/untitled-ontology-26/hasPenetree
 :hasPenetree rdf:type owl:ObjectProperty ;
              rdfs:subPropertyOf :hasParticipant .
 
 
-###  http://www.W3C.org/khafre/affordances_situations.owl#hasSupportee
+###  http://www.semanticweb.org/pomarlan/ontologies/2025/4/untitled-ontology-26/hasSupportee
 :hasSupportee rdf:type owl:ObjectProperty ;
               rdfs:subPropertyOf :hasParticipant .
 
 
-###  http://www.W3C.org/khafre/affordances_situations.owl#hasSupporter
+###  http://www.semanticweb.org/pomarlan/ontologies/2025/4/untitled-ontology-26/hasSupporter
 :hasSupporter rdf:type owl:ObjectProperty ;
               rdfs:subPropertyOf :hasParticipant .
 
@@ -69,451 +88,70 @@ Note that while the classifier USES such labels, they usually COME FROM the data
 #    Classes
 #################################################################
 
-###  http://www.W3C.org/khafre/affordances_situations.owl#Airplane
-:Airplane rdf:type owl:Class ;
-          rdfs:subClassOf :Vehicle ;
-          :hasCOCOName "airplane" .
+###  http://www.W3C.org/khafre/affordances_situations.owl#Approacher
+:Approacher rdf:type owl:Class ;
+            rdfs:subClassOf :Trajector ;
+            rdfs:comment "A role played by an object moving towards something." .
 
 
-###  http://www.W3C.org/khafre/affordances_situations.owl#Animal
-:Animal rdf:type owl:Class ;
-        rdfs:subClassOf <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#PhysicalAgent> .
+###  http://www.W3C.org/khafre/affordances_situations.owl#Contacter
+:Contacter rdf:type owl:Class ;
+           rdfs:subClassOf <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#Role> ;
+           rdfs:comment "A role played by an object in contact with some other one." .
 
 
-###  http://www.W3C.org/khafre/affordances_situations.owl#Apple
-:Apple rdf:type owl:Class ;
-       rdfs:subClassOf :Fruit ;
-       :hasObjectClassifierName "apple" ;
-       rdfs:comment "Fruit with red or yellow or green skin and sweet to tart crisp whitish flesh. (WordNet 3.1 synset 07755101-n)" .
+###  http://www.W3C.org/khafre/affordances_situations.owl#Departer
+:Departer rdf:type owl:Class ;
+          rdfs:subClassOf :Trajector ;
+          rdfs:comment "A role played by an object moving away from something." .
 
 
-###  http://www.W3C.org/khafre/affordances_situations.owl#Approach
-:Approach rdf:type owl:Class ;
-          rdfs:subClassOf :Movement ;
-          rdfs:comment "An object approaches another." .
+###  http://www.W3C.org/khafre/affordances_situations.owl#LinkedObject
+:LinkedObject rdf:type owl:Class ;
+              rdfs:subClassOf <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#Role> ;
+              rdfs:comment "A role played by an object attached to something else." .
 
 
-###  http://www.W3C.org/khafre/affordances_situations.owl#Banana
-:Banana rdf:type owl:Class ;
-        rdfs:subClassOf :Fruit ;
-        :hasObjectClassifierName "banana" ;
-        rdfs:comment "Elongated crescent-shaped yellow fruit with soft sweet flesh. (WordNet synset 3.1 07769568-n )" .
+###  http://www.W3C.org/khafre/affordances_situations.owl#Occludee
+:Occludee rdf:type owl:Class ;
+          rdfs:subClassOf <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#Role> ;
+          rdfs:comment "A role played by an object with lines of sight to some observer being blocked by some other object." .
 
 
-###  http://www.W3C.org/khafre/affordances_situations.owl#Bear
-:Bear rdf:type owl:Class ;
-      rdfs:subClassOf :Animal ;
-      :hasCOCOName "bear" ;
-      rdfs:comment "Massive plantigrade carnivorous or omnivorous mammals with long shaggy coats and strong claws. (WordNet 3.1 synset 02134305-n)" .
+###  http://www.W3C.org/khafre/affordances_situations.owl#Occluder
+:Occluder rdf:type owl:Class ;
+          rdfs:subClassOf <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#Role> ;
+          rdfs:comment "A role played by an object which blocks an observer's line of sight to some other object." .
 
 
-###  http://www.W3C.org/khafre/affordances_situations.owl#Bed
-:Bed rdf:type owl:Class ;
-     rdfs:subClassOf :Furniture ;
-     :hasCOCOName "bed" ;
-     rdfs:comment "A piece of furniture that provides a place to sleep. (WordNet 3.1 synset 02821967-n)" .
+###  http://www.W3C.org/khafre/affordances_situations.owl#Penetrator
+:Penetrator rdf:type owl:Class ;
+            rdfs:subClassOf <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#Role> ;
+            rdfs:comment "A role played by an object that is inserted into a spatial region that belonged to or is functionally controlled by another object." .
 
 
-###  http://www.W3C.org/khafre/affordances_situations.owl#Bicycle
-:Bicycle rdf:type owl:Class ;
-         rdfs:subClassOf :Vehicle ;
-         :hasCOCOName "bicycle" .
+###  http://www.W3C.org/khafre/affordances_situations.owl#Penetree
+:Penetree rdf:type owl:Class ;
+          rdfs:subClassOf <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#Role> ;
+          rdfs:comment "A role played by an object whose spatial region or functionally controlled spatial region is being overlapped by some other object." .
 
 
-###  http://www.W3C.org/khafre/affordances_situations.owl#Bird
-:Bird rdf:type owl:Class ;
-      rdfs:subClassOf :Animal ;
-      :hasCOCOName "bird" ;
-      rdfs:comment "Warm-blooded egg-laying vertebrates characterized by feathers and forelimbs modified as wings. (WordNet 3.1 synset 01505702-n)" .
+###  http://www.W3C.org/khafre/affordances_situations.owl#Supportee
+:Supportee rdf:type owl:Class ;
+           rdfs:subClassOf <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#Role> ;
+           rdfs:comment "A role played by an object prevented from falling by something else." .
 
 
-###  http://www.W3C.org/khafre/affordances_situations.owl#Boat
-:Boat rdf:type owl:Class ;
-      rdfs:subClassOf :Vehicle ;
-      :hasCOCOName "boat" .
+###  http://www.W3C.org/khafre/affordances_situations.owl#Supporter
+:Supporter rdf:type owl:Class ;
+           rdfs:subClassOf <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#Role> ;
+           rdfs:comment "A role played by an object which prevents the fall of something else." .
 
 
-###  http://www.W3C.org/khafre/affordances_situations.owl#Bottle
-:Bottle rdf:type owl:Class ;
-        rdfs:subClassOf :ContainerArtifact ;
-        :hasCOCOName "bottle" ;
-        rdfs:comment "A glass or plastic vessel used for storing drinks or other liquids; typically cylindrical without handles and with a narrow neck that can be plugged or capped. (WordNet 3.1 synset 02879899-n)" .
-
-
-###  http://www.W3C.org/khafre/affordances_situations.owl#Bowl
-:Bowl rdf:type owl:Class ;
-      rdfs:subClassOf :ContainerArtifact ,
-                      :Crockery ;
-      :hasCOCOName "bowl" ;
-      rdfs:comment "A dish that is round and open at the top for serving foods. (WordNet 3.1 synset 02884182-n)" .
-
-
-###  http://www.W3C.org/khafre/affordances_situations.owl#Broccoli
-:Broccoli rdf:type owl:Class ;
-          rdfs:subClassOf :Vegetable ;
-          :hasObjectClassifierName "broccoli" ;
-          rdfs:comment "Branched green undeveloped flower heads. (WordNet 3.1 synset 07730735-n )" .
-
-
-###  http://www.W3C.org/khafre/affordances_situations.owl#Bus
-:Bus rdf:type owl:Class ;
-     rdfs:subClassOf :Vehicle ;
-     :hasCOCOName "bus" .
-
-
-###  http://www.W3C.org/khafre/affordances_situations.owl#Cake
-:Cake rdf:type owl:Class ;
-      rdfs:subClassOf :Food ;
-      :hasObjectClassifierName "cake" ;
-      rdfs:comment "Baked goods made from or based on a mixture of flour, sugar, eggs, and fat. (WordNet synset 3.1 07644479-n)" .
-
-
-###  http://www.W3C.org/khafre/affordances_situations.owl#Car
-:Car rdf:type owl:Class ;
-     rdfs:subClassOf :Vehicle ;
-     :hasCOCOName "car" .
-
-
-###  http://www.W3C.org/khafre/affordances_situations.owl#Carrot
-:Carrot rdf:type owl:Class ;
-        rdfs:subClassOf :Vegetable ;
-        :hasObjectClassifierName "carrot" ;
-        rdfs:comment "Orange root; important source of carotene. (WordNet 3.1 synset 07746183-n)" .
-
-
-###  http://www.W3C.org/khafre/affordances_situations.owl#Cat
-:Cat rdf:type owl:Class ;
-     rdfs:subClassOf :Animal ;
-     :hasCOCOName "cat" ;
-     rdfs:comment "Feline mammal usually having thick soft fur and no ability to roar: domestic cats; wildcats. (WordNet 3.1 synset 02124272-n)" .
-
-
-###  http://www.W3C.org/khafre/affordances_situations.owl#Chair
-:Chair rdf:type owl:Class ;
-       rdfs:subClassOf :Furniture ;
-       :hasCOCOName "chair" ;
-       rdfs:comment "A seat for one person, with a support for the back. (WordNet 3.1 synset 03005231-n)" .
-
-
-###  http://www.W3C.org/khafre/affordances_situations.owl#Contact
-:Contact rdf:type owl:Class ;
-         rdfs:subClassOf :ImageSchematicSituation ;
-         rdfs:comment """An image schematic situation in which two physical objects have overlapping boundaries.
-
-Many physical interactions between objects have contact as a prerequisite.""" .
-
-
-###  http://www.W3C.org/khafre/affordances_situations.owl#ContainerArtifact
-:ContainerArtifact rdf:type owl:Class ;
-                   rdfs:subClassOf <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#PhysicalAgent> .
-
-
-###  http://www.W3C.org/khafre/affordances_situations.owl#Couch
-:Couch rdf:type owl:Class ;
-       rdfs:subClassOf :Furniture ;
-       :hasCOCOName "couch" ;
-       rdfs:comment "An upholstered seat for more than one person. (WordNet 3.1 synset 04263630-n)" .
-
-
-###  http://www.W3C.org/khafre/affordances_situations.owl#Cow
-:Cow rdf:type owl:Class ;
-     rdfs:subClassOf :Animal ;
-     :hasCOCOName "cow" ;
-     rdfs:comment "Large, domesticated, bovid ungulates widely kept as livestock. (wikipedia)" .
-
-
-###  http://www.W3C.org/khafre/affordances_situations.owl#Crockery
-:Crockery rdf:type owl:Class ;
-          rdfs:subClassOf <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#PhysicalAgent> .
-
-
-###  http://www.W3C.org/khafre/affordances_situations.owl#Cup
-:Cup rdf:type owl:Class ;
-     rdfs:subClassOf :ContainerArtifact ,
-                     :Crockery ;
-     :hasCOCOName "cup" ;
-     rdfs:comment "A small open container usually used for drinking; usually has a handle. (WordNet 3.1 synset 03152175-n)" .
-
-
-###  http://www.W3C.org/khafre/affordances_situations.owl#Cutlery
-:Cutlery rdf:type owl:Class ;
-         rdfs:subClassOf <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#PhysicalAgent> .
-
-
-###  http://www.W3C.org/khafre/affordances_situations.owl#Departure
-:Departure rdf:type owl:Class ;
-           rdfs:subClassOf :Movement ;
-           rdfs:comment "An object moves away from another." .
-
-
-###  http://www.W3C.org/khafre/affordances_situations.owl#DiningTable
-:DiningTable rdf:type owl:Class ;
-             rdfs:subClassOf :Furniture ;
-             :hasCOCOName "dining_table" ;
-             rdfs:comment "A table at which meals are served. (WordNet 3.1 synset 03205892-n)" .
-
-
-###  http://www.W3C.org/khafre/affordances_situations.owl#Dog
-:Dog rdf:type owl:Class ;
-     rdfs:subClassOf :Animal ;
-     :hasCOCOName "dog" ;
-     rdfs:comment "A member of the genus Canis (probably descended from the common wolf) that has been domesticated by man since prehistoric times; occurs in many breeds. (WordNet 3.1 synset 02086723-n)" .
-
-
-###  http://www.W3C.org/khafre/affordances_situations.owl#Donut
-:Donut rdf:type owl:Class ;
-       rdfs:subClassOf :Food ;
-       :hasObjectClassifierName "donut" ;
-       rdfs:comment "A small ring-shaped friedcake. (WordNet 3.1 synset 07654678-n )" .
-
-
-###  http://www.W3C.org/khafre/affordances_situations.owl#Elephant
-:Elephant rdf:type owl:Class ;
-          rdfs:subClassOf :Animal ;
-          :hasCOCOName "elephant" ;
-          rdfs:comment "Five-toed pachyderm. (WordNet 3.1 synset 02506148-n)" .
-
-
-###  http://www.W3C.org/khafre/affordances_situations.owl#Falling
-:Falling rdf:type owl:Class ;
-         rdfs:subClassOf :VerticalMovement ;
-         rdfs:comment "An object's movement has a significant downward component." .
-
-
-###  http://www.W3C.org/khafre/affordances_situations.owl#Food
-:Food rdf:type owl:Class ;
-      rdfs:subClassOf <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#PhysicalAgent> .
-
-
-###  http://www.W3C.org/khafre/affordances_situations.owl#Fork
-:Fork rdf:type owl:Class ;
-      rdfs:subClassOf :Cutlery ;
-      :hasCOCOName "fork" ;
-      rdfs:comment "Cutlery used for serving and eating food. (WordNet 3.1 synset 03388794-n)" .
-
-
-###  http://www.W3C.org/khafre/affordances_situations.owl#Fruit
-:Fruit rdf:type owl:Class ;
-       rdfs:subClassOf :Food .
-
-
-###  http://www.W3C.org/khafre/affordances_situations.owl#Furniture
-:Furniture rdf:type owl:Class ;
-           rdfs:subClassOf <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#PhysicalAgent> .
-
-
-###  http://www.W3C.org/khafre/affordances_situations.owl#Giraffe
-:Giraffe rdf:type owl:Class ;
-         rdfs:subClassOf :Animal ;
-         :hasCOCOName "giraffe" ;
-         rdfs:comment "Tallest living quadruped; having a spotted coat and small horns and very long neck and legs; of savannahs of tropical Africa. (WordNet 3.1 synset 02441664-n)" .
-
-
-###  http://www.W3C.org/khafre/affordances_situations.owl#Horse
-:Horse rdf:type owl:Class ;
-       rdfs:subClassOf :Animal ;
-       :hasCOCOName "horse" ;
-       rdfs:comment "Solid-hoofed herbivorous quadruped domesticated since prehistoric times. (WordNet 3.1 synset 02377103-n)" .
-
-
-###  http://www.W3C.org/khafre/affordances_situations.owl#HotDog
-:HotDog rdf:type owl:Class ;
-        rdfs:subClassOf :Food ;
-        :hasObjectClassifierName "hot_dog" ;
-        rdfs:comment "A frankfurter served hot on a bun. (WordNet 3.1 synset 07713282-n )" .
-
-
-###  http://www.W3C.org/khafre/affordances_situations.owl#ImageSchematicSituation
-:ImageSchematicSituation rdf:type owl:Class ;
-                         rdfs:subClassOf <https://w3id.org/framester/schema/FrameOccurrence> ,
-                                         [ rdf:type owl:Restriction ;
-                                           owl:onProperty :hasParticipant ;
-                                           owl:someValuesFrom <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#PhysicalObject>
-                                         ] ,
-                                         [ rdf:type owl:Restriction ;
-                                           owl:onProperty :hasParticipant ;
-                                           owl:allValuesFrom <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#PhysicalObject>
-                                         ] ;
-                         rdfs:comment "A reified image schematic relation between physical objects." .
-
-
-###  http://www.W3C.org/khafre/affordances_situations.owl#Knife
-:Knife rdf:type owl:Class ;
-       rdfs:subClassOf :Cutlery ;
-       :hasCOCOName "knife" ;
-       rdfs:comment "Edge tool used as a cutting instrument; has a pointed blade with a sharp edge and a handle. (WordNet 3.1 synset 03628765-n)" .
-
-
-###  http://www.W3C.org/khafre/affordances_situations.owl#Linkage
-:Linkage rdf:type owl:Class ;
-         rdfs:subClassOf :ImageSchematicSituation ;
-         rdfs:comment """An image schematic relation in which two objects are connected in such a way that they are constrained to move together.
-
-Thus, to recognize that a linkage occurs, one has to keep track of the relative motion of objects over some interval and/or make additional restrictions and assumptions.
-
-Our system asserts linkage comes into effect when an object (specifically, an agent) contacts some other object and then the agent approaches this other object, which is interpreted as the agent pulling itself towards this other object. Once established, a linkage is destroyed when the underlying contact ceases to be in effect.
-
-Colloquially, the participants in a linkage relation are given distinct roles comparable to \"locatum\" and \"relatum\". Thus, a bike (the locatum) is linked to a rack (the relatum), with the asymmetry stemming from the assumption that the relatum is in some sense less mobile than the relatum, and thus it is the one constraining the locatum.
-
-At the moment however, our system makes no such distinction and the participants in a linkage are treated as both equally constraining the other.""" .
-
-
-###  http://www.W3C.org/khafre/affordances_situations.owl#Motorcycle
-:Motorcycle rdf:type owl:Class ;
-            rdfs:subClassOf :Vehicle ;
-            :hasCOCOName "motorcycle" .
-
-
-###  http://www.W3C.org/khafre/affordances_situations.owl#Movement
-:Movement rdf:type owl:Class ;
-          rdfs:subClassOf :ImageSchematicSituation ;
-          rdfs:comment """An image schematic relation describing the movement of some objects relative to each other.
-
-Some of the subclasses of this relation only have one explicit participant, with its motion taken to be relative to the observer or some fixed feature of the environment such as the floor.""" .
-
-
-###  http://www.W3C.org/khafre/affordances_situations.owl#Occlusion
-:Occlusion rdf:type owl:Class ;
-           rdfs:subClassOf :ImageSchematicSituation ,
-                           [ rdf:type owl:Restriction ;
-                             owl:onProperty :hasOccludee ;
-                             owl:someValuesFrom <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#PhysicalObject>
-                           ] ,
-                           [ rdf:type owl:Restriction ;
-                             owl:onProperty :hasOccluder ;
-                             owl:someValuesFrom <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#PhysicalObject>
-                           ] ;
-           rdfs:comment "An image schematic relation in which one object (the occluder) is, relative to the observer, in front of another object (the occludee). Thus, the occluder object prevents, at least partially, the occludee object from being seen by the observer." .
-
-
-###  http://www.W3C.org/khafre/affordances_situations.owl#Orange
-:Orange rdf:type owl:Class ;
-        rdfs:subClassOf :Fruit ;
-        :hasObjectClassifierName "orange" ;
-        rdfs:comment "Round yellow to orange fruit of any of several citrus trees. (WordNet 3.1 synset 07763583-n)" .
-
-
-###  http://www.W3C.org/khafre/affordances_situations.owl#Penetration
-:Penetration rdf:type owl:Class ;
-             rdfs:subClassOf :ImageSchematicSituation ,
-                             [ rdf:type owl:Restriction ;
-                               owl:onProperty :hasPenetrator ;
-                               owl:someValuesFrom <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#PhysicalObject>
-                             ] ,
-                             [ rdf:type owl:Restriction ;
-                               owl:onProperty :hasPenetree ;
-                               owl:someValuesFrom <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#PhysicalObject>
-                             ] ;
-             rdfs:comment """An image schematic relation describing that an object (the penetrator) has come to occupy some region of space that used to belong to, or is partially enclosed by, another object (the penetree).
-
-Our system asserts that this relation comes into effect by default when an object becomes occluded by another while in contact with it. Obviously, this is not in general true and it is the job of additional defeasible theories describing the possible evolutions of a situation through time to retract such a conclusion when the many exceptions to it appear.""" .
-
-
-###  http://www.W3C.org/khafre/affordances_situations.owl#Pizza
-:Pizza rdf:type owl:Class ;
-       rdfs:subClassOf :Food ;
-       :hasObjectClassifierName "pizza" ;
-       rdfs:comment "Italian open pie made of thin bread dough spread with a spiced mixture of e.g. tomato sauce and cheese. (WordNet 3.1 synset 07889783-n)" .
-
-
-###  http://www.W3C.org/khafre/affordances_situations.owl#Rising
-:Rising rdf:type owl:Class ;
-        rdfs:subClassOf :VerticalMovement ;
-        rdfs:comment "An object's movement has a significant upward component." .
-
-
-###  http://www.W3C.org/khafre/affordances_situations.owl#Sandwich
-:Sandwich rdf:type owl:Class ;
-          rdfs:subClassOf :Food ;
-          :hasObjectClassifierName "sandwich" ;
-          rdfs:comment "Ttwo (or more) slices of bread with a filling between them. (Wordnet 3.1 synset 07711710-n)" .
-
-
-###  http://www.W3C.org/khafre/affordances_situations.owl#Sheep
-:Sheep rdf:type owl:Class ;
-       rdfs:subClassOf :Animal ;
-       :hasCOCOName "sheep" ;
-       rdfs:comment "Woolly usually horned ruminant mammal related to the goat. (WordNet 3.1 synset 02414351-n)" .
-
-
-###  http://www.W3C.org/khafre/affordances_situations.owl#Spoon
-:Spoon rdf:type owl:Class ;
-       rdfs:subClassOf :Cutlery ;
-       :hasCOCOName "spoon" ;
-       rdfs:comment "A piece of cutlery with a shallow bowl-shaped container and a handle; used to stir or serve or take up food. (WordNet 3.1 synset 04291140-n)" .
-
-
-###  http://www.W3C.org/khafre/affordances_situations.owl#Stillness
-:Stillness rdf:type owl:Class ;
-           rdfs:subClassOf :Movement ;
-           rdfs:comment "Two objects are in relative stillness to each other." .
-
-
-###  http://www.W3C.org/khafre/affordances_situations.owl#Support
-:Support rdf:type owl:Class ;
-         rdfs:subClassOf :ImageSchematicSituation ,
-                         [ rdf:type owl:Restriction ;
-                           owl:onProperty :hasSupportee ;
-                           owl:someValuesFrom <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#PhysicalObject>
-                         ] ,
-                         [ rdf:type owl:Restriction ;
-                           owl:onProperty :hasSupporter ;
-                           owl:someValuesFrom <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#PhysicalObject>
-                         ] ;
-         rdfs:comment """A schematic relation describing that an object (the supporter) prevents the falling of another object (the supportee).
-
-Our system asserts a support relation is in effect when there is a contact between two objects, no falling occurs, and one of the objects is known to belong to a particular class of objects that can sometimes offer support.
-
-This is, in general, not correct, and it is future work to make our system sensitive to the direction of contact, and in particular to become able to estimate if contact forces coming from the alleged supporter object have a significant vertical component to them.""" .
-
-
-###  http://www.W3C.org/khafre/affordances_situations.owl#Train
-:Train rdf:type owl:Class ;
-       rdfs:subClassOf :Vehicle ;
-       :hasCOCOName "train" .
-
-
-###  http://www.W3C.org/khafre/affordances_situations.owl#Truck
-:Truck rdf:type owl:Class ;
-       rdfs:subClassOf :Vehicle ;
-       :hasCOCOName "truck" .
-
-
-###  http://www.W3C.org/khafre/affordances_situations.owl#Vase
-:Vase rdf:type owl:Class ;
-      rdfs:subClassOf :ContainerArtifact ;
-      :hasCOCOName "vase" ;
-      rdfs:comment "An open jar of glass or porcelain used as an ornament or to hold flowers. (WordNet 3.1 synset 04529463-n)" .
-
-
-###  http://www.W3C.org/khafre/affordances_situations.owl#Vegetable
-:Vegetable rdf:type owl:Class ;
-           rdfs:subClassOf :Food .
-
-
-###  http://www.W3C.org/khafre/affordances_situations.owl#Vehicle
-:Vehicle rdf:type owl:Class ;
-         rdfs:subClassOf <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#PhysicalAgent> .
-
-
-###  http://www.W3C.org/khafre/affordances_situations.owl#VerticalMovement
-:VerticalMovement rdf:type owl:Class ;
-                  rdfs:subClassOf :Movement ;
-                  rdfs:comment "An object's movement has a significant vertical component." .
-
-
-###  http://www.W3C.org/khafre/affordances_situations.owl#WineGlass
-:WineGlass rdf:type owl:Class ;
-           rdfs:subClassOf :ContainerArtifact ;
-           :hasCOCOName "wine_glass" ;
-           rdfs:comment "A glass that has a stem and in which wine is served. (WordNet 3.1 synset 04599402-n)" .
-
-
-###  http://www.W3C.org/khafre/affordances_situations.owl#Zebra
-:Zebra rdf:type owl:Class ;
-       rdfs:subClassOf :Animal ;
-       :hasCOCOName "zebra" ;
-       rdfs:comment "Any of several fleet black-and-white striped African equines. (WordNet 3.1 synset 02393701-n)" .
+###  http://www.W3C.org/khafre/affordances_situations.owl#Trajector
+:Trajector rdf:type owl:Class ;
+           rdfs:subClassOf <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#Role> ;
+           rdfs:comment "A role played by an object in motion." .
 
 
 ###  http://www.ontologydesignpatterns.org/cp/owl/situation.owl#Situation
@@ -533,6 +171,469 @@ This is, in general, not correct, and it is future work to make our system sensi
 
 ###  http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#PhysicalObject
 <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#PhysicalObject> rdf:type owl:Class .
+
+
+###  http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#Role
+<http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#Role> rdf:type owl:Class .
+
+
+###  http://www.semanticweb.org/pomarlan/ontologies/2025/4/untitled-ontology-26/Airplane
+:Airplane rdf:type owl:Class ;
+          rdfs:subClassOf :Vehicle ;
+          :hasCOCOName "airplane" .
+
+
+###  http://www.semanticweb.org/pomarlan/ontologies/2025/4/untitled-ontology-26/Animal
+:Animal rdf:type owl:Class ;
+        rdfs:subClassOf <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#PhysicalAgent> .
+
+
+###  http://www.semanticweb.org/pomarlan/ontologies/2025/4/untitled-ontology-26/Apple
+:Apple rdf:type owl:Class ;
+       rdfs:subClassOf :Fruit ;
+       :hasObjectClassifierName "apple" ;
+       rdfs:comment "Fruit with red or yellow or green skin and sweet to tart crisp whitish flesh. (WordNet 3.1 synset 07755101-n)" .
+
+
+###  http://www.semanticweb.org/pomarlan/ontologies/2025/4/untitled-ontology-26/Approach
+:Approach rdf:type owl:Class ;
+          rdfs:subClassOf :Movement ,
+                          [ rdf:type owl:Restriction ;
+                            owl:onProperty :hasApproacher ;
+                            owl:someValuesFrom <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#PhysicalObject>
+                          ] ;
+          rdfs:comment "An object approaches another." .
+
+
+###  http://www.semanticweb.org/pomarlan/ontologies/2025/4/untitled-ontology-26/Banana
+:Banana rdf:type owl:Class ;
+        rdfs:subClassOf :Fruit ;
+        :hasObjectClassifierName "banana" ;
+        rdfs:comment "Elongated crescent-shaped yellow fruit with soft sweet flesh. (WordNet synset 3.1 07769568-n )" .
+
+
+###  http://www.semanticweb.org/pomarlan/ontologies/2025/4/untitled-ontology-26/Bear
+:Bear rdf:type owl:Class ;
+      rdfs:subClassOf :Animal ;
+      :hasCOCOName "bear" ;
+      rdfs:comment "Massive plantigrade carnivorous or omnivorous mammals with long shaggy coats and strong claws. (WordNet 3.1 synset 02134305-n)" .
+
+
+###  http://www.semanticweb.org/pomarlan/ontologies/2025/4/untitled-ontology-26/Bed
+:Bed rdf:type owl:Class ;
+     rdfs:subClassOf :Furniture ;
+     :hasCOCOName "bed" ;
+     rdfs:comment "A piece of furniture that provides a place to sleep. (WordNet 3.1 synset 02821967-n)" .
+
+
+###  http://www.semanticweb.org/pomarlan/ontologies/2025/4/untitled-ontology-26/Bicycle
+:Bicycle rdf:type owl:Class ;
+         rdfs:subClassOf :Vehicle ;
+         :hasCOCOName "bicycle" .
+
+
+###  http://www.semanticweb.org/pomarlan/ontologies/2025/4/untitled-ontology-26/Bird
+:Bird rdf:type owl:Class ;
+      rdfs:subClassOf :Animal ;
+      :hasCOCOName "bird" ;
+      rdfs:comment "Warm-blooded egg-laying vertebrates characterized by feathers and forelimbs modified as wings. (WordNet 3.1 synset 01505702-n)" .
+
+
+###  http://www.semanticweb.org/pomarlan/ontologies/2025/4/untitled-ontology-26/Boat
+:Boat rdf:type owl:Class ;
+      rdfs:subClassOf :Vehicle ;
+      :hasCOCOName "boat" .
+
+
+###  http://www.semanticweb.org/pomarlan/ontologies/2025/4/untitled-ontology-26/Bottle
+:Bottle rdf:type owl:Class ;
+        rdfs:subClassOf :ContainerArtifact ;
+        :hasCOCOName "bottle" ;
+        rdfs:comment "A glass or plastic vessel used for storing drinks or other liquids; typically cylindrical without handles and with a narrow neck that can be plugged or capped. (WordNet 3.1 synset 02879899-n)" .
+
+
+###  http://www.semanticweb.org/pomarlan/ontologies/2025/4/untitled-ontology-26/Bowl
+:Bowl rdf:type owl:Class ;
+      rdfs:subClassOf :ContainerArtifact ,
+                      :Crockery ;
+      :hasCOCOName "bowl" ;
+      rdfs:comment "A dish that is round and open at the top for serving foods. (WordNet 3.1 synset 02884182-n)" .
+
+
+###  http://www.semanticweb.org/pomarlan/ontologies/2025/4/untitled-ontology-26/Broccoli
+:Broccoli rdf:type owl:Class ;
+          rdfs:subClassOf :Vegetable ;
+          :hasObjectClassifierName "broccoli" ;
+          rdfs:comment "Branched green undeveloped flower heads. (WordNet 3.1 synset 07730735-n )" .
+
+
+###  http://www.semanticweb.org/pomarlan/ontologies/2025/4/untitled-ontology-26/Bus
+:Bus rdf:type owl:Class ;
+     rdfs:subClassOf :Vehicle ;
+     :hasCOCOName "bus" .
+
+
+###  http://www.semanticweb.org/pomarlan/ontologies/2025/4/untitled-ontology-26/Cake
+:Cake rdf:type owl:Class ;
+      rdfs:subClassOf :Food ;
+      :hasObjectClassifierName "cake" ;
+      rdfs:comment "Baked goods made from or based on a mixture of flour, sugar, eggs, and fat. (WordNet synset 3.1 07644479-n)" .
+
+
+###  http://www.semanticweb.org/pomarlan/ontologies/2025/4/untitled-ontology-26/Car
+:Car rdf:type owl:Class ;
+     rdfs:subClassOf :Vehicle ;
+     :hasCOCOName "car" .
+
+
+###  http://www.semanticweb.org/pomarlan/ontologies/2025/4/untitled-ontology-26/Carrot
+:Carrot rdf:type owl:Class ;
+        rdfs:subClassOf :Vegetable ;
+        :hasObjectClassifierName "carrot" ;
+        rdfs:comment "Orange root; important source of carotene. (WordNet 3.1 synset 07746183-n)" .
+
+
+###  http://www.semanticweb.org/pomarlan/ontologies/2025/4/untitled-ontology-26/Cat
+:Cat rdf:type owl:Class ;
+     rdfs:subClassOf :Animal ;
+     :hasCOCOName "cat" ;
+     rdfs:comment "Feline mammal usually having thick soft fur and no ability to roar: domestic cats; wildcats. (WordNet 3.1 synset 02124272-n)" .
+
+
+###  http://www.semanticweb.org/pomarlan/ontologies/2025/4/untitled-ontology-26/Chair
+:Chair rdf:type owl:Class ;
+       rdfs:subClassOf :Furniture ;
+       :hasCOCOName "chair" ;
+       rdfs:comment "A seat for one person, with a support for the back. (WordNet 3.1 synset 03005231-n)" .
+
+
+###  http://www.semanticweb.org/pomarlan/ontologies/2025/4/untitled-ontology-26/Contact
+:Contact rdf:type owl:Class ;
+         rdfs:subClassOf :ImageSchematicSituation ;
+         rdfs:comment """An image schematic situation in which two physical objects have overlapping boundaries.
+
+Many physical interactions between objects have contact as a prerequisite.""" .
+
+
+###  http://www.semanticweb.org/pomarlan/ontologies/2025/4/untitled-ontology-26/ContainerArtifact
+:ContainerArtifact rdf:type owl:Class ;
+                   rdfs:subClassOf <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#PhysicalAgent> .
+
+
+###  http://www.semanticweb.org/pomarlan/ontologies/2025/4/untitled-ontology-26/Couch
+:Couch rdf:type owl:Class ;
+       rdfs:subClassOf :Furniture ;
+       :hasCOCOName "couch" ;
+       rdfs:comment "An upholstered seat for more than one person. (WordNet 3.1 synset 04263630-n)" .
+
+
+###  http://www.semanticweb.org/pomarlan/ontologies/2025/4/untitled-ontology-26/Cow
+:Cow rdf:type owl:Class ;
+     rdfs:subClassOf :Animal ;
+     :hasCOCOName "cow" ;
+     rdfs:comment "Large, domesticated, bovid ungulates widely kept as livestock. (wikipedia)" .
+
+
+###  http://www.semanticweb.org/pomarlan/ontologies/2025/4/untitled-ontology-26/Crockery
+:Crockery rdf:type owl:Class ;
+          rdfs:subClassOf <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#PhysicalAgent> .
+
+
+###  http://www.semanticweb.org/pomarlan/ontologies/2025/4/untitled-ontology-26/Cup
+:Cup rdf:type owl:Class ;
+     rdfs:subClassOf :ContainerArtifact ,
+                     :Crockery ;
+     :hasCOCOName "cup" ;
+     rdfs:comment "A small open container usually used for drinking; usually has a handle. (WordNet 3.1 synset 03152175-n)" .
+
+
+###  http://www.semanticweb.org/pomarlan/ontologies/2025/4/untitled-ontology-26/Cutlery
+:Cutlery rdf:type owl:Class ;
+         rdfs:subClassOf <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#PhysicalAgent> .
+
+
+###  http://www.semanticweb.org/pomarlan/ontologies/2025/4/untitled-ontology-26/Departure
+:Departure rdf:type owl:Class ;
+           rdfs:subClassOf :Movement ,
+                           [ rdf:type owl:Restriction ;
+                             owl:onProperty :hasDeparter ;
+                             owl:someValuesFrom <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#PhysicalObject>
+                           ] ;
+           rdfs:comment "An object moves away from another." .
+
+
+###  http://www.semanticweb.org/pomarlan/ontologies/2025/4/untitled-ontology-26/DiningTable
+:DiningTable rdf:type owl:Class ;
+             rdfs:subClassOf :Furniture ;
+             :hasCOCOName "dining_table" ;
+             rdfs:comment "A table at which meals are served. (WordNet 3.1 synset 03205892-n)" .
+
+
+###  http://www.semanticweb.org/pomarlan/ontologies/2025/4/untitled-ontology-26/Dog
+:Dog rdf:type owl:Class ;
+     rdfs:subClassOf :Animal ;
+     :hasCOCOName "dog" ;
+     rdfs:comment "A member of the genus Canis (probably descended from the common wolf) that has been domesticated by man since prehistoric times; occurs in many breeds. (WordNet 3.1 synset 02086723-n)" .
+
+
+###  http://www.semanticweb.org/pomarlan/ontologies/2025/4/untitled-ontology-26/Donut
+:Donut rdf:type owl:Class ;
+       rdfs:subClassOf :Food ;
+       :hasObjectClassifierName "donut" ;
+       rdfs:comment "A small ring-shaped friedcake. (WordNet 3.1 synset 07654678-n )" .
+
+
+###  http://www.semanticweb.org/pomarlan/ontologies/2025/4/untitled-ontology-26/Elephant
+:Elephant rdf:type owl:Class ;
+          rdfs:subClassOf :Animal ;
+          :hasCOCOName "elephant" ;
+          rdfs:comment "Five-toed pachyderm. (WordNet 3.1 synset 02506148-n)" .
+
+
+###  http://www.semanticweb.org/pomarlan/ontologies/2025/4/untitled-ontology-26/Falling
+:Falling rdf:type owl:Class ;
+         rdfs:subClassOf :VerticalMovement ;
+         rdfs:comment "An object's movement has a significant downward component." .
+
+
+###  http://www.semanticweb.org/pomarlan/ontologies/2025/4/untitled-ontology-26/Food
+:Food rdf:type owl:Class ;
+      rdfs:subClassOf <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#PhysicalAgent> .
+
+
+###  http://www.semanticweb.org/pomarlan/ontologies/2025/4/untitled-ontology-26/Fork
+:Fork rdf:type owl:Class ;
+      rdfs:subClassOf :Cutlery ;
+      :hasCOCOName "fork" ;
+      rdfs:comment "Cutlery used for serving and eating food. (WordNet 3.1 synset 03388794-n)" .
+
+
+###  http://www.semanticweb.org/pomarlan/ontologies/2025/4/untitled-ontology-26/Fruit
+:Fruit rdf:type owl:Class ;
+       rdfs:subClassOf :Food .
+
+
+###  http://www.semanticweb.org/pomarlan/ontologies/2025/4/untitled-ontology-26/Furniture
+:Furniture rdf:type owl:Class ;
+           rdfs:subClassOf <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#PhysicalAgent> .
+
+
+###  http://www.semanticweb.org/pomarlan/ontologies/2025/4/untitled-ontology-26/Giraffe
+:Giraffe rdf:type owl:Class ;
+         rdfs:subClassOf :Animal ;
+         :hasCOCOName "giraffe" ;
+         rdfs:comment "Tallest living quadruped; having a spotted coat and small horns and very long neck and legs; of savannahs of tropical Africa. (WordNet 3.1 synset 02441664-n)" .
+
+
+###  http://www.semanticweb.org/pomarlan/ontologies/2025/4/untitled-ontology-26/Horse
+:Horse rdf:type owl:Class ;
+       rdfs:subClassOf :Animal ;
+       :hasCOCOName "horse" ;
+       rdfs:comment "Solid-hoofed herbivorous quadruped domesticated since prehistoric times. (WordNet 3.1 synset 02377103-n)" .
+
+
+###  http://www.semanticweb.org/pomarlan/ontologies/2025/4/untitled-ontology-26/HotDog
+:HotDog rdf:type owl:Class ;
+        rdfs:subClassOf :Food ;
+        :hasObjectClassifierName "hot_dog" ;
+        rdfs:comment "A frankfurter served hot on a bun. (WordNet 3.1 synset 07713282-n )" .
+
+
+###  http://www.semanticweb.org/pomarlan/ontologies/2025/4/untitled-ontology-26/ImageSchematicSituation
+:ImageSchematicSituation rdf:type owl:Class ;
+                         rdfs:subClassOf <https://w3id.org/framester/schema/FrameOccurrence> ,
+                                         [ rdf:type owl:Restriction ;
+                                           owl:onProperty :hasParticipant ;
+                                           owl:someValuesFrom <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#PhysicalObject>
+                                         ] ,
+                                         [ rdf:type owl:Restriction ;
+                                           owl:onProperty :hasParticipant ;
+                                           owl:allValuesFrom <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#PhysicalObject>
+                                         ] ;
+                         rdfs:comment "A reified image schematic relation between physical objects." .
+
+
+###  http://www.semanticweb.org/pomarlan/ontologies/2025/4/untitled-ontology-26/Knife
+:Knife rdf:type owl:Class ;
+       rdfs:subClassOf :Cutlery ;
+       :hasCOCOName "knife" ;
+       rdfs:comment "Edge tool used as a cutting instrument; has a pointed blade with a sharp edge and a handle. (WordNet 3.1 synset 03628765-n)" .
+
+
+###  http://www.semanticweb.org/pomarlan/ontologies/2025/4/untitled-ontology-26/Linkage
+:Linkage rdf:type owl:Class ;
+         rdfs:subClassOf :ImageSchematicSituation ;
+         rdfs:comment """An image schematic relation in which two objects are connected in such a way that they are constrained to move together.
+
+Thus, to recognize that a linkage occurs, one has to keep track of the relative motion of objects over some interval and/or make additional restrictions and assumptions.
+
+Our system asserts linkage comes into effect when an object (specifically, an agent) contacts some other object and then the agent approaches this other object, which is interpreted as the agent pulling itself towards this other object. Once established, a linkage is destroyed when the underlying contact ceases to be in effect.
+
+Colloquially, the participants in a linkage relation are given distinct roles comparable to \"locatum\" and \"relatum\". Thus, a bike (the locatum) is linked to a rack (the relatum), with the asymmetry stemming from the assumption that the relatum is in some sense less mobile than the relatum, and thus it is the one constraining the locatum.
+
+At the moment however, our system makes no such distinction and the participants in a linkage are treated as both equally constraining the other.""" .
+
+
+###  http://www.semanticweb.org/pomarlan/ontologies/2025/4/untitled-ontology-26/Motorcycle
+:Motorcycle rdf:type owl:Class ;
+            rdfs:subClassOf :Vehicle ;
+            :hasCOCOName "motorcycle" .
+
+
+###  http://www.semanticweb.org/pomarlan/ontologies/2025/4/untitled-ontology-26/Movement
+:Movement rdf:type owl:Class ;
+          rdfs:subClassOf :ImageSchematicSituation ,
+                          [ rdf:type owl:Restriction ;
+                            owl:onProperty :hasTrajector ;
+                            owl:someValuesFrom <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#PhysicalObject>
+                          ] ;
+          rdfs:comment """An image schematic relation describing the movement of some objects relative to each other.
+
+Some of the subclasses of this relation only have one explicit participant, with its motion taken to be relative to the observer or some fixed feature of the environment such as the floor.""" .
+
+
+###  http://www.semanticweb.org/pomarlan/ontologies/2025/4/untitled-ontology-26/Occlusion
+:Occlusion rdf:type owl:Class ;
+           rdfs:subClassOf :ImageSchematicSituation ,
+                           [ rdf:type owl:Restriction ;
+                             owl:onProperty :hasOccludee ;
+                             owl:someValuesFrom <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#PhysicalObject>
+                           ] ,
+                           [ rdf:type owl:Restriction ;
+                             owl:onProperty :hasOccluder ;
+                             owl:someValuesFrom <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#PhysicalObject>
+                           ] ;
+           rdfs:comment "An image schematic relation in which one object (the occluder) is, relative to the observer, in front of another object (the occludee). Thus, the occluder object prevents, at least partially, the occludee object from being seen by the observer." .
+
+
+###  http://www.semanticweb.org/pomarlan/ontologies/2025/4/untitled-ontology-26/Orange
+:Orange rdf:type owl:Class ;
+        rdfs:subClassOf :Fruit ;
+        :hasObjectClassifierName "orange" ;
+        rdfs:comment "Round yellow to orange fruit of any of several citrus trees. (WordNet 3.1 synset 07763583-n)" .
+
+
+###  http://www.semanticweb.org/pomarlan/ontologies/2025/4/untitled-ontology-26/Penetration
+:Penetration rdf:type owl:Class ;
+             rdfs:subClassOf :ImageSchematicSituation ,
+                             [ rdf:type owl:Restriction ;
+                               owl:onProperty :hasPenetrator ;
+                               owl:someValuesFrom <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#PhysicalObject>
+                             ] ,
+                             [ rdf:type owl:Restriction ;
+                               owl:onProperty :hasPenetree ;
+                               owl:someValuesFrom <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#PhysicalObject>
+                             ] ;
+             rdfs:comment """An image schematic relation describing that an object (the penetrator) has come to occupy some region of space that used to belong to, or is partially enclosed by, another object (the penetree).
+
+Our system asserts that this relation comes into effect by default when an object becomes occluded by another while in contact with it. Obviously, this is not in general true and it is the job of additional defeasible theories describing the possible evolutions of a situation through time to retract such a conclusion when the many exceptions to it appear.""" .
+
+
+###  http://www.semanticweb.org/pomarlan/ontologies/2025/4/untitled-ontology-26/Pizza
+:Pizza rdf:type owl:Class ;
+       rdfs:subClassOf :Food ;
+       :hasObjectClassifierName "pizza" ;
+       rdfs:comment "Italian open pie made of thin bread dough spread with a spiced mixture of e.g. tomato sauce and cheese. (WordNet 3.1 synset 07889783-n)" .
+
+
+###  http://www.semanticweb.org/pomarlan/ontologies/2025/4/untitled-ontology-26/Rising
+:Rising rdf:type owl:Class ;
+        rdfs:subClassOf :VerticalMovement ;
+        rdfs:comment "An object's movement has a significant upward component." .
+
+
+###  http://www.semanticweb.org/pomarlan/ontologies/2025/4/untitled-ontology-26/Sandwich
+:Sandwich rdf:type owl:Class ;
+          rdfs:subClassOf :Food ;
+          :hasObjectClassifierName "sandwich" ;
+          rdfs:comment "Ttwo (or more) slices of bread with a filling between them. (Wordnet 3.1 synset 07711710-n)" .
+
+
+###  http://www.semanticweb.org/pomarlan/ontologies/2025/4/untitled-ontology-26/Sheep
+:Sheep rdf:type owl:Class ;
+       rdfs:subClassOf :Animal ;
+       :hasCOCOName "sheep" ;
+       rdfs:comment "Woolly usually horned ruminant mammal related to the goat. (WordNet 3.1 synset 02414351-n)" .
+
+
+###  http://www.semanticweb.org/pomarlan/ontologies/2025/4/untitled-ontology-26/Spoon
+:Spoon rdf:type owl:Class ;
+       rdfs:subClassOf :Cutlery ;
+       :hasCOCOName "spoon" ;
+       rdfs:comment "A piece of cutlery with a shallow bowl-shaped container and a handle; used to stir or serve or take up food. (WordNet 3.1 synset 04291140-n)" .
+
+
+###  http://www.semanticweb.org/pomarlan/ontologies/2025/4/untitled-ontology-26/Stillness
+:Stillness rdf:type owl:Class ;
+           rdfs:subClassOf :Movement ;
+           rdfs:comment "Two objects are in relative stillness to each other." .
+
+
+###  http://www.semanticweb.org/pomarlan/ontologies/2025/4/untitled-ontology-26/Support
+:Support rdf:type owl:Class ;
+         rdfs:subClassOf :ImageSchematicSituation ,
+                         [ rdf:type owl:Restriction ;
+                           owl:onProperty :hasSupportee ;
+                           owl:someValuesFrom <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#PhysicalObject>
+                         ] ,
+                         [ rdf:type owl:Restriction ;
+                           owl:onProperty :hasSupporter ;
+                           owl:someValuesFrom <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#PhysicalObject>
+                         ] ;
+         rdfs:comment """A schematic relation describing that an object (the supporter) prevents the falling of another object (the supportee).
+
+Our system asserts a support relation is in effect when there is a contact between two objects, no falling occurs, and one of the objects is known to belong to a particular class of objects that can sometimes offer support.
+
+This is, in general, not correct, and it is future work to make our system sensitive to the direction of contact, and in particular to become able to estimate if contact forces coming from the alleged supporter object have a significant vertical component to them.""" .
+
+
+###  http://www.semanticweb.org/pomarlan/ontologies/2025/4/untitled-ontology-26/Train
+:Train rdf:type owl:Class ;
+       rdfs:subClassOf :Vehicle ;
+       :hasCOCOName "train" .
+
+
+###  http://www.semanticweb.org/pomarlan/ontologies/2025/4/untitled-ontology-26/Truck
+:Truck rdf:type owl:Class ;
+       rdfs:subClassOf :Vehicle ;
+       :hasCOCOName "truck" .
+
+
+###  http://www.semanticweb.org/pomarlan/ontologies/2025/4/untitled-ontology-26/Vase
+:Vase rdf:type owl:Class ;
+      rdfs:subClassOf :ContainerArtifact ;
+      :hasCOCOName "vase" ;
+      rdfs:comment "An open jar of glass or porcelain used as an ornament or to hold flowers. (WordNet 3.1 synset 04529463-n)" .
+
+
+###  http://www.semanticweb.org/pomarlan/ontologies/2025/4/untitled-ontology-26/Vegetable
+:Vegetable rdf:type owl:Class ;
+           rdfs:subClassOf :Food .
+
+
+###  http://www.semanticweb.org/pomarlan/ontologies/2025/4/untitled-ontology-26/Vehicle
+:Vehicle rdf:type owl:Class ;
+         rdfs:subClassOf <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#PhysicalAgent> .
+
+
+###  http://www.semanticweb.org/pomarlan/ontologies/2025/4/untitled-ontology-26/VerticalMovement
+:VerticalMovement rdf:type owl:Class ;
+                  rdfs:subClassOf :Movement ;
+                  rdfs:comment "An object's movement has a significant vertical component." .
+
+
+###  http://www.semanticweb.org/pomarlan/ontologies/2025/4/untitled-ontology-26/WineGlass
+:WineGlass rdf:type owl:Class ;
+           rdfs:subClassOf :ContainerArtifact ;
+           :hasCOCOName "wine_glass" ;
+           rdfs:comment "A glass that has a stem and in which wine is served. (WordNet 3.1 synset 04599402-n)" .
+
+
+###  http://www.semanticweb.org/pomarlan/ontologies/2025/4/untitled-ontology-26/Zebra
+:Zebra rdf:type owl:Class ;
+       rdfs:subClassOf :Animal ;
+       :hasCOCOName "zebra" ;
+       rdfs:comment "Any of several fleet black-and-white striped African equines. (WordNet 3.1 synset 02393701-n)" .
 
 
 ###  https://w3id.org/framester/schema/FrameOccurrence

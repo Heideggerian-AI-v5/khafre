@@ -148,6 +148,7 @@ Additionally, gets goal data (sets of triples) from a queue.
         maskResults, maskImg, rateMask, droppedMask = self._requestSubscribedData("MaskImg")
         maskImgs = _getMaskImgs(maskImg, maskResults)
         depthResults, depthImg, rateDepth, droppedDepth = self._requestSubscribedData("DepthImg")
+        print("Started contact find on", maskResults.get("imgId"))
         print("CONTACT ObjTriples", maskResults["triples"])
         imgHeight, imgWidth = depthImg.shape
         outputImg = numpy.zeros((imgHeight, imgWidth), dtype=numpy.uint32)
@@ -190,5 +191,6 @@ Additionally, gets goal data (sets of triples) from a queue.
             for k, color in todos:
                 dbgImg[outputImg==k]=color
             self._requestToPublish("DbgImg", "%.02f %.02f ifps | %d%% %d%% obj drop" % (rateMask if rateMask is not None else 0.0, rateDepth if rateDepth is not None else 0.0, droppedMask, droppedDepth), dbgImg)
+        print("Ended contact find on", maskResults.get("imgId"))
     def _cleanup(self):
         pass

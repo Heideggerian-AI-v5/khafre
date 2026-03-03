@@ -65,6 +65,7 @@ Subclasses should implement command handling code here.
         # Do we even have a model loaded? Do we even have an output to send to?
         # Note: it is possible for the user of this process to not want an image as a result, and only a list of detections/polygons etc.
         e, inpImg, rate, dropped = self._requestSubscribedData("InpImg")
+        print("Start NNWrapper on", e.get("imgId"))
         if (self._model is not None):
             results, outputImg = self._useModel(inpImg)
             results["imgId"] = e["imgId"]
@@ -73,5 +74,6 @@ Subclasses should implement command handling code here.
                 numpy.zeros(inpImg.shape, numpy.float32)
                 dbgImg = self._prepareDbgImg(results, inpImg, outputImg)
                 self._requestToPublish("DbgImg", "%.02f ifps | %d%% obj drop" % (rate if rate is not None else 0.0, dropped), dbgImg)
+        print("End NNWrapper on", e.get("imgId"))
     def _cleanup(self):
         self._unloadModel()

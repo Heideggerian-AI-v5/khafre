@@ -1,0 +1,5 @@
+person
+animal
+vehicle
+furniture
+rock

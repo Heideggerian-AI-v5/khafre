@@ -287,9 +287,10 @@ class ByteTracker(Tracker):
             return
         
         notification, inpImg, rate, dropped = self._requestSubscribedData("InpImg")
+        print("Start tracker on", notification.get("imgId"))
         
-        print(self._currentGoals)
-        detections = self._segmenter.detect(inpImg, self._currentGoals)
+        #print(self._currentGoals)
+        detections = self._segmenter.detect(inpImg, self._queries)
         
         detections = detections.with_nmm(threshold=self._settings["nmm_threshold"])
         detections = self._tracker.update_with_detections(detections)
@@ -320,7 +321,7 @@ class ByteTracker(Tracker):
                 for p in polygons:
                     cv.fillPoly(outputImg, pts = [p], color = col)
 
-        self._requestToPublish("OutImg", {"segments": segments, "triples": triples}, outputImg)
+        self._requestToPublish("OutImg", {"segments": segments, "triples": triples, "imgId": notification.get("imgId")}, outputImg)
 
         if self.havePublisher("DbgImg"):
             annotatedFrame = self._bboxAnnotator.annotate(scene=inpImg.copy(), detections=detections)
@@ -328,4 +329,5 @@ class ByteTracker(Tracker):
             annotatedFrame = numpy.asarray(self._polygonAnnotator.annotate(scene=annotatedFrame, detections=detections))
             dbgImg = annotatedFrame.astype(numpy.float32) / 255
             self._requestToPublish("DbgImg", "", dbgImg)
+        print("Ended tracker on", notification.get("imgId"))
 

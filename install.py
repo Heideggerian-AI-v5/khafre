@@ -24,7 +24,7 @@ else:
     sys.exit(0)
 
 subprocess.run(argsTorch)
-subprocess.run("pip3 install transformers==4.40.1".split(" "))
+subprocess.run("pip3 install transformers==4.57.0".split(" "))
 subprocess.run("pip3 install -e .")
 print("SUCCESS: khafre should be installed in the current python environment.")
 print("Installing dependencies for the scripts in examples. Khafre itself is still usable if these installs fail however.")

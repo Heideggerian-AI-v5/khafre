@@ -156,7 +156,8 @@ def main():
     procs["objP"].sendCommand(("LOAD", ("yolov8x-seg.pt",)))
     #procs["objP"].sendCommand(("LOAD", ("yolo11x-seg.pt",)))
     procs["objP"].sendCommand(("START", ()))
-    procs["dptP"].sendCommand(("LOAD", ("vinvino02/glpn-nyu",)))
+    #procs["dptP"].sendCommand(("LOAD", ("vinvino02/glpn-nyu",)))
+    procs["dptP"].sendCommand(("LOAD", ("depth-anything/Depth-Anything-V2-Small-hf",)))
 
     # Load theories and facts: these describe how reasoning should reconfigure the video analysis and adapt it
     # frame by frame to the situation.

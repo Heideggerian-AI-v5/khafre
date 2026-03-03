@@ -34,9 +34,13 @@ Wire shared memories:
             else:
                 raise e
     def _useModel(self, img):
+        '''
         predictions = self._model(Image.fromarray(img))
         # interpolate to original size
         outputImg = cv.resize(predictions["predicted_depth"].numpy()[0], (img.shape[1], img.shape[0]), interpolation=cv.INTER_LINEAR)
+        '''
+        predictions = self._model(Image.fromarray(img))["depth"]
+        outputImg = cv.resize(numpy.array(predictions).astype(numpy.float32), (img.shape[1], img.shape[0]), interpolation=cv.INTER_LINEAR)
         return {}, outputImg
     def _prepareDbgImg(self, results, inputImg, outputImg):
         return cv.cvtColor(outputImg / numpy.max(outputImg), cv.COLOR_GRAY2BGR)

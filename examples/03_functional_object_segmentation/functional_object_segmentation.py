@@ -169,7 +169,8 @@ def main():
     procs["objP"].sendCommand(("LOAD", ("yolov8x-seg.pt",)))
     #procs["objP"].sendCommand(("LOAD", ("yolo11x-seg.pt",)))
     procs["objP"].sendCommand(("START", ()))
-    procs["dptP"].sendCommand(("LOAD", ("vinvino02/glpn-nyu",)))
+    #procs["dptP"].sendCommand(("LOAD", ("vinvino02/glpn-nyu",)))
+    procs["dptP"].sendCommand(("LOAD", ("depth-anything/Depth-Anything-V2-Small-hf",)))
 
     procs["reasoner"].sendCommand(("LOAD_THEORY", ("perception interpretation", percIntTheory)))
     procs["reasoner"].sendCommand(("LOAD_THEORY", ("update schemas", updSchTheory)))

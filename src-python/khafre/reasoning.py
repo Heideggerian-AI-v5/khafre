@@ -190,6 +190,7 @@ def logImageSchematicEvents(reasoner, conclusions, imageResources, inpImgId, seg
                     loggables[t[1]]["statements"].append((p, o))
                     loggables[t[1]]["properties"].add(p)
                     loggables[t[1]]["participants"].add(o)
+    print("LOGGABLES", loggables)
     cleanup = []
     for k, d in loggables.items():
         d["statements"] = sorted(d["statements"])
@@ -483,6 +484,7 @@ class Reasoner(ReifiedProcess):
             conclusions = _silkie(self.perceptionInterpretationTheory, facts, self.backgroundFacts)
             ## reifiable/stet relations (triples) + theory -> new persistent schemas (dfl facts)
             facts = reifyConclusions(conclusions)
+            #print("AFTER PI", conclusions.defeasiblyProvable)
             conclusions = _silkie(self.updateSchemasTheory, facts, self.backgroundFacts)
             self.persistentSchemas = conclusions2Facts(conclusions)
             ## add connquery results to persistent schemas
